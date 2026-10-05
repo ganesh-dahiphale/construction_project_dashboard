@@ -14,15 +14,15 @@ public class NavBar {
     private final WebDriver driver;
     private final WebDriverWait wait;
 
-    private final By homeLink = By.xpath("//a[contains(@class, 'nav-link') and contains(., 'Home')]");
-    private final By dashboardLink = By.xpath("//a[contains(@class, 'nav-link') and contains(., 'Dashboard')]");
-    private final By tasksLink = By.xpath("//a[contains(@class, 'nav-link') and contains(., 'Tasks')]");
-    private final By statusLink = By.xpath("//a[contains(@class, 'nav-link') and contains(., 'Status')]");
-    private final By alertsLink = By.xpath("//a[contains(@class, 'nav-link') and contains(., 'Alerts')]");
-    private final By addTaskBtn = By.xpath("//a[contains(., 'Add Task')]");
-    private final By adminBtn = By.xpath("//a[contains(., 'Admin')]");
-    private final By logoutBtn = By.cssSelector("form[action*='/logout'] button");
-    private final By userBadge = By.cssSelector(".navbar span.badge");
+    private final By homeLink = By.xpath("//a[contains(@class, 'nav-link') and @href='/']");
+    private final By dashboardLink = By.xpath("//a[contains(@href, '/dashboard')]");
+    private final By tasksLink = By.xpath("//a[contains(@class, 'nav-link') and @href='/tasks']");
+    private final By statusLink = By.xpath("//a[contains(@href, '/status')]");
+    private final By alertsLink = By.xpath("//a[contains(@href, '/alerts')]");
+    private final By addTaskBtn = By.xpath("//a[contains(@href, '/tasks/new')]");
+    private final By adminBtn = By.xpath("//a[contains(@href, '/admin/projects')]");
+    private final By logoutBtn = By.cssSelector(".navbar form button, button[title='Logout']");
+    private final By userBadge = By.cssSelector(".navbar .badge");
 
     public NavBar(WebDriver driver) {
         this.driver = driver;
@@ -68,7 +68,7 @@ public class NavBar {
 
     public boolean isUserLoggedIn() {
         try {
-            return driver.findElements(userBadge).size() > 0;
+            return wait.until(ExpectedConditions.visibilityOfElementLocated(userBadge)).isDisplayed();
         } catch (Exception e) {
             return false;
         }

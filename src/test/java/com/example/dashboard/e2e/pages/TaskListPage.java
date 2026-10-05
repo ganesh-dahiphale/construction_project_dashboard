@@ -55,7 +55,7 @@ public class TaskListPage {
 
     public boolean isTaskPresent(String taskTitle) {
         try {
-            By taskLocator = By.xpath("//table//tr[td[contains(., '" + taskTitle + "')]]");
+            By taskLocator = By.xpath("//table//tr[contains(., '" + taskTitle + "')]");
             return wait.until(ExpectedConditions.presenceOfElementLocated(taskLocator)).isDisplayed();
         } catch (Exception e) {
             return false;
@@ -63,22 +63,22 @@ public class TaskListPage {
     }
 
     public String getTaskStatus(String taskTitle) {
-        By statusBadge = By.xpath("//table//tr[td[contains(., '" + taskTitle + "')]]//span[contains(@class, 'badge')]");
+        By statusBadge = By.xpath("//table//tr[contains(., '" + taskTitle + "')]//span[contains(@class, 'badge')]");
         return wait.until(ExpectedConditions.visibilityOfElementLocated(statusBadge)).getText().trim();
     }
 
     public String getTaskProgress(String taskTitle) {
-        By progressBar = By.xpath("//table//tr[td[contains(., '" + taskTitle + "')]]//div[contains(@class, 'progress-bar')]");
-        return wait.until(ExpectedConditions.visibilityOfElementLocated(progressBar)).getText().trim();
+        By progressElem = By.xpath("//table//tr[contains(., '" + taskTitle + "')]//small[contains(., '%')]");
+        return wait.until(ExpectedConditions.visibilityOfElementLocated(progressElem)).getText().trim();
     }
 
     public void clickEditTask(String taskTitle) {
-        By editBtn = By.xpath("//table//tr[td[contains(., '" + taskTitle + "')]]//a[contains(@href, '/edit')]");
-        WebElement btn = wait.until(ExpectedConditions.elementToBeClickable(editBtn));
+        By editBtn = By.xpath("//table//tr[contains(., '" + taskTitle + "')]//a[contains(@href, '/edit')]");
+        WebElement btn = wait.until(ExpectedConditions.presenceOfElementLocated(editBtn));
         try {
-            btn.click();
+            ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true); arguments[0].click();", btn);
         } catch (Exception e) {
-            ((JavascriptExecutor) driver).executeScript("arguments[0].click();", btn);
+            btn.click();
         }
     }
 

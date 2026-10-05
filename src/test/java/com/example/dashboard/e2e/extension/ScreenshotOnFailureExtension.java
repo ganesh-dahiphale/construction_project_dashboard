@@ -1,6 +1,7 @@
 package com.example.dashboard.e2e.extension;
 
 import com.example.dashboard.e2e.BaseE2ETest;
+import org.junit.jupiter.api.extension.AfterTestExecutionCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.TestWatcher;
 import org.openqa.selenium.OutputType;
@@ -16,13 +17,22 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
-public class ScreenshotOnFailureExtension implements TestWatcher {
+public class ScreenshotOnFailureExtension implements AfterTestExecutionCallback, TestWatcher {
 
     private static final String SCREENSHOTS_DIR = "target/screenshots";
     private static final DateTimeFormatter TIMESTAMP_FORMAT = DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss");
 
     @Override
-    public void testFailed(ExtensionContext context, Throwable cause) {
+    public void afterTestExecution(ExtensionContext context) {
+        if (context.getExecutionException().isPresent()) {
+            Throwable cause = context.getExecutionException().get();
+            if (!(cause instanceof org.opentest4j.TestAbortedException)) {
+                captureScreenshot(context, cause);
+            }
+        }
+    }
+
+    private void captureScreenshot(ExtensionContext context, Throwable cause) {
         Object testInstance = context.getRequiredTestInstance();
         if (testInstance instanceof BaseE2ETest) {
             WebDriver driver = ((BaseE2ETest) testInstance).getDriver();
@@ -61,6 +71,11 @@ public class ScreenshotOnFailureExtension implements TestWatcher {
                 }
             }
         }
+    }
+
+    @Override
+    public void testFailed(ExtensionContext context, Throwable cause) {
+        // Fallback if not already captured
     }
 
     @Override

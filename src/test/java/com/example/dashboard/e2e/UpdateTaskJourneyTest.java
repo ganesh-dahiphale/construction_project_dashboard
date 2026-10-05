@@ -35,6 +35,7 @@ public class UpdateTaskJourneyTest extends BaseE2ETest {
         formPage.submit();
 
         TaskListPage listPage = new TaskListPage(driver, getBaseUrl());
+        assertThat(listPage.isSuccessMessageDisplayed()).isTrue();
         assertThat(listPage.isTaskPresent(uniqueTitle)).isTrue();
 
         // 2. Click edit on the created task

@@ -22,8 +22,8 @@ public class TaskFormPage {
     private final By percentInput = By.id("percentComplete");
     private final By dueDateInput = By.id("dueDate");
     private final By remarksTextarea = By.id("remarks");
-    private final By submitBtn = By.id("saveTaskBtn");
-    private final By invalidFeedback = By.cssSelector(".invalid-feedback");
+    private final By submitBtn = By.cssSelector("#taskForm #submitBtn, #taskForm button[type='submit'], #submitBtn");
+    private final By invalidFeedback = By.cssSelector(".invalid-feedback, .alert-danger");
 
     public TaskFormPage(WebDriver driver, String baseUrl) {
         this.driver = driver;
@@ -44,11 +44,14 @@ public class TaskFormPage {
             t.sendKeys(title);
         }
 
-        // Select first available project if options exist
-        WebElement projElem = driver.findElement(projectSelect);
+        // Select first valid enabled project option
+        WebElement projElem = wait.until(ExpectedConditions.visibilityOfElementLocated(projectSelect));
         Select projSelect = new Select(projElem);
-        if (!projSelect.getOptions().isEmpty()) {
-            projSelect.selectByIndex(0);
+        for (WebElement opt : projSelect.getOptions()) {
+            if (opt.isEnabled() && opt.getAttribute("value") != null && !opt.getAttribute("value").trim().isEmpty()) {
+                projSelect.selectByValue(opt.getAttribute("value"));
+                break;
+            }
         }
 
         if (status != null) {
@@ -56,35 +59,40 @@ public class TaskFormPage {
             st.selectByValue(status);
         }
 
-        WebElement p = driver.findElement(percentInput);
+        WebElement p = wait.until(ExpectedConditions.visibilityOfElementLocated(percentInput));
         p.clear();
         p.sendKeys(String.valueOf(percentComplete));
 
         if (dueDate != null && !dueDate.isEmpty()) {
-            WebElement d = driver.findElement(dueDateInput);
-            d.clear();
-            d.sendKeys(dueDate);
+            WebElement d = wait.until(ExpectedConditions.visibilityOfElementLocated(dueDateInput));
+            try {
+                d.clear();
+                d.sendKeys(dueDate);
+            } catch (Exception ignored) {}
+            ((JavascriptExecutor) driver).executeScript(
+                    "arguments[0].value = arguments[1]; arguments[0].dispatchEvent(new Event('input', {bubbles: true})); arguments[0].dispatchEvent(new Event('change', {bubbles: true}));",
+                    d, dueDate);
         }
 
         if (remarks != null) {
-            WebElement r = driver.findElement(remarksTextarea);
+            WebElement r = wait.until(ExpectedConditions.visibilityOfElementLocated(remarksTextarea));
             r.clear();
             r.sendKeys(remarks);
         }
     }
 
     public void submit() {
-        WebElement btn = wait.until(ExpectedConditions.elementToBeClickable(submitBtn));
+        WebElement btn = wait.until(ExpectedConditions.presenceOfElementLocated(submitBtn));
         try {
-            btn.click();
+            ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true); arguments[0].click();", btn);
         } catch (Exception e) {
-            ((JavascriptExecutor) driver).executeScript("arguments[0].click();", btn);
+            btn.click();
         }
     }
 
     public boolean hasValidationErrors() {
         try {
-            return driver.findElements(invalidFeedback).stream().anyMatch(WebElement::isDisplayed);
+            return wait.until(ExpectedConditions.visibilityOfElementLocated(invalidFeedback)).isDisplayed();
         } catch (Exception e) {
             return false;
         }

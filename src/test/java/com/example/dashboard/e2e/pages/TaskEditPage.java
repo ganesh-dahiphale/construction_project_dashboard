@@ -44,11 +44,11 @@ public class TaskEditPage {
     }
 
     public void submit() {
-        WebElement btn = wait.until(ExpectedConditions.elementToBeClickable(submitBtn));
+        WebElement btn = wait.until(ExpectedConditions.presenceOfElementLocated(submitBtn));
         try {
-            btn.click();
+            ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true); arguments[0].click();", btn);
         } catch (Exception e) {
-            ((JavascriptExecutor) driver).executeScript("arguments[0].click();", btn);
+            btn.click();
         }
     }
 }

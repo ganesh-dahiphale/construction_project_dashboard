@@ -17,13 +17,14 @@ public class DashboardPage {
     private final WebDriverWait wait;
     private final String baseUrl;
 
-    private final By totalTasksCard = By.xpath("//div[contains(@class, 'card')]//p[contains(text(), 'Total Tasks')]/following-sibling::h2 | //div[contains(@class, 'card')]//span[contains(text(), 'Total')]/following-sibling::h3 | //h2[contains(@class, 'display') or contains(@class, 'fw-bold')]");
-    private final By kpiCards = By.cssSelector(".card h2, .card h3, .card .display-6");
-    private final By keywordInput = By.name("keyword");
-    private final By statusSelect = By.name("status");
-    private final By filterSubmitBtn = By.cssSelector("form button[type='submit']");
-    private final By taskTableRows = By.cssSelector("table tbody tr");
-    private final By delayedCardLink = By.xpath("//a[contains(@href, '/status/delayed')]");
+    private final By totalTasksCard = By.id("totalTasksCount");
+    private final By kpiCards = By.cssSelector(".metric-card");
+    private final By keywordInput = By.id("keyword");
+    private final By statusSelect = By.id("status");
+    private final By filterSubmitBtn = By.id("filterSubmitBtn");
+    private final By taskTableRows = By.cssSelector("#tasksTable tbody tr");
+    private final By emptyState = By.id("emptyState");
+    private final By delayedCardLink = By.cssSelector("#delayedCardLink, a[href*='/status/delayed']");
 
     public DashboardPage(WebDriver driver, String baseUrl) {
         this.driver = driver;
@@ -46,18 +47,26 @@ public class DashboardPage {
     }
 
     public void searchByKeyword(String keyword) {
+        WebElement form = driver.findElement(By.cssSelector("form[action*='/dashboard']"));
         WebElement input = wait.until(ExpectedConditions.visibilityOfElementLocated(keywordInput));
         input.clear();
-        input.sendKeys(keyword);
+        if (keyword != null && !keyword.isEmpty()) {
+            input.sendKeys(keyword);
+        }
         WebElement btn = wait.until(ExpectedConditions.elementToBeClickable(filterSubmitBtn));
         try {
             btn.click();
         } catch (Exception e) {
             ((JavascriptExecutor) driver).executeScript("arguments[0].click();", btn);
         }
+        try {
+            wait.until(ExpectedConditions.stalenessOf(form));
+        } catch (Exception ignored) {}
+        wait.until(ExpectedConditions.presenceOfElementLocated(keywordInput));
     }
 
     public void filterByStatus(String statusValue) {
+        WebElement form = driver.findElement(By.cssSelector("form[action*='/dashboard']"));
         WebElement selectElem = wait.until(ExpectedConditions.visibilityOfElementLocated(statusSelect));
         Select select = new Select(selectElem);
         select.selectByValue(statusValue);
@@ -67,6 +76,34 @@ public class DashboardPage {
         } catch (Exception e) {
             ((JavascriptExecutor) driver).executeScript("arguments[0].click();", btn);
         }
+        try {
+            wait.until(ExpectedConditions.stalenessOf(form));
+        } catch (Exception ignored) {}
+        wait.until(ExpectedConditions.presenceOfElementLocated(statusSelect));
+    }
+
+    public void searchAndFilter(String keyword, String statusValue) {
+        WebElement form = driver.findElement(By.cssSelector("form[action*='/dashboard']"));
+        WebElement input = wait.until(ExpectedConditions.visibilityOfElementLocated(keywordInput));
+        input.clear();
+        if (keyword != null && !keyword.isEmpty()) {
+            input.sendKeys(keyword);
+        }
+        if (statusValue != null && !statusValue.isEmpty()) {
+            WebElement selectElem = wait.until(ExpectedConditions.visibilityOfElementLocated(statusSelect));
+            Select select = new Select(selectElem);
+            select.selectByValue(statusValue);
+        }
+        WebElement btn = wait.until(ExpectedConditions.elementToBeClickable(filterSubmitBtn));
+        try {
+            btn.click();
+        } catch (Exception e) {
+            ((JavascriptExecutor) driver).executeScript("arguments[0].click();", btn);
+        }
+        try {
+            wait.until(ExpectedConditions.stalenessOf(form));
+        } catch (Exception ignored) {}
+        wait.until(ExpectedConditions.presenceOfElementLocated(keywordInput));
     }
 
     public int getTaskRowCount() {

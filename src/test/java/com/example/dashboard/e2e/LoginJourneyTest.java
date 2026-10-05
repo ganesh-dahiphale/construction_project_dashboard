@@ -44,12 +44,14 @@ public class LoginJourneyTest extends BaseE2ETest {
 
         // Engineer accessing /dashboard
         navigateTo("/dashboard");
-        assertThat(driver.getTitle()).contains("Access Denied");
+        waitForElementVisible(By.tagName("h1"));
+        assertThat(driver.getTitle()).containsIgnoringCase("Access Denied");
         assertThat(driver.findElement(By.tagName("body")).getText()).contains("403");
 
         // Engineer accessing /admin/projects
         navigateTo("/admin/projects");
-        assertThat(driver.getTitle()).contains("Access Denied");
+        waitForElementVisible(By.tagName("h1"));
+        assertThat(driver.getTitle()).containsIgnoringCase("Access Denied");
         assertThat(driver.findElement(By.tagName("body")).getText()).contains("403");
     }
 

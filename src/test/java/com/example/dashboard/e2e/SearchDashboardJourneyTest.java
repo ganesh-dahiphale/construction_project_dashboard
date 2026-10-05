@@ -27,7 +27,7 @@ public class SearchDashboardJourneyTest extends BaseE2ETest {
         assertThat(initialRowCount).isGreaterThan(0);
 
         // Filter by valid keyword
-        dashboardPage.searchByKeyword("Metro");
+        dashboardPage.searchByKeyword("Concrete");
         int filteredRowCount = dashboardPage.getTaskRowCount();
         assertThat(filteredRowCount).isGreaterThan(0);
 
@@ -36,8 +36,7 @@ public class SearchDashboardJourneyTest extends BaseE2ETest {
         assertThat(dashboardPage.getTaskRowCount()).isEqualTo(0);
 
         // Filter by status dropdown
-        dashboardPage.searchByKeyword("");
-        dashboardPage.filterByStatus("COMPLETED");
+        dashboardPage.searchAndFilter("", "COMPLETED");
         assertThat(dashboardPage.getTaskRowCount()).isGreaterThanOrEqualTo(1);
     }
 }

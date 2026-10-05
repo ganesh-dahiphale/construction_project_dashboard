@@ -43,6 +43,10 @@ public class LoginPage {
 
         WebElement btn = wait.until(ExpectedConditions.elementToBeClickable(submitButton));
         btn.click();
+        wait.until(ExpectedConditions.or(
+                ExpectedConditions.visibilityOfElementLocated(errorAlert),
+                ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".navbar"))
+        ));
     }
 
     public boolean isErrorAlertDisplayed() {
