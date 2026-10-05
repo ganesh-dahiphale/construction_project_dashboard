@@ -39,6 +39,24 @@ The **Construction Progress Dashboard** bridges this gap:
 
 ---
 
+## 🔐 Security & Role-Based Access
+
+The application enforces Spring Security with role-based access control (RBAC):
+- **ADMIN**: Full system access including project management (`/admin/**`), task operations, and executive dashboards.
+- **MANAGER**: Access to Executive Dashboard (`/dashboard`), Status Drill-Down (`/status/**`), Alerts (`/alerts`), and task workflows.
+- **ENGINEER**: Access to view, create, and update tasks (`/tasks/**`).
+- **Public**: Health check (`/health`), login page (`/login`), and static assets.
+
+### Development Default Credentials
+
+| Role | Username | Default Password | Environment Variable |
+|---|---|---|---|
+| Administrator | `admin` | `admin123` | `DEV_ADMIN_PASSWORD` |
+| Project Manager | `manager` | `manager123` | `DEV_MANAGER_PASSWORD` |
+| Site Engineer | `engineer` | `engineer123` | `DEV_ENGINEER_PASSWORD` |
+
+---
+
 ## 🛠️ Technology Stack
 
 | Layer | Technology | Description |
