@@ -55,6 +55,7 @@ public class Task {
     @Column(nullable = false)
     private LocalDate dueDate;
 
+    @Size(max = 500, message = "Remarks cannot exceed 500 characters")
     @Column(length = 500)
     private String remarks;
 

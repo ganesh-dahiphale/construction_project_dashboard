@@ -26,7 +26,8 @@ public class DataInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        if (projectRepository.count() > 0) {
+        // Guard: skip if data already seeded (checks both to handle partial-seed dev restarts)
+        if (projectRepository.count() > 0 || taskRepository.count() > 0) {
             return;
         }
 

@@ -117,4 +117,23 @@ class TaskControllerTest {
 
         verify(taskService, never()).createTask(any(Task.class));
     }
+
+    @Test
+    @DisplayName("POST /tasks with percentComplete=100 and status=COMPLETED should redirect (boundary value)")
+    void createTaskWithBoundaryPercentCompleteShouldRedirect() throws Exception {
+        when(taskService.createTask(any(Task.class))).thenReturn(sampleTask);
+
+        mockMvc.perform(post("/tasks")
+                        .param("title", "Final Inspection Sign-off")
+                        .param("project", "1")
+                        .param("status", "COMPLETED")
+                        .param("percentComplete", "100")
+                        .param("dueDate", LocalDate.now().toString())
+                        .param("remarks", ""))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/tasks"))
+                .andExpect(flash().attributeExists("successMessage"));
+
+        verify(taskService, times(1)).createTask(any(Task.class));
+    }
 }
