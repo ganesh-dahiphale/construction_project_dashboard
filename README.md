@@ -209,3 +209,44 @@ We enforce the [Conventional Commits](https://www.conventionalcommits.org/) spec
 | **Week 13** | **Monitoring, Logging & Observability** | Spring Boot Actuator, Prometheus metrics export, log aggregation |
 | **Week 14** | **Security & Vulnerability Scanning** | OWASP Dependency-Check, container security scanning (Trivy), credentials audit |
 | **Week 15** | **Production Release & Project Retrospective** | Zero-downtime release deployment, project showcase, and post-mortem report |
+
+---
+
+## 🗓️ Week 5 — Feature 1: Task / Progress Event Entry & Task List
+
+**Delivered in:** `feature/5-task-entry-form` (merged into `develop`).  
+**Closes:** Issue [#5 — Task/event entry form and task list](https://github.com/ganesh-dahiphale/construction_project_dashboard/issues/5)
+
+### What was built
+
+| Layer | Details |
+|---|---|
+| **Models** | `Project` (id, name, location, startDate, endDate) and `Task` (id, project, title, status enum, percentComplete 0–100, dueDate, remarks, lastUpdated) with full Bean Validation |
+| **Repositories** | `ProjectRepository` and `TaskRepository` (Spring Data JPA) |
+| **Service** | `TaskService` — `createTask`, `getAllTasks`, `getTaskById`, `getAllProjects` |
+| **Controllers** | `TaskController` — `GET /tasks` (list), `GET /tasks/new` (form), `POST /tasks` (validate → save or redisplay) |
+| **Templates** | `tasks/list.html` (table with status badges, progress bars, overdue flag), `tasks/form.html` (validated Bootstrap form), `fragments/navbar.html` (shared nav) |
+| **Seed Data** | `DataInitializer` (dev/default profile) seeds 2 projects and 5 tasks (one overdue, one completed, one blocked) |
+| **Tests** | `TaskServiceTest` (Mockito, 4 tests) + `TaskControllerTest` (MockMvc, 4 tests) + existing `HealthControllerTest` — **9 / 9 green** |
+
+### Endpoints added
+
+| Method | URL | Description |
+|---|---|---|
+| `GET` | `/tasks` | Paginated task list sorted by due date |
+| `GET` | `/tasks/new` | Task / progress event entry form |
+| `POST` | `/tasks` | Save validated task; redirect with flash on success; redisplay form on errors |
+
+### How to run locally
+
+```bash
+# Linux / macOS
+./mvnw spring-boot:run
+
+# Windows PowerShell
+.\mvnw.cmd spring-boot:run
+```
+
+Then open:
+- **Task List**: http://localhost:8080/tasks
+- **New Task Form**: http://localhost:8080/tasks/new
