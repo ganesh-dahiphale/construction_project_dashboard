@@ -1,0 +1,113 @@
+# ===================================================================
+# Construction Progress Dashboard - Git Ignore Configuration
+# ===================================================================
+
+# Compiled Class files
+*.class
+
+# Log files
+*.log
+logs/
+
+# BlueJ files
+*.ctxt
+
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+# Package Files #
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# Maven build directory & artifacts
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+
+# Allow Maven Wrapper jar
+!.mvn/wrapper/maven-wrapper.jar
+
+# Virtual Machine crash logs
+hs_err_pid*
+replay_pid*
+
+# ===================================================================
+# IDE & Editor Specific Files
+# ===================================================================
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+
+# Visual Studio Code
+.vscode/
+*.code-workspace
+
+# Eclipse
+.settings/
+.project
+.classpath
+.metadata/
+bin/
+tmp/
+
+# NetBeans
+nbproject/private/
+nbbuild/
+dist/
+nbproject/
+nb-configuration.xml
+
+# ===================================================================
+# Operating System Files
+# ===================================================================
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+*~
+.directory
+
+# ===================================================================
+# Environment Variables & Secrets
+# ===================================================================
+.env
+.env.local
+.env.*.local
+*.key
+*.pem
+*.pfx
+*.p12
+
+# ===================================================================
+# Docker & Jenkins Local Artifacts
+# ===================================================================
+docker-compose.override.yml
+.docker/
+jenkins_home/
+.jenkins/
