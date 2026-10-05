@@ -2,6 +2,7 @@ package com.example.dashboard.service;
 
 import com.example.dashboard.model.Project;
 import com.example.dashboard.model.Task;
+import com.example.dashboard.model.TaskStatus;
 import com.example.dashboard.repository.ProjectRepository;
 import com.example.dashboard.repository.TaskRepository;
 import org.springframework.stereotype.Service;

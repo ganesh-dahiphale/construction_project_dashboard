@@ -136,4 +136,61 @@ class TaskControllerTest {
 
         verify(taskService, times(1)).createTask(any(Task.class));
     }
+
+    @Test
+    @DisplayName("GET /tasks/{id}/edit should return 200, view tasks/edit and form in model")
+    void editTaskFormShouldReturn200AndEditView() throws Exception {
+        when(taskService.getTaskById(10L)).thenReturn(java.util.Optional.of(sampleTask));
+
+        mockMvc.perform(get("/tasks/10/edit"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("tasks/edit"))
+                .andExpect(model().attributeExists("task"))
+                .andExpect(model().attributeExists("taskForm"))
+                .andExpect(model().attributeExists("statuses"));
+
+        verify(taskService, times(1)).getTaskById(10L);
+    }
+
+    @Test
+    @DisplayName("GET /tasks/{id}/edit for non-existent task should return 404")
+    void editTaskFormNotFoundShouldReturn404() throws Exception {
+        when(taskService.getTaskById(999L)).thenReturn(java.util.Optional.empty());
+
+        mockMvc.perform(get("/tasks/999/edit"))
+                .andExpect(status().isNotFound());
+
+        verify(taskService, times(1)).getTaskById(999L);
+    }
+
+    @Test
+    @DisplayName("POST /tasks/{id}/edit with valid data should update task and redirect")
+    void updateTaskWithValidDataShouldRedirect() throws Exception {
+        when(taskService.getTaskById(10L)).thenReturn(java.util.Optional.of(sampleTask));
+        when(taskService.updateTask(any(), any(), any(), any(), any())).thenReturn(sampleTask);
+
+        mockMvc.perform(post("/tasks/10/edit")
+                        .param("status", "COMPLETED")
+                        .param("percentComplete", "100")
+                        .param("remarks", "All done"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/tasks"))
+                .andExpect(flash().attributeExists("successMessage"));
+
+        verify(taskService, times(1)).updateTask(10L, TaskStatus.COMPLETED, 100, "All done", "system");
+    }
+
+    @Test
+    @DisplayName("POST /tasks/{id}/edit with invalid data should return 200 and show form errors")
+    void updateTaskWithInvalidDataShouldReturnForm() throws Exception {
+        when(taskService.getTaskById(10L)).thenReturn(java.util.Optional.of(sampleTask));
+
+        mockMvc.perform(post("/tasks/10/edit")
+                        .param("percentComplete", "150"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("tasks/edit"))
+                .andExpect(model().hasErrors());
+
+        verify(taskService, never()).updateTask(any(), any(), any(), any(), any());
+    }
 }

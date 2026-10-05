@@ -73,7 +73,7 @@
                         <div class="mb-3">
                             <label for="status" class="form-label fw-semibold">Execution Status <span class="text-danger">*</span></label>
                             <select class="form-select" id="status" th:field="*{status}"
-                                    th:classappend="${#fields.hasErrors('status')} ? 'is-invalid' : ''}" required>
+                                    th:classappend="${#fields.hasErrors('status') ? 'is-invalid' : ''}" required>
                                 <option th:each="st : ${statuses}" th:value="${st}" th:text="${st.displayName}"></option>
                             </select>
                             <div class="invalid-feedback" th:if="${#fields.hasErrors('status')}" th:errors="*{status}">
@@ -90,7 +90,7 @@
                             <div class="input-group">
                                 <input type="number" class="form-control" id="percentComplete" th:field="*{percentComplete}"
                                        min="0" max="100" placeholder="0 - 100"
-                                       th:classappend="${#fields.hasErrors('percentComplete')} ? 'is-invalid' : ''}" required>
+                                       th:classappend="${#fields.hasErrors('percentComplete') ? 'is-invalid' : ''}" required>
                                 <span class="input-group-text bg-light">%</span>
                                 <div class="invalid-feedback" th:if="${#fields.hasErrors('percentComplete')}" th:errors="*{percentComplete}">
                                     Percentage must be an integer between 0 and 100.
@@ -103,7 +103,7 @@
                             <label for="remarks" class="form-label fw-semibold">Progress Notes & Site Impediments</label>
                             <textarea class="form-control" id="remarks" th:field="*{remarks}" rows="3"
                                       placeholder="Provide recent activity details, inspection notes, or reasons for delay/blockers..."
-                                      th:classappend="${#fields.hasErrors('remarks')} ? 'is-invalid' : ''}"></textarea>
+                                      th:classappend="${#fields.hasErrors('remarks') ? 'is-invalid' : ''}"></textarea>
                             <div class="invalid-feedback" th:if="${#fields.hasErrors('remarks')}" th:errors="*{remarks}">
                                 Remarks cannot exceed 500 characters.
                             </div>
