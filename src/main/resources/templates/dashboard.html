@@ -97,14 +97,16 @@
 
         <!-- Delayed Tasks (Overdue & not completed) -->
         <div class="col-6 col-md-4 col-xl-2">
-            <div class="card metric-card border-0 shadow-sm bg-white h-100 p-3 border-start border-danger border-4">
-                <div class="d-flex align-items-center justify-content-between mb-2">
-                    <span class="text-muted small fw-semibold">Delayed</span>
-                    <span class="badge bg-danger-subtle text-danger rounded-pill p-2"><i class="bi bi-clock-history"></i></span>
+            <a th:href="@{/status/delayed}" class="text-decoration-none" id="delayedCardLink">
+                <div class="card metric-card border-0 shadow-sm bg-white h-100 p-3 border-start border-danger border-4">
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <span class="text-muted small fw-semibold">Delayed</span>
+                        <span class="badge bg-danger-subtle text-danger rounded-pill p-2"><i class="bi bi-clock-history"></i></span>
+                    </div>
+                    <h2 class="h3 fw-bold mb-0 text-danger" id="delayedTasksCount" th:text="${summary.delayedTasks}">0</h2>
+                    <small class="text-danger fw-semibold">Past due date</small>
                 </div>
-                <h2 class="h3 fw-bold mb-0 text-danger" id="delayedTasksCount" th:text="${summary.delayedTasks}">0</h2>
-                <small class="text-danger fw-semibold">Past due date</small>
-            </div>
+            </a>
         </div>
 
         <!-- Overall Completion % -->

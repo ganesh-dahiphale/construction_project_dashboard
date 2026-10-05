@@ -311,3 +311,54 @@ Access the application in your browser:
 - **Admin Projects**: http://localhost:8080/admin/projects
 - **Health Check**: http://localhost:8080/health
 
+---
+
+## 🧪 Running UI Tests (Selenium E2E)
+
+The project includes an automated end-to-end (E2E) testing suite powered by **Selenium 4**, **JUnit 5**, and **Headless Chrome**, automating 5 critical user journeys across authentication, role-based authorization, task creation, status updates, search filters, and exception drill-downs.
+
+### 1. Default Build (Fast Unit & Integration Tests)
+By default, standard builds do **not** run slow browser E2E tests, allowing standard CI pipelines to remain fast:
+```bash
+# Unit & Controller/Service integration tests only (E2E excluded)
+./mvnw clean test
+./mvnw clean package
+```
+
+### 2. Execute Selenium E2E Tests
+To run the automated Selenium user journey suite locally, activate the `selenium` Maven profile:
+```bash
+# Run all 5 critical user journey tests (Headless Chrome)
+./mvnw -B -Pselenium test
+
+# Windows PowerShell:
+.\mvnw.cmd -B -Pselenium test
+```
+
+### 3. Execution Options & System Properties
+
+| Property | Default Value | Description | Example |
+|---|---|---|---|
+| `-Pselenium` | *(none)* | Maven profile activating E2E tests tagged `@Tag("e2e")` | `./mvnw -B -Pselenium test` |
+| `-Dheadless=false` | `true` | Runs Chrome in visible (headed) GUI mode for visual inspection | `./mvnw -B -Pselenium test -Dheadless=false` |
+| `-Dbase.url` | *(Embedded Port)* | Targets a pre-deployed server instance (e.g. Tomcat/staging) | `./mvnw -B -Pselenium test -Dbase.url=http://localhost:8080` |
+| `-Ddemo.failure=true` | `false` | Executes the deliberate failure verification test | `./mvnw -B -Pselenium test "-Ddemo.failure=true"` |
+| `-De2e.manager.password` | `manager123` | Overrides test account passwords | `./mvnw -B -Pselenium test -De2e.manager.password=customPass` |
+
+### 4. HTML Surefire Test Report
+Generate and view the HTML Surefire test report:
+```bash
+# Generate report after running tests
+./mvnw -B -Pselenium surefire-report:report-only
+
+# Windows PowerShell:
+.\mvnw.cmd -B -Pselenium surefire-report:report-only
+```
+- Report output location: `target/site/surefire-report.html`
+
+### 5. Failure Screenshot Mechanism
+The test framework includes a JUnit 5 `ScreenshotOnFailureExtension` (`AfterTestExecutionCallback` & `TestWatcher`). Whenever any UI test fails:
+- An automatic full-page PNG screenshot is captured to `target/screenshots/<ClassName>_<methodName>_<timestamp>.png`.
+- The failure log records the exact page URL, document title, and failure cause.
+- Permanent evidence files and reports are preserved under `docs/evidence/week9/`.
+
