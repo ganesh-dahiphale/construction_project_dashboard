@@ -38,6 +38,10 @@ public class Project {
     public Project() {
     }
 
+    public Project(Long id) {
+        this.id = id;
+    }
+
     public Project(String name, String location, LocalDate startDate, LocalDate endDate) {
         this.name = name;
         this.location = location;
