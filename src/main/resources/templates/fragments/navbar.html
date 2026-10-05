@@ -19,8 +19,18 @@
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link" th:classappend="${activeTab == 'dashboard' ? 'active' : ''}" th:href="@{/dashboard}">
+                        <i class="bi bi-speedometer2 me-1"></i>Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link" th:classappend="${activeTab == 'tasks' ? 'active' : ''}" th:href="@{/tasks}">
                         <i class="bi bi-list-task me-1"></i>Tasks
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:classappend="${activeTab == 'status' ? 'active' : ''}" th:href="@{/status}">
+                        <i class="bi bi-diagram-3 me-1"></i>Status
                     </a>
                 </li>
                 <li class="nav-item">

@@ -36,6 +36,7 @@ The **Construction Progress Dashboard** bridges this gap:
 4. **Status Drill-Down**: In-depth inspection view for individual site tasks, sub-tasks, and historical event logs.
 5. **Overdue Task Alert View**: Automated flagging of tasks that exceed their target completion deadlines or stall without updates.
 6. **System Health Endpoint**: Built-in REST endpoint (`/health`) for health checks and automated CI/CD synthetic monitoring.
+- Searchable dashboard with summary indicators
 - Status drill-down and alert view
 
 ---
