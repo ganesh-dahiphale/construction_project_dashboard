@@ -72,7 +72,7 @@ class SecurityTest {
 
     @Test
     @WithMockUser(username = "engineer", roles = {"ENGINEER"})
-    @DisplayName("ROLE_ENGINEER can access /tasks but gets 403 on /dashboard and /alerts")
+    @DisplayName("ROLE_ENGINEER can access /tasks but gets 403 on /dashboard, /alerts, and /admin/projects")
     void engineerRoleAccessRestrictions() throws Exception {
         mockMvc.perform(get("/tasks"))
                 .andExpect(status().isOk());
@@ -85,11 +85,14 @@ class SecurityTest {
 
         mockMvc.perform(get("/alerts"))
                 .andExpect(status().isForbidden());
+
+        mockMvc.perform(get("/admin/projects"))
+                .andExpect(status().isForbidden());
     }
 
     @Test
     @WithMockUser(username = "manager", roles = {"MANAGER"})
-    @DisplayName("ROLE_MANAGER can access /tasks, /dashboard, /status, /alerts")
+    @DisplayName("ROLE_MANAGER can access /tasks, /dashboard, /status, /alerts but gets 403 on /admin/projects")
     void managerRoleAccessAllowed() throws Exception {
         mockMvc.perform(get("/tasks"))
                 .andExpect(status().isOk());
@@ -102,11 +105,14 @@ class SecurityTest {
 
         mockMvc.perform(get("/alerts"))
                 .andExpect(status().isOk());
+
+        mockMvc.perform(get("/admin/projects"))
+                .andExpect(status().isForbidden());
     }
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    @DisplayName("ROLE_ADMIN has full access to all application views")
+    @DisplayName("ROLE_ADMIN has full access to all application views including /admin/projects")
     void adminRoleHasFullAccess() throws Exception {
         mockMvc.perform(get("/tasks"))
                 .andExpect(status().isOk());
@@ -115,6 +121,9 @@ class SecurityTest {
                 .andExpect(status().isOk());
 
         mockMvc.perform(get("/alerts"))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(get("/admin/projects"))
                 .andExpect(status().isOk());
     }
 }

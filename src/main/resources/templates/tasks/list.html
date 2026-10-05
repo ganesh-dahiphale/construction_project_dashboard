@@ -88,11 +88,12 @@
                                 <th style="width: 15%;">Progress</th>
                                 <th style="width: 13%;">Due Date</th>
                                 <th style="width: 10%;">Updated</th>
+                                <th style="width: 8%; text-align: center;">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr th:if="${#lists.isEmpty(tasks)}">
-                                <td colspan="7" class="text-center py-5 text-muted">
+                                <td colspan="8" class="text-center py-5 text-muted">
                                     <i class="bi bi-inbox display-6 d-block mb-2 text-secondary"></i>
                                     <span>No tasks logged yet. Click <strong>"Log New Task / Event"</strong> to record site progress.</span>
                                 </td>
@@ -137,6 +138,11 @@
                                 <td>
                                     <small class="text-muted"
                                            th:text="${task.lastUpdated != null ? #temporals.format(task.lastUpdated, 'MMM dd, HH:mm') : '-'}">Oct 05</small>
+                                </td>
+                                <td class="text-center">
+                                    <a th:href="@{/tasks/{id}/edit(id=${task.id})}" class="btn btn-outline-secondary btn-sm py-0 px-2" title="Edit Task Progress">
+                                        <i class="bi bi-pencil me-1"></i>Edit
+                                    </a>
                                 </td>
                             </tr>
                         </tbody>

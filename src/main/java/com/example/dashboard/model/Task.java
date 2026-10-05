@@ -61,6 +61,9 @@ public class Task {
 
     private LocalDateTime lastUpdated;
 
+    @Column(length = 50)
+    private String updatedBy = "system";
+
     public Task() {
     }
 
@@ -136,6 +139,14 @@ public class Task {
 
     public void setLastUpdated(LocalDateTime lastUpdated) {
         this.lastUpdated = lastUpdated;
+    }
+
+    public String getUpdatedBy() {
+        return updatedBy;
+    }
+
+    public void setUpdatedBy(String updatedBy) {
+        this.updatedBy = updatedBy;
     }
 
     public boolean isOverdue() {
