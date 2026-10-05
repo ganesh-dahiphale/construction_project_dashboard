@@ -39,11 +39,31 @@ The **Construction Progress Dashboard** bridges this gap:
 
 ---
 
+## 🔐 Security & Role-Based Access
+
+The application enforces Spring Security with role-based access control (RBAC):
+- **ADMIN**: Full system access including project management (`/admin/**`), task operations, and executive dashboards.
+- **MANAGER**: Access to Executive Dashboard (`/dashboard`), Status Drill-Down (`/status/**`), Alerts (`/alerts`), and task workflows.
+- **ENGINEER**: Access to view, create, and update tasks (`/tasks/**`).
+- **Public**: Health check (`/health`), login page (`/login`), and static assets.
+
+### Development Default Credentials
+
+| Role | Username | Default Password | Environment Variable |
+|---|---|---|---|
+| Administrator | `admin` | `admin123` | `DEV_ADMIN_PASSWORD` |
+| Project Manager | `manager` | `manager123` | `DEV_MANAGER_PASSWORD` |
+| Site Engineer | `engineer` | `engineer123` | `DEV_ENGINEER_PASSWORD` |
+
+---
+
 ## 📝 Task Updates & Project Administration
 
 - **Progress Updates (`/tasks/{id}/edit`)**: Update task execution status, percentage completion (0-100%), and progress notes. Automatic business rule: setting status to `COMPLETED` automatically forces `percentComplete` to 100%. Tracks `lastUpdated` and `updatedBy`.
 - **Project Site Management (`/admin/projects`)**: Create, inspect, and update construction site definitions and timelines.
 - **Robust Error Handling**: Dedicated, user-friendly error views for 400 Bad Request, 403 Forbidden, 404 Not Found, and 500 Internal Error.
+
+---
 
 ---
 

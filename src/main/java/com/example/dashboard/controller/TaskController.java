@@ -79,6 +79,7 @@ public class TaskController {
             @org.springframework.web.bind.annotation.PathVariable("id") Long id,
             @Valid @ModelAttribute("taskForm") com.example.dashboard.dto.TaskUpdateDto form,
             BindingResult bindingResult,
+            java.security.Principal principal,
             Model model,
             RedirectAttributes redirectAttributes) {
 
@@ -93,7 +94,8 @@ public class TaskController {
             return "tasks/edit";
         }
 
-        taskService.updateTask(id, form.getStatus(), form.getPercentComplete(), form.getRemarks(), "system");
+        String updatedBy = (principal != null) ? principal.getName() : "system";
+        taskService.updateTask(id, form.getStatus(), form.getPercentComplete(), form.getRemarks(), updatedBy);
         redirectAttributes.addFlashAttribute("successMessage", "Task #" + id + " updated successfully!");
         return "redirect:/tasks";
     }
