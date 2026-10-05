@@ -96,4 +96,41 @@ class TaskServiceTest {
         assertThat(projects.get(0).getName()).isEqualTo("Metro Station");
         verify(projectRepository, times(1)).findAllByOrderByNameAsc();
     }
+
+    @Test
+    @DisplayName("updateTask should modify status, progress, remarks, updatedBy and lastUpdated")
+    void updateTaskShouldUpdateFields() {
+        when(taskRepository.findById(10L)).thenReturn(Optional.of(sampleTask));
+        when(taskRepository.save(any(Task.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        Task updated = taskService.updateTask(10L, TaskStatus.IN_PROGRESS, 75, "Pouring finished", "engineer1");
+
+        assertThat(updated.getPercentComplete()).isEqualTo(75);
+        assertThat(updated.getRemarks()).isEqualTo("Pouring finished");
+        assertThat(updated.getUpdatedBy()).isEqualTo("engineer1");
+        verify(taskRepository, times(1)).save(sampleTask);
+    }
+
+    @Test
+    @DisplayName("updateTask with COMPLETED status automatically forces percentComplete to 100")
+    void updateTaskWithCompletedForcesHundredPercent() {
+        when(taskRepository.findById(10L)).thenReturn(Optional.of(sampleTask));
+        when(taskRepository.save(any(Task.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        Task updated = taskService.updateTask(10L, TaskStatus.COMPLETED, 40, "Signed off", "manager1");
+
+        assertThat(updated.getStatus()).isEqualTo(TaskStatus.COMPLETED);
+        assertThat(updated.getPercentComplete()).isEqualTo(100);
+        verify(taskRepository, times(1)).save(sampleTask);
+    }
+
+    @Test
+    @DisplayName("updateTask for non-existent task throws IllegalArgumentException")
+    void updateTaskNonExistentThrowsException() {
+        when(taskRepository.findById(999L)).thenReturn(Optional.empty());
+
+        org.junit.jupiter.api.Assertions.assertThrows(IllegalArgumentException.class, () ->
+                taskService.updateTask(999L, TaskStatus.COMPLETED, 100, "None", "system")
+        );
+    }
 }

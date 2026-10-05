@@ -39,6 +39,34 @@ The **Construction Progress Dashboard** bridges this gap:
 
 ---
 
+## 🔐 Security & Role-Based Access
+
+The application enforces Spring Security with role-based access control (RBAC):
+- **ADMIN**: Full system access including project management (`/admin/**`), task operations, and executive dashboards.
+- **MANAGER**: Access to Executive Dashboard (`/dashboard`), Status Drill-Down (`/status/**`), Alerts (`/alerts`), and task workflows.
+- **ENGINEER**: Access to view, create, and update tasks (`/tasks/**`).
+- **Public**: Health check (`/health`), login page (`/login`), and static assets.
+
+### Development Default Credentials
+
+| Role | Username | Default Password | Environment Variable |
+|---|---|---|---|
+| Administrator | `admin` | `admin123` | `DEV_ADMIN_PASSWORD` |
+| Project Manager | `manager` | `manager123` | `DEV_MANAGER_PASSWORD` |
+| Site Engineer | `engineer` | `engineer123` | `DEV_ENGINEER_PASSWORD` |
+
+---
+
+## 📝 Task Updates & Project Administration
+
+- **Progress Updates (`/tasks/{id}/edit`)**: Update task execution status, percentage completion (0-100%), and progress notes. Automatic business rule: setting status to `COMPLETED` automatically forces `percentComplete` to 100%. Tracks `lastUpdated` and `updatedBy`.
+- **Project Site Management (`/admin/projects`)**: Create, inspect, and update construction site definitions and timelines.
+- **Robust Error Handling**: Dedicated, user-friendly error views for 400 Bad Request, 403 Forbidden, 404 Not Found, and 500 Internal Error.
+
+---
+
+---
+
 ## 🛠️ Technology Stack
 
 | Layer | Technology | Description |
@@ -231,25 +259,37 @@ We enforce the [Conventional Commits](https://www.conventionalcommits.org/) spec
 
 ---
 
-## 🗓️ Week 6 — MVP Baseline: Executive Dashboard, Status Drill-Down & Alert View
+## 🗓️ Week 7 — MVP Release v1.0.0: Authentication, RBAC, Task Updates & Project Management
 
-**Delivered in:** `feature/7-searchable-dashboard` and `feature/8-drilldown-alerts` (parallel development, conflict resolved, merged into `develop`).  
-**Closes:** Issue [#7 — Searchable dashboard with summary indicators](https://github.com/ganesh-dahiphale/construction_project_dashboard/issues/7) and Issue [#8 — Status drill-down and alert/exception view](https://github.com/ganesh-dahiphale/construction_project_dashboard/issues/8).
+**Delivered in:** `feature/25-login-roles` and `feature/26-status-update-admin` (parallel development, conflict resolved, merged into `develop`).  
+**Closes:** Issue [#25 — Login and role-based access](https://github.com/ganesh-dahiphale/construction_project_dashboard/issues/25) and Issue [#26 — Task status update and admin project management](https://github.com/ganesh-dahiphale/construction_project_dashboard/issues/26).
+
+### 🎯 MVP Status: **100% Complete (Release v1.0.0)**
 
 ### Complete MVP Web Application Routes
 
-| Method | URL | Description |
-|---|---|---|
-| `GET` | `/` | Welcome and home page |
-| `GET` | `/dashboard` | Executive Dashboard with KPI cards and multi-criteria filter form |
-| `GET` | `/tasks` | Full list of all construction tasks with status badges and progress |
-| `GET` | `/tasks/new` | Task / site event entry form with Bean Validation |
-| `POST` | `/tasks` | Submit and validate new task; redirect with flash feedback |
-| `GET` | `/status` | Status drill-down category overview with live task counts |
-| `GET` | `/status/{status}` | Filtered tasks by status (`NOT_STARTED`, `IN_PROGRESS`, `COMPLETED`, `BLOCKED`, `delayed`) |
-| `GET` | `/alerts` | High-priority exception dashboard for overdue and blocked tasks |
-| `GET` | `/health` | Application health and synthetic monitoring endpoint (JSON) |
-| `GET` | `/h2-console` | In-memory H2 database console (local dev profile) |
+| Method | URL | Required Role | Description |
+|---|---|---|---|
+| `GET` | `/` | Authenticated | Welcome and home page |
+| `GET` | `/login` | Public | Custom form login view |
+| `POST` | `/login` | Public | Spring Security authentication handler |
+| `POST` | `/logout` | Authenticated | Secure session termination |
+| `GET` | `/dashboard` | `ADMIN`, `MANAGER` | Executive Dashboard with KPI cards and multi-criteria filter form |
+| `GET` | `/tasks` | `ADMIN`, `MANAGER`, `ENGINEER` | Full list of all construction tasks with status badges and edit links |
+| `GET` | `/tasks/new` | `ADMIN`, `MANAGER`, `ENGINEER` | Task / site event entry form with Bean Validation |
+| `POST` | `/tasks` | `ADMIN`, `MANAGER`, `ENGINEER` | Submit and validate new task; redirect with flash feedback |
+| `GET` | `/tasks/{id}/edit` | `ADMIN`, `MANAGER`, `ENGINEER` | Form to update task status, percent completion, and remarks |
+| `POST` | `/tasks/{id}/edit` | `ADMIN`, `MANAGER`, `ENGINEER` | Process task update, auto-complete rule, and record auditing user |
+| `GET` | `/status` | `ADMIN`, `MANAGER` | Status drill-down category overview with live task counts |
+| `GET` | `/status/{status}` | `ADMIN`, `MANAGER` | Filtered tasks by status (`NOT_STARTED`, `IN_PROGRESS`, `COMPLETED`, `BLOCKED`, `delayed`) |
+| `GET` | `/alerts` | `ADMIN`, `MANAGER` | High-priority exception dashboard for overdue and blocked tasks |
+| `GET` | `/admin/projects` | `ADMIN` | List all construction project sites |
+| `GET` | `/admin/projects/new` | `ADMIN` | Create new construction project site form |
+| `POST` | `/admin/projects` | `ADMIN` | Save new construction project |
+| `GET` | `/admin/projects/{id}/edit`| `ADMIN` | Edit construction project metadata and dates |
+| `POST` | `/admin/projects/{id}/edit`| `ADMIN` | Update construction project details |
+| `GET` | `/health` | Public | Application health and synthetic monitoring endpoint (JSON) |
+| `GET` | `/h2-console` | Public | In-memory H2 database console (local dev profile) |
 
 ### How to Run the Application Locally
 
@@ -262,10 +302,12 @@ We enforce the [Conventional Commits](https://www.conventionalcommits.org/) spec
 ```
 
 Access the application in your browser:
+- **Login**: http://localhost:8080/login *(Use `admin`/`admin123`, `manager`/`manager123`, or `engineer`/`engineer123`)*
 - **Dashboard**: http://localhost:8080/dashboard
 - **Task List**: http://localhost:8080/tasks
 - **New Task Form**: http://localhost:8080/tasks/new
 - **Status Drill-Down**: http://localhost:8080/status
 - **Alert View**: http://localhost:8080/alerts
+- **Admin Projects**: http://localhost:8080/admin/projects
 - **Health Check**: http://localhost:8080/health
 
