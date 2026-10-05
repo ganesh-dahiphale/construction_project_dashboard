@@ -39,6 +39,14 @@ The **Construction Progress Dashboard** bridges this gap:
 
 ---
 
+## 📝 Task Updates & Project Administration
+
+- **Progress Updates (`/tasks/{id}/edit`)**: Update task execution status, percentage completion (0-100%), and progress notes. Automatic business rule: setting status to `COMPLETED` automatically forces `percentComplete` to 100%. Tracks `lastUpdated` and `updatedBy`.
+- **Project Site Management (`/admin/projects`)**: Create, inspect, and update construction site definitions and timelines.
+- **Robust Error Handling**: Dedicated, user-friendly error views for 400 Bad Request, 403 Forbidden, 404 Not Found, and 500 Internal Error.
+
+---
+
 ## 🛠️ Technology Stack
 
 | Layer | Technology | Description |
