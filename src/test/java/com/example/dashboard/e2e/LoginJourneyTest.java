@@ -66,12 +66,15 @@ public class LoginJourneyTest extends BaseE2ETest {
         assertThat(navBar.isUserLoggedIn()).isTrue();
 
         navBar.clickDashboard();
+        wait.until(org.openqa.selenium.support.ui.ExpectedConditions.urlContains("/dashboard"));
         assertThat(driver.getCurrentUrl()).contains("/dashboard");
 
         navBar.clickStatus();
+        wait.until(org.openqa.selenium.support.ui.ExpectedConditions.urlContains("/status"));
         assertThat(driver.getCurrentUrl()).contains("/status");
 
         navBar.clickAlerts();
+        wait.until(org.openqa.selenium.support.ui.ExpectedConditions.urlContains("/alerts"));
         assertThat(driver.getCurrentUrl()).contains("/alerts");
     }
 

@@ -36,7 +36,8 @@ public class SearchDashboardJourneyTest extends BaseE2ETest {
         assertThat(dashboardPage.getTaskRowCount()).isEqualTo(0);
 
         // Filter by status dropdown
-        dashboardPage.searchAndFilter("", "COMPLETED");
+        dashboardPage.open();
+        dashboardPage.filterByStatus("COMPLETED");
         assertThat(dashboardPage.getTaskRowCount()).isGreaterThanOrEqualTo(1);
     }
 }
