@@ -43,6 +43,19 @@
                         <i class="bi bi-plus-circle me-1"></i>Add Task
                     </a>
                 </li>
+                <li class="nav-item ms-lg-3 mt-2 mt-lg-0" sec:authorize="isAuthenticated()">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="badge bg-secondary text-light px-2 py-1">
+                            <i class="bi bi-person-circle text-warning me-1"></i>
+                            <span sec:authentication="name">User</span>
+                        </span>
+                        <form th:action="@{/logout}" method="post" class="d-inline m-0">
+                            <button type="submit" class="btn btn-outline-danger btn-sm py-1 px-2" title="Logout">
+                                <i class="bi bi-box-arrow-right me-1"></i>Logout
+                            </button>
+                        </form>
+                    </div>
+                </li>
             </ul>
         </div>
     </div>
