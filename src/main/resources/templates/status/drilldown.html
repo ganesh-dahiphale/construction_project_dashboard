@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${heading} + ' - Construction Progress Dashboard'">Status Drill-Down</title>
+    <!-- Bootstrap 5 CSS & Icons CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <style>
+        .badge-NOT_STARTED { background-color: #6c757d; color: white; }
+        .badge-IN_PROGRESS { background-color: #0d6efd; color: white; }
+        .badge-BLOCKED { background-color: #dc3545; color: white; }
+        .badge-COMPLETED { background-color: #198754; color: white; }
+    </style>
+</head>
+<body class="bg-light d-flex flex-column min-vh-100">
+
+<!-- Global Navigation -->
+<div th:replace="~{fragments/navbar :: navbar('status')}"></div>
+
+<main class="container my-4 flex-grow-1">
+
+    <!-- Header / Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a th:href="@{/}" class="text-decoration-none">Home</a></li>
+            <li class="breadcrumb-item"><a th:href="@{/status}" class="text-decoration-none">Status Overview</a></li>
+            <li class="breadcrumb-item active fw-semibold" aria-current="page" th:text="${heading}">Status</li>
+        </ol>
+    </nav>
+
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+        <div>
+            <h1 class="h3 fw-bold mb-1 d-flex align-items-center gap-2">
+                <i class="bi bi-filter-circle text-primary"></i>
+                <span th:text="${heading}">Status Drill-Down</span>
+            </h1>
+            <p class="text-muted mb-0">Inspecting all tasks matching this category.</p>
+        </div>
+        <div class="d-flex gap-2">
+            <span class="badge fs-6 px-3 py-2 rounded-pill shadow-sm" th:classappend="${badgeClass}"
+                  th:text="${count} + ' Tasks'">0 Tasks</span>
+            <a th:href="@{/status}" class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-arrow-left me-1"></i>All Categories
+            </a>
+        </div>
+    </div>
+
+    <!-- Tasks Table -->
+    <div class="card border-0 shadow-sm">
+        <div class="card-body p-0">
+            <div class="table-responsive" th:if="${not #lists.isEmpty(tasks)}">
+                <table class="table table-hover align-middle mb-0" id="drilldownTable">
+                    <thead class="table-light">
+                    <tr>
+                        <th style="width: 5%;">#</th>
+                        <th style="width: 20%;">Project</th>
+                        <th style="width: 25%;">Task Title</th>
+                        <th style="width: 12%;">Status</th>
+                        <th style="width: 15%;">Progress</th>
+                        <th style="width: 13%;">Due Date</th>
+                        <th style="width: 10%;">Remarks</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="task : ${tasks}">
+                        <td class="text-muted small fw-semibold" th:text="${task.id}">1</td>
+                        <td>
+                            <div class="fw-semibold" th:text="${task.project.name}">Project Name</div>
+                            <small class="text-muted" th:text="${task.project.location}">Location</small>
+                        </td>
+                        <td>
+                            <span class="fw-semibold text-dark" th:text="${task.title}">Task Title</span>
+                        </td>
+                        <td>
+                            <span class="badge rounded-pill"
+                                  th:classappend="'badge-' + ${task.status.name()}"
+                                  th:text="${task.status.displayName}">NOT_STARTED</span>
+                        </td>
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="progress flex-grow-1" style="height: 8px;">
+                                    <div class="progress-bar"
+                                         th:classappend="${task.percentComplete == 100 ? 'bg-success' : (task.percentComplete < 30 ? 'bg-danger' : 'bg-primary')}"
+                                         role="progressbar"
+                                         th:style="'width: ' + ${task.percentComplete} + '%;'"
+                                         th:aria-valuenow="${task.percentComplete}" aria-valuemin="0" aria-valuemax="100">
+                                    </div>
+                                </div>
+                                <span class="small fw-semibold" th:text="${task.percentComplete + '%'}">0%</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div th:if="${task.dueDate.isBefore(today) and task.status.name() != 'COMPLETED'}" class="text-danger fw-semibold small">
+                                <i class="bi bi-exclamation-circle-fill me-1"></i>
+                                <span th:text="${#temporals.format(task.dueDate, 'dd MMM yyyy')}">01 Jan 2026</span>
+                                <span class="badge bg-danger ms-1">Delayed</span>
+                            </div>
+                            <div th:unless="${task.dueDate.isBefore(today) and task.status.name() != 'COMPLETED'}" class="text-secondary small">
+                                <span th:text="${#temporals.format(task.dueDate, 'dd MMM yyyy')}">01 Jan 2026</span>
+                            </div>
+                        </td>
+                        <td>
+                            <small class="text-muted text-truncate d-inline-block" style="max-width: 180px;"
+                                   th:title="${task.remarks}"
+                                   th:text="${#strings.isEmpty(task.remarks) ? '—' : task.remarks}">—</small>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Empty State -->
+            <div class="p-5 text-center" th:if="${#lists.isEmpty(tasks)}" id="emptyDrilldownState">
+                <i class="bi bi-check2-circle display-4 text-success mb-3 d-block"></i>
+                <h3 class="h5 fw-bold text-dark mb-1">No tasks in this category</h3>
+                <p class="text-muted mb-3">There are currently no tasks matching the selected status filter.</p>
+                <a th:href="@{/status}" class="btn btn-outline-primary btn-sm px-3">
+                    <i class="bi bi-arrow-left me-1"></i>Back to Status Overview
+                </a>
+            </div>
+        </div>
+    </div>
+
+</main>
+
+<footer class="bg-white border-top py-3 mt-auto">
+    <div class="container text-center text-muted small">
+        Construction Progress Dashboard &copy; 2026 &bull; Status Drill-Down
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

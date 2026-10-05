@@ -30,11 +30,11 @@ The **Construction Progress Dashboard** bridges this gap:
 
 ## 🚀 MVP Features
 
-1. **Task & Event Logging**: Simple web interface for site engineers to log site events with timestamps, task descriptions, and progress percentages.
-2. **Searchable Executive Dashboard**: Filterable and searchable dashboard displaying active jobs, milestones, and site locations.
-3. **Summary Indicators & KPI Cards**: Key performance indicators including completed tasks, in-progress activities, and critical bottlenecks.
-4. **Status Drill-Down**: In-depth inspection view for individual site tasks, sub-tasks, and historical event logs.
-5. **Overdue Task Alert View**: Automated flagging of tasks that exceed their target completion deadlines or stall without updates.
+1. **Task & Event Logging**: Simple web interface for site engineers to log site events with timestamps, task descriptions, and progress percentages (`/tasks`, `/tasks/new`).
+2. **Searchable Executive Dashboard**: Filterable and searchable dashboard displaying active jobs, milestones, and site locations (`/dashboard`).
+3. **Summary Indicators & KPI Cards**: Key performance indicators including completed tasks, in-progress activities, blocked items, and delayed activities (`/dashboard`).
+4. **Status Drill-Down**: In-depth inspection view for individual site task categories (`/status`, `/status/{status}`).
+5. **Overdue Task Alert View**: Automated flagging of tasks that exceed their target completion deadlines or stall without updates (`/alerts`).
 6. **System Health Endpoint**: Built-in REST endpoint (`/health`) for health checks and automated CI/CD synthetic monitoring.
 
 ---
@@ -209,3 +209,63 @@ We enforce the [Conventional Commits](https://www.conventionalcommits.org/) spec
 | **Week 13** | **Monitoring, Logging & Observability** | Spring Boot Actuator, Prometheus metrics export, log aggregation |
 | **Week 14** | **Security & Vulnerability Scanning** | OWASP Dependency-Check, container security scanning (Trivy), credentials audit |
 | **Week 15** | **Production Release & Project Retrospective** | Zero-downtime release deployment, project showcase, and post-mortem report |
+
+---
+
+## 🗓️ Week 5 — Feature 1: Task / Progress Event Entry & Task List
+
+**Delivered in:** `feature/5-task-entry-form` (merged into `develop`).  
+**Closes:** Issue [#5 — Task/event entry form and task list](https://github.com/ganesh-dahiphale/construction_project_dashboard/issues/5)
+
+### What was built
+
+| Layer | Details |
+|---|---|
+| **Models** | `Project` (id, name, location, startDate, endDate) and `Task` (id, project, title, status enum, percentComplete 0–100, dueDate, remarks, lastUpdated) with full Bean Validation |
+| **Repositories** | `ProjectRepository` and `TaskRepository` (Spring Data JPA) |
+| **Service** | `TaskService` — `createTask`, `getAllTasks`, `getTaskById`, `getAllProjects` |
+| **Controllers** | `TaskController` — `GET /tasks` (list), `GET /tasks/new` (form), `POST /tasks` (validate → save or redisplay) |
+| **Templates** | `tasks/list.html` (table with status badges, progress bars, overdue flag), `tasks/form.html` (validated Bootstrap form), `fragments/navbar.html` (shared nav) |
+| **Seed Data** | `DataInitializer` (dev/default profile) seeds 2 projects and 5 tasks (one overdue, one completed, one blocked) |
+| **Tests** | `TaskServiceTest` (Mockito, 4 tests) + `TaskControllerTest` (MockMvc, 5 tests) + existing `HealthControllerTest` — **10 / 10 green** |
+
+---
+
+## 🗓️ Week 6 — MVP Baseline: Executive Dashboard, Status Drill-Down & Alert View
+
+**Delivered in:** `feature/7-searchable-dashboard` and `feature/8-drilldown-alerts` (parallel development, conflict resolved, merged into `develop`).  
+**Closes:** Issue [#7 — Searchable dashboard with summary indicators](https://github.com/ganesh-dahiphale/construction_project_dashboard/issues/7) and Issue [#8 — Status drill-down and alert/exception view](https://github.com/ganesh-dahiphale/construction_project_dashboard/issues/8).
+
+### Complete MVP Web Application Routes
+
+| Method | URL | Description |
+|---|---|---|
+| `GET` | `/` | Welcome and home page |
+| `GET` | `/dashboard` | Executive Dashboard with KPI cards and multi-criteria filter form |
+| `GET` | `/tasks` | Full list of all construction tasks with status badges and progress |
+| `GET` | `/tasks/new` | Task / site event entry form with Bean Validation |
+| `POST` | `/tasks` | Submit and validate new task; redirect with flash feedback |
+| `GET` | `/status` | Status drill-down category overview with live task counts |
+| `GET` | `/status/{status}` | Filtered tasks by status (`NOT_STARTED`, `IN_PROGRESS`, `COMPLETED`, `BLOCKED`, `delayed`) |
+| `GET` | `/alerts` | High-priority exception dashboard for overdue and blocked tasks |
+| `GET` | `/health` | Application health and synthetic monitoring endpoint (JSON) |
+| `GET` | `/h2-console` | In-memory H2 database console (local dev profile) |
+
+### How to Run the Application Locally
+
+```bash
+# Linux / macOS
+./mvnw spring-boot:run
+
+# Windows PowerShell
+.\mvnw.cmd spring-boot:run
+```
+
+Access the application in your browser:
+- **Dashboard**: http://localhost:8080/dashboard
+- **Task List**: http://localhost:8080/tasks
+- **New Task Form**: http://localhost:8080/tasks/new
+- **Status Drill-Down**: http://localhost:8080/status
+- **Alert View**: http://localhost:8080/alerts
+- **Health Check**: http://localhost:8080/health
+
