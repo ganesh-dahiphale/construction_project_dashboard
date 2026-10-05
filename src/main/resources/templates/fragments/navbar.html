@@ -23,6 +23,11 @@
                         <i class="bi bi-list-task me-1"></i>Tasks
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:classappend="${activeTab == 'alerts' ? 'active' : ''}" th:href="@{/alerts}">
+                        <i class="bi bi-bell me-1"></i>Alerts
+                    </a>
+                </li>
                 <li class="nav-item ms-lg-2 mt-2 mt-lg-0">
                     <a class="btn btn-warning btn-sm fw-semibold" th:href="@{/tasks/new}">
                         <i class="bi bi-plus-circle me-1"></i>Add Task
