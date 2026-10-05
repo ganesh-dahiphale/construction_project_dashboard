@@ -14,13 +14,13 @@ public class NavBar {
     private final WebDriver driver;
     private final WebDriverWait wait;
 
-    private final By homeLink = By.xpath("//a[contains(@class, 'nav-link') and @href='/']");
-    private final By dashboardLink = By.xpath("//a[contains(@href, '/dashboard')]");
-    private final By tasksLink = By.xpath("//a[contains(@class, 'nav-link') and @href='/tasks']");
-    private final By statusLink = By.xpath("//a[contains(@href, '/status')]");
-    private final By alertsLink = By.xpath("//a[contains(@href, '/alerts')]");
-    private final By addTaskBtn = By.xpath("//a[contains(@href, '/tasks/new')]");
-    private final By adminBtn = By.xpath("//a[contains(@href, '/admin/projects')]");
+    private final By homeLink = By.cssSelector(".navbar a[href='/']");
+    private final By dashboardLink = By.cssSelector(".navbar a[href*='/dashboard']");
+    private final By tasksLink = By.cssSelector(".navbar a[href$='/tasks'], .navbar a[href='/tasks']");
+    private final By statusLink = By.cssSelector(".navbar a[href$='/status'], .navbar a[href='/status']");
+    private final By alertsLink = By.cssSelector(".navbar a[href*='/alerts']");
+    private final By addTaskBtn = By.cssSelector(".navbar a[href*='/tasks/new']");
+    private final By adminBtn = By.cssSelector(".navbar a[href*='/admin']");
     private final By logoutBtn = By.cssSelector(".navbar form button, button[title='Logout']");
     private final By userBadge = By.cssSelector(".navbar .badge");
 
