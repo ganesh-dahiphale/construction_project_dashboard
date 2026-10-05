@@ -25,6 +25,31 @@ public class TaskService {
 
     public Task createTask(Task task) {
         task.setLastUpdated(LocalDateTime.now());
+        if (task.getStatus() == TaskStatus.COMPLETED) {
+            task.setPercentComplete(100);
+        }
+        return taskRepository.save(task);
+    }
+
+    public Task updateTask(Long id, TaskStatus status, Integer percentComplete, String remarks, String updatedBy) {
+        Task task = taskRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Task not found with id: " + id));
+
+        // Auto rule: setting COMPLETED forces percentComplete to 100
+        if (status == TaskStatus.COMPLETED) {
+            percentComplete = 100;
+        } else if (percentComplete != null && percentComplete == 100 && status != TaskStatus.COMPLETED) {
+            status = TaskStatus.COMPLETED;
+        }
+
+        task.setStatus(status);
+        if (percentComplete != null) {
+            task.setPercentComplete(percentComplete);
+        }
+        task.setRemarks(remarks);
+        task.setUpdatedBy(updatedBy != null && !updatedBy.trim().isEmpty() ? updatedBy : "system");
+        task.setLastUpdated(LocalDateTime.now());
+
         return taskRepository.save(task);
     }
 
