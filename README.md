@@ -142,10 +142,23 @@ Alternatively, run the packaged WAR file directly:
 java -jar target/dashboard.war
 ```
 
-### 5. Access the Application
-- **Home Dashboard**: [http://localhost:8080/](http://localhost:8080/)
-- **Health Check API**: [http://localhost:8080/health](http://localhost:8080/health) *(returns `{"status":"UP"}`)*
-- **H2 Web Console**: [http://localhost:8080/h2-console](http://localhost:8080/h2-console) *(JDBC URL: `jdbc:h2:mem:constructiondb`)*
+### 6. Run with Docker 🐳
+Build and run the containerized application using the multi-stage Dockerfile:
+
+```bash
+# 1. Build and tag the Docker image
+docker build -t construction-dashboard:1.0.0 .
+docker tag construction-dashboard:1.0.0 construction-dashboard:latest
+
+# 2. Run the container on port 8082 with development seed data
+docker run -d --name dashboard-demo -p 8082:8080 -e SPRING_PROFILES_ACTIVE=dev construction-dashboard:1.0.0
+
+# 3. Verify health status
+curl -s http://localhost:8082/health
+```
+
+Access the containerized application at [http://localhost:8082/](http://localhost:8082/).  
+For complete lifecycle operations and configuration flags, see [`docs/DOCKER.md`](docs/DOCKER.md).
 
 ---
 
