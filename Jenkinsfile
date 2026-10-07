@@ -16,7 +16,8 @@ pipeline {
         choice(name: 'DEPLOY_ENV', choices: ['dev', 'staging'], description: 'Target deployment environment')
         string(name: 'TOMCAT_URL', defaultValue: 'http://localhost:8081', description: 'Tomcat 10 server base URL')
         string(name: 'APP_CONTEXT', defaultValue: 'construction-dashboard', description: 'Base application context name')
-        booleanParam(name: 'RUN_TESTS', defaultValue: true, description: 'Run test suite during packaging')
+        booleanParam(name: 'RUN_TESTS', defaultValue: true, description: 'Run unit test suite')
+        booleanParam(name: 'RUN_SELENIUM', defaultValue: true, description: 'Run Selenium E2E test suite as deployment quality gate')
     }
 
     environment {
@@ -37,6 +38,8 @@ pipeline {
                     echo "Target Environment: ${params.DEPLOY_ENV}"
                     echo "Target Context Path: ${env.TARGET_PATH}"
                     echo "Tomcat Server URL: ${params.TOMCAT_URL}"
+                    echo "Run Unit Tests: ${params.RUN_TESTS}"
+                    echo "Run Selenium Quality Gate: ${params.RUN_SELENIUM}"
                     echo "=========================================="
                 }
             }
@@ -51,17 +54,43 @@ pipeline {
             }
         }
 
+        stage('Unit Tests') {
+            when {
+                expression { params.RUN_TESTS == true }
+            }
+            steps {
+                script {
+                    echo "Executing Unit and Integration Test Suite..."
+                    runCmd('mvn -B test')
+                }
+            }
+        }
+
         stage('Package') {
             steps {
                 script {
-                    echo "Packaging WAR archive (RUN_TESTS: ${params.RUN_TESTS})..."
-                    if (params.RUN_TESTS) {
-                        runCmd('mvn -B package')
-                    } else {
-                        runCmd('mvn -B package -DskipTests')
-                    }
+                    echo "Packaging WAR archive (skipping tests during package stage)..."
+                    runCmd('mvn -B package -DskipTests')
                 }
                 archiveArtifacts artifacts: 'target/*.war', fingerprint: true, allowEmptyArchive: false
+            }
+        }
+
+        stage('Selenium Tests') {
+            steps {
+                script {
+                    if (params.RUN_SELENIUM) {
+                        echo "==========================================================="
+                        echo "Executing Selenium E2E Tests Quality Gate (Headless Chrome)..."
+                        echo "==========================================================="
+                        runCmd('mvn -B -Pselenium test -Dheadless=true')
+                    } else {
+                        echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+                        echo "WARNING: Selenium Quality Gate is explicitly DISABLED!"
+                        echo "Proceeding with deployment without end-to-end verification."
+                        echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+                    }
+                }
             }
         }
 
@@ -129,6 +158,7 @@ pipeline {
         failure {
             echo "==========================================================="
             echo "FAILURE: Pipeline execution failed."
+            echo "Deployment skipped because tests failed or deployment error occurred."
             echo "Verify Jenkins credentials ('tomcat-manager'), Tomcat status on ${params.TOMCAT_URL},"
             echo "and application runtime logs in catalina.out."
             echo "==========================================================="
