@@ -47,11 +47,13 @@ public class DashboardPage {
     }
 
     public void searchByKeyword(String keyword) {
-        WebElement form = driver.findElement(By.cssSelector("form[action*='/dashboard']"));
-        WebElement input = wait.until(ExpectedConditions.visibilityOfElementLocated(keywordInput));
+        WebElement input = wait.until(ExpectedConditions.elementToBeClickable(keywordInput));
         input.clear();
         if (keyword != null && !keyword.isEmpty()) {
             input.sendKeys(keyword);
+            ((JavascriptExecutor) driver).executeScript("arguments[0].value = arguments[1];", input, keyword);
+        } else {
+            ((JavascriptExecutor) driver).executeScript("arguments[0].value = '';", input);
         }
         WebElement btn = wait.until(ExpectedConditions.elementToBeClickable(filterSubmitBtn));
         try {
@@ -59,10 +61,9 @@ public class DashboardPage {
         } catch (Exception e) {
             ((JavascriptExecutor) driver).executeScript("arguments[0].click();", btn);
         }
-        try {
-            wait.until(ExpectedConditions.stalenessOf(form));
-        } catch (Exception ignored) {}
-        wait.until(ExpectedConditions.presenceOfElementLocated(keywordInput));
+        if (keyword != null && !keyword.isEmpty()) {
+            wait.until(ExpectedConditions.urlContains("keyword=" + keyword));
+        }
     }
 
     public void filterByStatus(String statusValue) {
