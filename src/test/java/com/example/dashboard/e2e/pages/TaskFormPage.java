@@ -38,10 +38,13 @@ public class TaskFormPage {
     }
 
     public void fillForm(String title, String status, int percentComplete, String dueDate, String remarks) {
+        WebElement t = wait.until(ExpectedConditions.elementToBeClickable(titleInput));
         if (title != null) {
-            WebElement t = wait.until(ExpectedConditions.visibilityOfElementLocated(titleInput));
             t.clear();
             t.sendKeys(title);
+            ((JavascriptExecutor) driver).executeScript(
+                    "arguments[0].value = arguments[1]; arguments[0].dispatchEvent(new Event('input', {bubbles: true})); arguments[0].dispatchEvent(new Event('change', {bubbles: true}));",
+                    t, title);
         }
 
         // Select first valid enabled project option
@@ -59,9 +62,12 @@ public class TaskFormPage {
             st.selectByValue(status);
         }
 
-        WebElement p = wait.until(ExpectedConditions.visibilityOfElementLocated(percentInput));
+        WebElement p = wait.until(ExpectedConditions.elementToBeClickable(percentInput));
         p.clear();
         p.sendKeys(String.valueOf(percentComplete));
+        ((JavascriptExecutor) driver).executeScript(
+                "arguments[0].value = arguments[1]; arguments[0].dispatchEvent(new Event('input', {bubbles: true})); arguments[0].dispatchEvent(new Event('change', {bubbles: true}));",
+                p, String.valueOf(percentComplete));
 
         if (dueDate != null && !dueDate.isEmpty()) {
             WebElement d = wait.until(ExpectedConditions.visibilityOfElementLocated(dueDateInput));
@@ -75,9 +81,12 @@ public class TaskFormPage {
         }
 
         if (remarks != null) {
-            WebElement r = wait.until(ExpectedConditions.visibilityOfElementLocated(remarksTextarea));
+            WebElement r = wait.until(ExpectedConditions.elementToBeClickable(remarksTextarea));
             r.clear();
             r.sendKeys(remarks);
+            ((JavascriptExecutor) driver).executeScript(
+                    "arguments[0].value = arguments[1]; arguments[0].dispatchEvent(new Event('input', {bubbles: true})); arguments[0].dispatchEvent(new Event('change', {bubbles: true}));",
+                    r, remarks);
         }
     }
 
