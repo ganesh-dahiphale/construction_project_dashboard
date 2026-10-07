@@ -140,9 +140,8 @@
                                            th:text="${task.lastUpdated != null ? #temporals.format(task.lastUpdated, 'MMM dd, HH:mm') : '-'}">Oct 05</small>
                                 </td>
                                 <td class="text-center">
-                                    <a th:href="@{/tasks/{id}/edit(id=${task.id})}" class="btn btn-outline-secondary btn-sm py-0 px-2" title="Edit Task Progress">
-                                        <i class="bi bi-pencil me-1"></i>Edit
-                                    </a>
+                                    <!-- Deliberate UI defect for Week 10 demo: Edit action link removed -->
+                                    <span class="text-muted small">-</span>
                                 </td>
                             </tr>
                         </tbody>
