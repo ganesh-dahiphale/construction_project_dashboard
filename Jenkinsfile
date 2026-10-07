@@ -64,6 +64,14 @@ pipeline {
                     runCmd('mvn -B test')
                 }
             }
+            post {
+                always {
+                    junit testResults: 'target/surefire-reports/*.xml', allowEmptyResults: true
+                }
+                failure {
+                    echo "Deployment skipped because tests failed."
+                }
+            }
         }
 
         stage('Package') {
@@ -90,6 +98,31 @@ pipeline {
                         echo "Proceeding with deployment without end-to-end verification."
                         echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
                     }
+                }
+            }
+            post {
+                always {
+                    junit testResults: 'target/surefire-reports/*.xml', allowEmptyResults: true
+                    archiveArtifacts artifacts: 'target/screenshots/*.png, target/site/**/*.html, target/surefire-reports/**', allowEmptyArchive: true
+                    script {
+                        try {
+                            if (Jenkins.instance.pluginManager.getPlugin('htmlpublisher') != null) {
+                                publishHTML(target: [
+                                    allowMissing: true,
+                                    alwaysLinkToLastBuild: true,
+                                    keepAll: true,
+                                    reportDir: 'target/site',
+                                    reportFiles: 'surefire-report.html',
+                                    reportName: 'Surefire HTML Report'
+                                ])
+                            }
+                        } catch (Throwable t) {
+                            echo "HTML Publisher plugin guarded check: ${t.message}"
+                        }
+                    }
+                }
+                failure {
+                    echo "Deployment skipped because tests failed."
                 }
             }
         }
