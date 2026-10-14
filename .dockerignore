@@ -1,6 +1,7 @@
-# Build output
-target/
-*.war
+# Build output (ignore classes and reports, allow tested war)
+target/*
+!target/*.war
+!target/dashboard.war
 *.jar
 
 # Version Control
