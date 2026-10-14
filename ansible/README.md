@@ -1,8 +1,8 @@
-# Ansible Configuration Management Guide 🛠️
+# Ansible Configuration Management & Deployment Guide 🛠️
 
 **Project**: Construction Progress Dashboard  
-**Milestone**: Week 13 — Server Configuration & Playbook Architecture  
-**Target Roles**: `common`, `docker`, `app_user`, `app_dirs`, `firewall`, `app_config`  
+**Milestone**: Week 14 — Provisioning, Idempotency, Health Checks & Automatic Rollback  
+**Roles**: `common`, `docker`, `app_user`, `app_dirs`, `firewall`, `app_config`, `deploy`  
 
 ---
 
@@ -19,7 +19,7 @@
   - `ansible.posix >= 1.5.0`
   - `community.docker >= 3.10.0`
 
-Install requirements:
+Install required collections:
 ```bash
 ansible-galaxy collection install -r requirements.yml
 ```
@@ -35,47 +35,37 @@ ansible-galaxy collection install -r requirements.yml
 
 ```text
 ansible/
+├── .ansible-lint                  # Production linting configuration profile
 ├── ansible.cfg                    # Ansible default configuration & privilege escalation
 ├── requirements.yml               # Required collections (ansible.posix, community.docker)
 ├── README.md                      # Usage guide and operational instructions
+├── demo/
+│   ├── Dockerfile.broken          # Defective image listening on wrong port (9999) for rollback demo
+│   └── load-broken-image.sh       # Stream loader script for target Docker daemon
 ├── inventory/
 │   ├── hosts.yml                  # Production target host definition
 │   └── hosts.example.yml          # Generic inventory template
 ├── group_vars/
 │   └── app_servers.yml            # Environment parameters, ports, and versions
 ├── playbooks/
-│   └── site.yml                   # Top-level site orchestration playbook
+│   ├── site.yml                   # Top-level site infrastructure orchestration playbook
+│   ├── provision.yml              # End-to-end node provisioning & application deployment
+│   ├── healthcheck.yml            # Comprehensive health check and readiness audit
+│   ├── rollback.yml               # Manual rollback to previous stable release
+│   └── status.yml                 # Release status and deployment audit trail display
 └── roles/
     ├── common/                    # Apt cache, base packages, timezone Asia/Kolkata
     ├── docker/                    # Docker CE upstream repository, packages, daemon.json
     ├── app_user/                  # Dedicated system user (appdeploy) and docker group
-    ├── app_dirs/                  # Directories (/opt/construction-dashboard/*)
+    ├── app_dirs/                  # Runtime directories (/opt/construction-dashboard/*)
     ├── firewall/                  # UFW port 22 first, port 8082, default deny inbound
-    └── app_config/                # app.env and systemd unit service (enabled, stopped)
+    ├── app_config/                # app.env and systemd unit service configuration
+    └── deploy/                    # Application container deployment, health check & rollback
 ```
 
 ---
 
-## 3. How to Change Target Node
-
-Edit `inventory/hosts.yml` (or create a custom inventory):
-
-```yaml
----
-all:
-  children:
-    app_servers:
-      hosts:
-        cpd-target-node:
-          ansible_host: <target-ip-or-hostname>
-          ansible_port: 22
-          ansible_user: <ssh-username>
-          ansible_ssh_private_key_file: ~/.ssh/cpd_ansible
-```
-
----
-
-## 4. Configuration Variables (`group_vars/app_servers.yml`)
+## 3. Configuration Variables (`group_vars/app_servers.yml`)
 
 | Variable | Default Value | Description |
 |---|---|---|
@@ -84,8 +74,8 @@ all:
 | `app_dir` | `/opt/construction-dashboard` | Base installation directory path. |
 | `app_port` | `8082` | Exposed host port for external web access. |
 | `container_name` | `construction-dashboard` | Docker container identifier. |
-| `docker_image` | `ganesh/construction-dashboard` | Published Docker Hub container image repository. |
-| `image_tag` | `stable` | Image tag to be deployed in Week 14. |
+| `docker_image` | `localhost:5000/construction-dashboard` | Published container image repository. |
+| `image_tag` | `stable` | Default image tag if not passed via CLI. |
 | `spring_profile` | `dev` | Active Spring profile (`dev` with H2 DB for demo). |
 | `app_version` | `1.0.0` | Semantic application version recorded in `app.env`. |
 | `java_opts` | `-Xms128m -Xmx256m` | JVM memory limits passed to container. |
@@ -94,47 +84,59 @@ all:
 
 ---
 
-## 5. Playbook Execution Commands
+## 4. Playbooks & Usage Guide
 
 Always run commands from the `ansible/` directory on the control node:
 
-### 1. Connectivity Ping
+### 1. Provisioning & Application Deployment (`playbooks/provision.yml`)
+Provisions the clean target node, applies firewall and Docker configuration, pulls the specified container release, configures systemd, and performs a live health check gate.
+
 ```bash
-ansible app_servers -i inventory/hosts.yml -m ping
+# Deploy a specific release
+ansible-playbook -i inventory/hosts.yml playbooks/provision.yml -e release_tag=0.0.1-SNAPSHOT-b2-f3cac90
 ```
 
-### 2. Syntax Check
+### 2. Live Health & Readiness Verification (`playbooks/healthcheck.yml`)
+Audits target service status, container status, HTTP `/health` response (200 OK + `{"status":"UP"}`), login page version badge, disk usage, and memory availability.
+
 ```bash
-ansible-playbook -i inventory/hosts.yml playbooks/site.yml --syntax-check
+ansible-playbook -i inventory/hosts.yml playbooks/healthcheck.yml
 ```
 
-### 3. Dry-Run Mode (Check & Diff)
+### 3. Manual Rollback Playbook (`playbooks/rollback.yml`)
+Safely reverts the running application to the previously deployed release recorded in `previous.txt`. Requires explicit confirmation to prevent accidental rollbacks.
+
 ```bash
-ansible-playbook -i inventory/hosts.yml playbooks/site.yml --check --diff
+ansible-playbook -i inventory/hosts.yml playbooks/rollback.yml -e confirm_rollback=yes
 ```
 
-### 4. Full Execution
+### 4. Release Audit & Status (`playbooks/status.yml`)
+Displays the currently active release (`current.txt`), the previous release (`previous.txt`), and the full timestamped deployment history log (`history.log`).
+
 ```bash
-ansible-playbook -i inventory/hosts.yml playbooks/site.yml -v
+ansible-playbook -i inventory/hosts.yml playbooks/status.yml
 ```
 
-### 5. Running by Specific Role Tags
-Each role is assigned a dedicated tag:
-```bash
-# Run only firewall configuration
-ansible-playbook -i inventory/hosts.yml playbooks/site.yml --tags firewall
+---
 
-# Run only docker and app_config
-ansible-playbook -i inventory/hosts.yml playbooks/site.yml --tags docker,config
-```
+## 5. Automatic Rollback Mechanism
 
-Available tags:
-- `common`: OS updates, base packages, and timezone
-- `docker`: Docker CE repository, daemon.json, and engine installation
-- `user`: System user `appdeploy` and group membership
-- `dirs`: Runtime directory structure and permissions
-- `firewall`: UFW firewall rules and enforcement
-- `config`: Environment file `app.env` and systemd unit file
+The `deploy` role implements an atomic deployment workflow with Ansible `block` / `rescue`:
+1. **Pre-flight**: Records the currently active release (`pre_deploy_tag`).
+2. **Deploy Block**:
+   - Pulls target container image.
+   - Updates `app.env` and systemd unit file with new release tag.
+   - Restarts application container service.
+   - Polls `/health` endpoint up to 25 retries with 5s delay.
+   - Verifies version badge on `/login`.
+   - On success, updates `previous.txt`, `current.txt`, and logs deployment to `history.log`.
+3. **Rescue Block**:
+   - Triggered automatically if `/health` fails or times out.
+   - Reverts `app.env` and systemd unit to `pre_deploy_tag`.
+   - Restarts service with previous stable release.
+   - Verifies health check returns to UP.
+   - Records rollback event in `history.log`.
+   - Fails the playbook with an informative alert for the operator.
 
 ---
 
@@ -142,28 +144,12 @@ Available tags:
 
 Verify YAML and Ansible syntax cleanliness:
 ```bash
-# Validate YAML formatting
-yamllint ansible
+# Validate Ansible playbooks and roles against production rules
+ansible-lint
 
-# Validate Ansible best practices
-ansible-lint ansible/playbooks/site.yml
-```
-
----
-
-## 7. Target Node Post-Run Verification
-
-Inspect target node over SSH to verify configured state:
-```bash
-ssh -i ~/.ssh/cpd_ansible ganesh@<target-ip> "
-  docker --version &&
-  systemctl is-active docker &&
-  systemctl is-enabled construction-dashboard &&
-  systemctl is-active construction-dashboard &&
-  id appdeploy &&
-  ls -ld /opt/construction-dashboard /opt/construction-dashboard/* &&
-  sudo ufw status verbose &&
-  cat /etc/docker/daemon.json &&
-  cat /opt/construction-dashboard/config/app.env
-"
+# Syntax check all playbooks
+ansible-playbook -i inventory/hosts.yml playbooks/provision.yml --syntax-check
+ansible-playbook -i inventory/hosts.yml playbooks/healthcheck.yml --syntax-check
+ansible-playbook -i inventory/hosts.yml playbooks/rollback.yml --syntax-check
+ansible-playbook -i inventory/hosts.yml playbooks/status.yml --syntax-check
 ```

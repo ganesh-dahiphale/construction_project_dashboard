@@ -5,7 +5,8 @@ app_group: docker
 app_dir: /opt/construction-dashboard
 app_port: 8082
 container_name: construction-dashboard
-docker_image: ganesh/construction-dashboard
+docker_image: localhost:5000/construction-dashboard
+image_name: localhost:5000/construction-dashboard
 image_tag: stable
 # dev profile is for this course demo only
 spring_profile: dev

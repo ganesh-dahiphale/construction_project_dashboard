@@ -7,7 +7,7 @@ Requires=docker.service
 Type=simple
 User={{ app_user }}
 Group={{ app_group }}
-Restart=unless-stopped
+Restart=always
 RestartSec=10s
 TimeoutStartSec=120
 TimeoutStopSec=30
@@ -18,7 +18,7 @@ ExecStart=/usr/bin/docker run --name {{ container_name }} \
   --rm \
   -p {{ app_port }}:8080 \
   --env-file {{ app_dir }}/config/app.env \
-  {{ docker_image }}:{{ image_tag }}
+  {{ image_name | default(docker_image) }}:{{ active_release_tag | default(release_tag) | default(image_tag) }}
 ExecStop=/usr/bin/docker stop -t 15 {{ container_name }}
 
 [Install]
