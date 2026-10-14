@@ -1,0 +1,40 @@
+
+PLAY [Display Application Release Status and History] **************************
+
+TASK [Gathering Facts] *********************************************************
+[WARNING]: Host 'cpd-target-node' is using the discovered Python interpreter at '/usr/bin/python3.14', but future installation of another Python interpreter could cause a different interpreter to be discovered. See https://docs.ansible.com/ansible-core/2.20/reference_appendices/interpreter_discovery.html for more information.
+ok: [cpd-target-node]
+
+TASK [Read current release tag] ************************************************
+ok: [cpd-target-node]
+
+TASK [Read previous release tag] ***********************************************
+ok: [cpd-target-node]
+
+TASK [Read release history log] ************************************************
+ok: [cpd-target-node]
+
+TASK [Display Release Status Summary] ******************************************
+ok: [cpd-target-node] => {
+    "msg": [
+        "================================================================================",
+        "                 APPLICATION RELEASE STATUS AND AUDIT TRAIL                     ",
+        "================================================================================",
+        " CURRENT RELEASE:  0.0.1-SNAPSHOT-b2-f3cac90",
+        " PREVIOUS RELEASE: 0.0.1-SNAPSHOT-b1-fe3efe3",
+        "--------------------------------------------------------------------------------",
+        " RECENT RELEASE HISTORY (from history.log):",
+        [
+            "2026-10-14 17:26:39 UTC DEPLOYED 0.0.1-SNAPSHOT-b1-fe3efe3\n2026-10-14 17:28:56 UTC DEPLOYED 0.0.1-SNAPSHOT-b2-f3cac90\n2026-10-14 17:49:12 UTC DEPLOYED broken-demo\n2026-10-14 18:21:43 UTC ROLLED BACK from broken-demo to 0.0.1-SNAPSHOT-b2-f3cac90"
+        ],
+        "================================================================================"
+    ]
+}
+
+PLAY RECAP *********************************************************************
+cpd-target-node            : ok=5    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+
+
+PLAYBOOK RECAP *****************************************************************
+Playbook run took 0 days, 0 hours, 0 minutes, 5 seconds
+

@@ -1,0 +1,105 @@
+
+PLAY [Manual Rollback to Previous Stable Release] ******************************
+
+TASK [Gathering Facts] *********************************************************
+[WARNING]: Host 'cpd-target-node' is using the discovered Python interpreter at '/usr/bin/python3.14', but future installation of another Python interpreter could cause a different interpreter to be discovered. See https://docs.ansible.com/ansible-core/2.20/reference_appendices/interpreter_discovery.html for more information.
+ok: [cpd-target-node]
+
+TASK [Verify explicit rollback confirmation] ***********************************
+ok: [cpd-target-node] => {
+    "changed": false,
+    "msg": "All assertions passed"
+}
+
+TASK [Check if previous release state record exists] ***************************
+ok: [cpd-target-node]
+
+TASK [Fail if no previous release is recorded] *********************************
+skipping: [cpd-target-node]
+
+TASK [Read previous release tag] ***********************************************
+ok: [cpd-target-node]
+
+TASK [Set target rollback release tag] *****************************************
+ok: [cpd-target-node]
+
+TASK [Read current release tag for logging] ************************************
+ok: [cpd-target-node]
+
+TASK [Set current release tag] *************************************************
+ok: [cpd-target-node]
+
+TASK [Print rollback execution notice] *****************************************
+ok: [cpd-target-node] => {
+    "msg": "Rolling back from current '0.0.1-SNAPSHOT-b2-f3cac90' to previous stable release '0.0.1-SNAPSHOT-b1-fe3efe3'..."
+}
+
+TASK [Deploy previous stable release using deploy role] ************************
+included: deploy for cpd-target-node
+
+TASK [deploy : Validate that release_tag is defined] ***************************
+ok: [cpd-target-node] => {
+    "changed": false,
+    "msg": "All assertions passed"
+}
+
+TASK [deploy : Initialize active release tag variable] *************************
+ok: [cpd-target-node]
+
+TASK [deploy : Check for existing release state record] ************************
+ok: [cpd-target-node]
+
+TASK [deploy : Read pre-deployment current release tag if present] *************
+ok: [cpd-target-node]
+
+TASK [deploy : Set pre-deployment release tag fact] ****************************
+ok: [cpd-target-node]
+
+TASK [deploy : Ensure target container image is present] ***********************
+ok: [cpd-target-node]
+
+TASK [deploy : Deploy application environment configuration] *******************
+changed: [cpd-target-node]
+
+TASK [deploy : Deploy systemd unit service file] *******************************
+changed: [cpd-target-node]
+
+TASK [deploy : Flush handlers to restart application service immediately] ******
+
+RUNNING HANDLER [deploy : Restart construction-dashboard] **********************
+changed: [cpd-target-node]
+
+TASK [deploy : Ensure construction-dashboard service is active and running] ****
+ok: [cpd-target-node]
+
+TASK [deploy : Wait for application health check endpoint] *********************
+FAILED - RETRYING: [cpd-target-node]: Wait for application health check endpoint (24 retries left).
+ok: [cpd-target-node]
+
+TASK [deploy : Verify application login page displays correct release version] ***
+ok: [cpd-target-node]
+
+TASK [deploy : Update previous release pointer if changing releases] ***********
+changed: [cpd-target-node]
+
+TASK [deploy : Record newly deployed release in current.txt] *******************
+changed: [cpd-target-node]
+
+TASK [deploy : Append deployment event to history.log] *************************
+changed: [cpd-target-node]
+
+TASK [Record manual rollback in history.log] ***********************************
+changed: [cpd-target-node]
+
+TASK [Print manual rollback completion confirmation] ***************************
+ok: [cpd-target-node] => {
+    "msg": "Manual rollback to 0.0.1-SNAPSHOT-b1-fe3efe3 successfully completed and verified healthy."
+}
+
+PLAY RECAP *********************************************************************
+cpd-target-node            : ok=26   changed=7    unreachable=0    failed=0    skipped=1    rescued=0    ignored=0   
+
+
+PLAYBOOK RECAP *****************************************************************
+Playbook run took 0 days, 0 hours, 0 minutes, 30 seconds
+
