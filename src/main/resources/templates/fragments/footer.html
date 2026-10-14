@@ -8,7 +8,7 @@
             <a th:href="@{/health}" class="text-muted text-decoration-none small">
                 <i class="bi bi-heart-pulse me-1"></i>System Health
             </a>
-            <span class="badge bg-secondary text-light" data-testid="app-version" th:text="'Version: ' + ${appVersion != null ? appVersion : @environment.getProperty('app.version')}">Version: dev</span>
+            <span class="badge bg-secondary text-light" data-testid="app-version" th:text="'Version: ' + ${appVersion != null ? appVersion : @environment.getProperty('app.version')} + ' - Jenkins-Docker CD demo'">Version: dev - Jenkins-Docker CD demo</span>
         </div>
     </div>
 </footer>
