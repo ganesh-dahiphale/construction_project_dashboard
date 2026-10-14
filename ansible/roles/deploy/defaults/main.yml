@@ -1,0 +1,9 @@
+---
+image_name: "{{ docker_image | default('localhost:5000/construction-dashboard') }}"
+container_name: "{{ container_name | default('construction-dashboard') }}"
+app_port: 8082
+health_url: "http://127.0.0.1:{{ app_port }}/health"
+health_retries: 24
+health_delay: 5
+state_dir: /opt/construction-dashboard/releases
+image_source: pull

@@ -5,7 +5,7 @@
     dest: "{{ app_dir }}/config/app.env"
     owner: "{{ app_user }}"
     group: "{{ app_group }}"
-    mode: "0640"
+    mode: "0600"
   tags:
     - config
 
@@ -25,12 +25,9 @@
   tags:
     - config
 
-# Service is explicitly stopped this week;
-# deployment and launch occur in Week 14
-- name: Ensure construction-dashboard service is enabled but stopped
+- name: Ensure construction-dashboard service is enabled
   ansible.builtin.systemd:
     name: construction-dashboard
     enabled: true
-    state: stopped
   tags:
     - config

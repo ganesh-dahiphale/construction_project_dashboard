@@ -1,0 +1,6 @@
+---
+- name: Restart construction-dashboard
+  ansible.builtin.systemd:
+    name: "{{ container_name }}"
+    state: restarted
+    daemon_reload: true
