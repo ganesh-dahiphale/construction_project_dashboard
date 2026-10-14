@@ -142,10 +142,23 @@ Alternatively, run the packaged WAR file directly:
 java -jar target/dashboard.war
 ```
 
-### 5. Access the Application
-- **Home Dashboard**: [http://localhost:8080/](http://localhost:8080/)
-- **Health Check API**: [http://localhost:8080/health](http://localhost:8080/health) *(returns `{"status":"UP"}`)*
-- **H2 Web Console**: [http://localhost:8080/h2-console](http://localhost:8080/h2-console) *(JDBC URL: `jdbc:h2:mem:constructiondb`)*
+### 6. Run with Docker 🐳
+Build and run the containerized application using the multi-stage Dockerfile:
+
+```bash
+# 1. Build and tag the Docker image
+docker build -t construction-dashboard:1.0.0 .
+docker tag construction-dashboard:1.0.0 construction-dashboard:latest
+
+# 2. Run the container on port 8082 with development seed data
+docker run -d --name dashboard-demo -p 8082:8080 -e SPRING_PROFILES_ACTIVE=dev construction-dashboard:1.0.0
+
+# 3. Verify health status
+curl -s http://localhost:8082/health
+```
+
+Access the containerized application at [http://localhost:8082/](http://localhost:8082/).  
+For complete lifecycle operations and configuration flags, see [`docs/DOCKER.md`](docs/DOCKER.md).
 
 ---
 
@@ -310,4 +323,76 @@ Access the application in your browser:
 - **Alert View**: http://localhost:8080/alerts
 - **Admin Projects**: http://localhost:8080/admin/projects
 - **Health Check**: http://localhost:8080/health
+
+---
+
+## 🧪 Running UI Tests (Selenium E2E)
+
+The project includes an automated end-to-end (E2E) testing suite powered by **Selenium 4**, **JUnit 5**, and **Headless Chrome**, automating 5 critical user journeys across authentication, role-based authorization, task creation, status updates, search filters, and exception drill-downs.
+
+### 1. Default Build (Fast Unit & Integration Tests)
+By default, standard builds do **not** run slow browser E2E tests, allowing standard CI pipelines to remain fast:
+```bash
+# Unit & Controller/Service integration tests only (E2E excluded)
+./mvnw clean test
+./mvnw clean package
+```
+
+### 2. Execute Selenium E2E Tests
+To run the automated Selenium user journey suite locally, activate the `selenium` Maven profile:
+```bash
+# Run all 5 critical user journey tests (Headless Chrome)
+./mvnw -B -Pselenium test
+
+# Windows PowerShell:
+.\mvnw.cmd -B -Pselenium test
+```
+
+### 3. Execution Options & System Properties
+
+| Property | Default Value | Description | Example |
+|---|---|---|---|
+| `-Pselenium` | *(none)* | Maven profile activating E2E tests tagged `@Tag("e2e")` | `./mvnw -B -Pselenium test` |
+| `-Dheadless=false` | `true` | Runs Chrome in visible (headed) GUI mode for visual inspection | `./mvnw -B -Pselenium test -Dheadless=false` |
+| `-Dbase.url` | *(Embedded Port)* | Targets a pre-deployed server instance (e.g. Tomcat/staging) | `./mvnw -B -Pselenium test -Dbase.url=http://localhost:8080` |
+| `-Ddemo.failure=true` | `false` | Executes the deliberate failure verification test | `./mvnw -B -Pselenium test "-Ddemo.failure=true"` |
+| `-De2e.manager.password` | `manager123` | Overrides test account passwords | `./mvnw -B -Pselenium test -De2e.manager.password=customPass` |
+
+### 4. HTML Surefire Test Report
+Generate and view the HTML Surefire test report:
+```bash
+# Generate report after running tests
+./mvnw -B -Pselenium surefire-report:report-only
+
+# Windows PowerShell:
+.\mvnw.cmd -B -Pselenium surefire-report:report-only
+```
+- Report output location: `target/site/surefire-report.html`
+
+### 5. Failure Screenshot Mechanism
+The test framework includes a JUnit 5 `ScreenshotOnFailureExtension` (`AfterTestExecutionCallback` & `TestWatcher`). Whenever any UI test fails:
+- An automatic full-page PNG screenshot is captured to `target/screenshots/<ClassName>_<methodName>_<timestamp>.png`.
+- The failure log records the exact page URL, document title, and failure cause.
+- Permanent evidence files and reports are preserved under `docs/evidence/week9/`.
+
+---
+
+## 🚀 Week 14 — Target Node Provisioning, Idempotency & Automated Rollback
+
+**Delivered in:** `feature/55-provision-rollback` (merged into `develop`).  
+**Closes:** Issue [#55 — Provision clean target environment and implement release deployment with rollback](https://github.com/ganesh-dahiphale/construction_project_dashboard/issues/55)
+
+### Highlights & Architecture
+- **Ansible Automation**: Full target node configuration via Ansible roles (`common`, `docker`, `app_user`, `app_dirs`, `firewall`, `app_config`, `deploy`).
+- **Idempotency**: Demonstrated zero state change (`changed=0`) across consecutive playbook runs and automatic reconciliation upon configuration drift.
+- **Health Gate & Atomic Rollback**: Integrated post-deployment HTTP `/health` polling (up to 25 retries) and login page version verification with Ansible `block` / `rescue` automatic rollback to the previous stable release.
+- **Operational Playbooks**:
+  - `provision.yml`: Full node provisioning and versioned release deployment.
+  - `healthcheck.yml`: Synthetic health and infrastructure readiness auditing.
+  - `rollback.yml`: Operator-confirmed manual rollback to `previous.txt`.
+  - `status.yml`: Release audit trail and history reporting from `history.log`.
+- **Fault Recovery**: Tested and verified systemd container auto-recovery (17s downtime) and node reboot recovery (22s recovery).
+
+For complete playbook usage, role architecture, and evidence, see [`ansible/README.md`](ansible/README.md) and [`docs/evidence/week14/week14-evidence.md`](docs/evidence/week14/week14-evidence.md).
+
 

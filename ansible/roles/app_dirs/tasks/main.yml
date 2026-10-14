@@ -1,0 +1,40 @@
+---
+- name: Create application root directory
+  ansible.builtin.file:
+    path: "{{ app_dir }}"
+    state: directory
+    owner: "{{ app_user }}"
+    group: "{{ app_group }}"
+    mode: "0755"
+  tags:
+    - dirs
+
+- name: Create application configuration directory
+  ansible.builtin.file:
+    path: "{{ app_dir }}/config"
+    state: directory
+    owner: "{{ app_user }}"
+    group: "{{ app_group }}"
+    mode: "0750"
+  tags:
+    - dirs
+
+- name: Create application logs directory
+  ansible.builtin.file:
+    path: "{{ app_dir }}/logs"
+    state: directory
+    owner: "{{ app_user }}"
+    group: "{{ app_group }}"
+    mode: "0750"
+  tags:
+    - dirs
+
+- name: Create application releases directory
+  ansible.builtin.file:
+    path: "{{ app_dir }}/releases"
+    state: directory
+    owner: "{{ app_user }}"
+    group: "{{ app_group }}"
+    mode: "0755"
+  tags:
+    - dirs

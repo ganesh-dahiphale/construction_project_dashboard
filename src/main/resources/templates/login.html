@@ -86,11 +86,12 @@
         </div>
     </div>
 
-    <!-- Footer link to health -->
-    <div class="text-center mt-3">
+    <!-- Footer link to health & version -->
+    <div class="text-center mt-3 d-flex flex-column align-items-center gap-1">
         <a th:href="@{/health}" class="text-white-50 small text-decoration-none">
             <i class="bi bi-heart-pulse me-1"></i>System Health Endpoint
         </a>
+        <span class="badge bg-secondary text-light mt-1" data-testid="app-version" th:text="'Version: ' + ${appVersion != null ? appVersion : @environment.getProperty('app.version')} + ' - Final Release Demo'">Version: dev - Final Release Demo</span>
     </div>
 
 </div>

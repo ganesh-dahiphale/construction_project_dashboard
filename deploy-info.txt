@@ -1,0 +1,13 @@
+﻿DEPLOYMENT INFORMATION (RUN B - COMMIT TO CONTAINER)
+===================================================
+Image: localhost:5000/construction-dashboard
+Tag: 0.0.1-SNAPSHOT-b2-f3cac90
+Digest: localhost:5000/construction-dashboard@sha256:b7f4dd413240c2a1649111797479bdcee6d604b764157f59b7fb59dea9e1ebcb
+Git Commit: f3cac909e7b09ff9adf5239483de1093bfa6d361 (f3cac90)
+Build Number: 2
+Deployed URL: http://localhost:8082/
+Deployed At: 2026-10-14 16:26:59 +05:30
+Previous Container ID: 66059093e717f97992f047e52ce5662ea7d81c8a4b260a16b54ff23c9dd07f46
+New Container ID: d61b21331b1c998ff1cd668e4ebf9477654dd2e9e1720565447a06690a3ec6d6
+Health Status: UP
+Footer Text Verified: Yes ('0.0.1-SNAPSHOT-b2-f3cac90 - Jenkins-Docker CD demo')

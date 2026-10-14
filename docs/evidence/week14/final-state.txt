@@ -1,0 +1,114 @@
+=== FINAL TARGET ENVIRONMENT STATE AUDIT ===
+Date: 2026-10-14 19:05:52 UTC
+
+1. HOST & KERNEL INFORMATION:
+Hostname: cpd-target
+Kernel:   Linux cpd-target 6.18.40.1-microsoft-standard-WSL2 #1 SMP PREEMPT_DYNAMIC Fri Jul 31 22:12:15 UTC 2026 x86_64 GNU/Linux
+Uptime:    00:35:53 up  8:21,  2 users,  load average: 0.58, 0.36, 0.40
+
+2. UFW FIREWALL STATUS:
+Status: active
+Logging: on (low)
+Default: deny (incoming), allow (outgoing), deny (routed)
+New profiles: skip
+
+To                         Action      From
+--                         ------      ----
+22/tcp                     ALLOW IN    Anywhere                  
+8082/tcp                   ALLOW IN    Anywhere                  
+22/tcp (v6)                ALLOW IN    Anywhere (v6)             
+8082/tcp (v6)              ALLOW IN    Anywhere (v6)             
+
+
+3. DOCKER RUNNING CONTAINERS:
+CONTAINER ID   IMAGE                                                             COMMAND                  CREATED         STATUS                   PORTS                                         NAMES
+a268cbd8e6f9   localhost:5000/construction-dashboard:0.0.1-SNAPSHOT-b2-f3cac90   "sh -c 'java $JAVA_O…"   2 minutes ago   Up 2 minutes (healthy)   0.0.0.0:8082->8080/tcp, [::]:8082->8080/tcp   construction-dashboard
+
+4. DOCKER LOCAL IMAGES:
+IMAGE                                                             ID             DISK USAGE   CONTENT SIZE   EXTRA
+hello-world:latest                                                11a3eb1597e8       25.9kB         9.49kB        
+localhost:5000/construction-dashboard:0.0.1-SNAPSHOT-b1-fe3efe3   03b7a8db53f5        545MB          163MB        
+localhost:5000/construction-dashboard:0.0.1-SNAPSHOT-b2-f3cac90   b7f4dd413240        545MB          163MB   U    
+localhost:5000/construction-dashboard:broken-demo                 aeb144aaff78        545MB          163MB        
+
+5. SYSTEMD SERVICE STATUS (construction-dashboard.service):
+● construction-dashboard.service - Construction Progress Dashboard Container Service
+     Loaded: loaded (/etc/systemd/system/construction-dashboard.service; enabled; preset: enabled)
+     Active: active (running) since Thu 2026-10-15 00:33:41 IST; 2min 12s ago
+ Invocation: 8d8cd2af1a294804920aded380d8d2d0
+    Process: 612 ExecStartPre=/usr/bin/docker stop construction-dashboard (code=exited, status=1/FAILURE)
+    Process: 623 ExecStartPre=/usr/bin/docker rm construction-dashboard (code=exited, status=1/FAILURE)
+   Main PID: 637 (docker)
+      Tasks: 12 (limit: 9334)
+     Memory: 47.9M (peak: 60.1M)
+        CPU: 117ms
+     CGroup: /system.slice/construction-dashboard.service
+             └─637 /usr/bin/docker run --name construction-dashboard --rm -p 8082:8080 --env-file /opt/construction-dashboard/config/app.env localhost:5000/construction-dashboard:0.0.1-SNAPSHOT-b2-f3cac90
+
+Oct 15 00:33:46 cpd-target docker[637]: 2026-10-14T19:03:46.686Z  INFO 7 --- [construction-progress-dashboard] [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+Oct 15 00:33:46 cpd-target docker[637]: 2026-10-14T19:03:46.739Z  INFO 7 --- [construction-progress-dashboard] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+Oct 15 00:33:47 cpd-target docker[637]: 2026-10-14T19:03:47.114Z  WARN 7 --- [construction-progress-dashboard] [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+Oct 15 00:33:47 cpd-target docker[637]: 2026-10-14T19:03:47.138Z  INFO 7 --- [construction-progress-dashboard] [           main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
+Oct 15 00:33:47 cpd-target docker[637]: 2026-10-14T19:03:47.212Z  INFO 7 --- [construction-progress-dashboard] [           main] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page template: index
+Oct 15 00:33:47 cpd-target docker[637]: 2026-10-14T19:03:47.674Z  INFO 7 --- [construction-progress-dashboard] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+Oct 15 00:33:47 cpd-target docker[637]: 2026-10-14T19:03:47.687Z  INFO 7 --- [construction-progress-dashboard] [           main] c.e.d.ConstructionDashboardApplication   : Started ConstructionDashboardApplication in 4.622 seconds (process running for 5.236)
+Oct 15 00:33:52 cpd-target docker[637]: 2026-10-14T19:03:52.585Z  INFO 7 --- [construction-progress-dashboard] [nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+Oct 15 00:33:52 cpd-target docker[637]: 2026-10-14T19:03:52.585Z  INFO 7 --- [construction-progress-dashboard] [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+Oct 15 00:33:52 cpd-target docker[637]: 2026-10-14T19:03:52.586Z  INFO 7 --- [construction-progress-dashboard] [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+
+6. DOCKER DAEMON SYSTEMD STATUS:
+● docker.service - Docker Application Container Engine
+     Loaded: loaded (/usr/lib/systemd/system/docker.service; enabled; preset: enabled)
+     Active: active (running) since Thu 2026-10-15 00:33:41 IST; 2min 12s ago
+ Invocation: 25b255c36a4b4daf9a291c1e2af865de
+TriggeredBy: ● docker.socket
+       Docs: https://docs.docker.com
+   Main PID: 332 (dockerd)
+      Tasks: 35
+     Memory: 161.8M (peak: 163.3M)
+        CPU: 1.127s
+     CGroup: /system.slice/docker.service
+             ├─332 /usr/bin/dockerd -H fd:// --containerd=/run/containerd/containerd.sock
+             ├─749 /usr/bin/docker-proxy -proto tcp -host-ip 0.0.0.0 -host-port 8082 -container-ip 172.17.0.2 -container-port 8080 -use-listen-fd
+             └─756 /usr/bin/docker-proxy -proto tcp -host-ip :: -host-port 8082 -container-ip 172.17.0.2 -container-port 8080 -use-listen-fd
+
+Oct 15 00:33:41 cpd-target dockerd[332]: time="2026-10-15T00:33:41.827959771+05:30" level=info msg="Completed buildkit initialization"
+Oct 15 00:33:41 cpd-target dockerd[332]: time="2026-10-15T00:33:41.832286116+05:30" level=info msg="Daemon has completed initialization"
+Oct 15 00:33:41 cpd-target dockerd[332]: time="2026-10-15T00:33:41.832352183+05:30" level=info msg="API listen on /run/docker.sock"
+Oct 15 00:33:41 cpd-target systemd[1]: Started docker.service - Docker Application Container Engine.
+Oct 15 00:33:42 cpd-target dockerd[332]: time="2026-10-15T00:33:42.344866688+05:30" level=info msg="sbJoin: gwep4 ''->'74bd65f112d7', gwep6 ''->''" eid=74bd65f112d7 ep=construction-dashboard net=bridge nid=12d358be58c0
+
+7. RELEASE POINTERS AND AUDIT TRAIL:
+current.txt:
+0.0.1-SNAPSHOT-b2-f3cac90
+
+previous.txt:
+0.0.1-SNAPSHOT-b1-fe3efe3
+
+history.log:
+2026-10-14 17:26:39 UTC DEPLOYED 0.0.1-SNAPSHOT-b1-fe3efe3
+2026-10-14 17:28:56 UTC DEPLOYED 0.0.1-SNAPSHOT-b2-f3cac90
+2026-10-14 17:49:12 UTC DEPLOYED broken-demo
+2026-10-14 18:21:43 UTC ROLLED BACK from broken-demo to 0.0.1-SNAPSHOT-b2-f3cac90
+2026-10-14 18:25:50 UTC ROLLED BACK from 0.0.1-SNAPSHOT-b1-fe3efe3 to 0.0.1-SNAPSHOT-b2-f3cac90
+2026-10-14 18:27:50 UTC DEPLOYED 0.0.1-SNAPSHOT-b1-fe3efe3
+2026-10-14 18:27:51 UTC MANUAL ROLLBACK from 0.0.1-SNAPSHOT-b2-f3cac90 to 0.0.1-SNAPSHOT-b1-fe3efe3
+2026-10-14 18:29:29 UTC ROLLED BACK from 0.0.1-SNAPSHOT-b2-f3cac90 to 0.0.1-SNAPSHOT-b1-fe3efe3
+2026-10-14 18:37:34 UTC DEPLOYED 0.0.1-SNAPSHOT-b2-f3cac90
+
+8. APPLICATION ENVIRONMENT CONFIGURATION (/opt/construction-dashboard/config/app.env):
+# Construction Progress Dashboard Application Environment Configuration
+# Managed by Ansible - Week 14
+APP_VERSION=0.0.1-SNAPSHOT-b2-f3cac90
+# dev profile is for this course demo only
+SPRING_PROFILES_ACTIVE=dev
+SERVER_PORT=8080
+JAVA_OPTS=-Xms128m -Xmx256m
+
+9. APPLICATION HEALTH ENDPOINT (http://127.0.0.1:8082/health):
+{"status":"UP"}
+
+10. APPLICATION LOGIN PAGE VERSION BADGE:
+Version: 0.0.1-SNAPSHOT-b2-f3cac90 - Jenkins-Docker CD demo
+
+=============================================

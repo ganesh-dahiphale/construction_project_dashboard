@@ -1,0 +1,17 @@
+Could not delete non-existent rule
+Could not delete non-existent rule (v6)
+=== DRIFT INTRODUCED BEFORE ANSIBLE REPAIR ===
+Wed Oct 14 17:33:05 UTC 2026
+--- Permissions of app.env: Drifted to 0644 ---
+-rw-r--r-- 1 appdeploy docker 256 Oct 14 22:58 /opt/construction-dashboard/config/app.env
+--- UFW Status: Port 8082 Removed ---
+Status: active
+Logging: on (low)
+Default: deny (incoming), allow (outgoing), deny (routed)
+New profiles: skip
+
+To                         Action      From
+--                         ------      ----
+22/tcp                     ALLOW IN    Anywhere                  
+22/tcp (v6)                ALLOW IN    Anywhere (v6)             
+

@@ -1,0 +1,67 @@
+---
+- name: Manual Rollback to Previous Stable Release
+  hosts: app_servers
+  become: true
+  vars_files:
+    - "../group_vars/app_servers.yml"
+  tasks:
+    - name: Verify explicit rollback confirmation
+      ansible.builtin.assert:
+        that:
+          - confirm_rollback is defined
+          - confirm_rollback == 'yes'
+        fail_msg: >-
+          Rollback requires explicit operator confirmation.
+          Please rerun with: -e confirm_rollback=yes
+
+    - name: Check if previous release state record exists
+      ansible.builtin.stat:
+        path: "{{ app_dir }}/releases/previous.txt"
+      register: previous_file_stat
+
+    - name: Fail if no previous release is recorded
+      ansible.builtin.fail:
+        msg: "No previous release recorded at {{ app_dir }}/releases/previous.txt. Cannot execute rollback."
+      when: not previous_file_stat.stat.exists
+
+    - name: Read previous release tag
+      ansible.builtin.slurp:
+        src: "{{ app_dir }}/releases/previous.txt"
+      register: previous_file_data
+
+    - name: Set target rollback release tag
+      ansible.builtin.set_fact:
+        target_rollback_tag: "{{ previous_file_data.content | b64decode | trim }}"
+
+    - name: Read current release tag for logging
+      ansible.builtin.slurp:
+        src: "{{ app_dir }}/releases/current.txt"
+      register: current_file_data
+      failed_when: false
+
+    - name: Set current release tag
+      ansible.builtin.set_fact:
+        current_deployed_tag: "{{ (current_file_data.content | b64decode | trim) if (current_file_data.content is defined) else 'unknown' }}"
+
+    - name: Print rollback execution notice
+      ansible.builtin.debug:
+        msg: "Rolling back from current '{{ current_deployed_tag }}' to previous stable release '{{ target_rollback_tag }}'..."
+
+    - name: Deploy previous stable release using deploy role
+      ansible.builtin.include_role:
+        name: deploy
+      vars:
+        release_tag: "{{ target_rollback_tag }}"
+
+    - name: Record manual rollback in history.log
+      ansible.builtin.lineinfile:
+        path: "{{ app_dir }}/releases/history.log"
+        line: "{{ lookup('pipe', 'date -u +\"%Y-%m-%d %H:%M:%S UTC\"') }} MANUAL ROLLBACK from {{ current_deployed_tag }} to {{ target_rollback_tag }}"
+        create: true
+        owner: "{{ app_user }}"
+        group: "{{ app_group }}"
+        mode: "0644"
+
+    - name: Print manual rollback completion confirmation
+      ansible.builtin.debug:
+        msg: "Manual rollback to {{ target_rollback_tag }} successfully completed and verified healthy."

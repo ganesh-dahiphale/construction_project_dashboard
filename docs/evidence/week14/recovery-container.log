@@ -1,0 +1,103 @@
+=== CONTAINER CRASH RECOVERY TEST ===
+Timestamp: 2026-10-14 18:45:43 UTC
+
+--- 1. BEFORE CRASH: Current container status ---
+Active container ID: 5e6e7f27d333
+CONTAINER ID   IMAGE                                                             COMMAND                  CREATED              STATUS                        PORTS                                         NAMES
+5e6e7f27d333   localhost:5000/construction-dashboard:0.0.1-SNAPSHOT-b2-f3cac90   "sh -c 'java $JAVA_O…"   About a minute ago   Up About a minute (healthy)   0.0.0.0:8082->8080/tcp, [::]:8082->8080/tcp   construction-dashboard
+Checking /health: {"status":"UP"}
+
+--- 2. SIMULATING CONTAINER CRASH ---
+Killing container at timestamp: 1792003544
+construction-dashboard
+
+--- 3. POLLING FOR RECOVERY ---
+[+1s] /health response: DOWN
+[+2s] /health response: DOWN
+[+3s] /health response: DOWN
+[+4s] /health response: DOWN
+[+5s] /health response: DOWN
+[+6s] /health response: DOWN
+[+7s] /health response: DOWN
+[+8s] /health response: DOWN
+[+9s] /health response: DOWN
+[+10s] /health response: DOWN
+[+11s] /health response: DOWN
+[+12s] /health response: DOWN
+[+13s] /health response: DOWN
+[+14s] /health response: DOWN
+[+16s] /health response: DOWN
+[+17s] /health response: {"status":"UP"}
+Service recovered! Total downtime: 17 seconds
+
+--- 4. POST-RECOVERY INSPECTION ---
+Old container ID: 5e6e7f27d333
+New container ID: 60133556fb72
+Verified: New container instance was spawned automatically by systemd.
+
+--- 5. SYSTEMD SERVICE STATUS ---
+● construction-dashboard.service - Construction Progress Dashboard Container Service
+     Loaded: loaded (/etc/systemd/system/construction-dashboard.service; enabled; preset: enabled)
+     Active: active (running) since Thu 2026-10-15 00:15:55 IST; 6s ago
+ Invocation: 4225c04e660e4bd7868dd6713c41f464
+    Process: 62854 ExecStartPre=/usr/bin/docker stop construction-dashboard (code=exited, status=1/FAILURE)
+    Process: 62876 ExecStartPre=/usr/bin/docker rm construction-dashboard (code=exited, status=1/FAILURE)
+   Main PID: 62892 (docker)
+      Tasks: 11 (limit: 9334)
+     Memory: 10.8M (peak: 33.2M)
+        CPU: 99ms
+     CGroup: /system.slice/construction-dashboard.service
+             └─62892 /usr/bin/docker run --name construction-dashboard --rm -p 8082:8080 --env-file /opt/construction-dashboard/config/app.env localhost:5000/construction-dashboard:0.0.1-SNAPSHOT-b2-f3cac90
+
+Oct 15 00:15:59 cpd-target docker[62892]: 2026-10-14T18:45:59.836Z  INFO 7 --- [construction-progress-dashboard] [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+Oct 15 00:15:59 cpd-target docker[62892]: 2026-10-14T18:45:59.897Z  INFO 7 --- [construction-progress-dashboard] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+Oct 15 00:16:00 cpd-target docker[62892]: 2026-10-14T18:46:00.382Z  WARN 7 --- [construction-progress-dashboard] [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+Oct 15 00:16:00 cpd-target docker[62892]: 2026-10-14T18:46:00.415Z  INFO 7 --- [construction-progress-dashboard] [           main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
+Oct 15 00:16:00 cpd-target docker[62892]: 2026-10-14T18:46:00.478Z  INFO 7 --- [construction-progress-dashboard] [           main] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page template: index
+Oct 15 00:16:00 cpd-target docker[62892]: 2026-10-14T18:46:00.984Z  INFO 7 --- [construction-progress-dashboard] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+Oct 15 00:16:00 cpd-target docker[62892]: 2026-10-14T18:46:00.998Z  INFO 7 --- [construction-progress-dashboard] [           main] c.e.d.ConstructionDashboardApplication   : Started ConstructionDashboardApplication in 5.155 seconds (process running for 5.648)
+Oct 15 00:16:01 cpd-target docker[62892]: 2026-10-14T18:46:01.098Z  INFO 7 --- [construction-progress-dashboard] [nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+Oct 15 00:16:01 cpd-target docker[62892]: 2026-10-14T18:46:01.098Z  INFO 7 --- [construction-progress-dashboard] [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+Oct 15 00:16:01 cpd-target docker[62892]: 2026-10-14T18:46:01.100Z  INFO 7 --- [construction-progress-dashboard] [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
+
+--- 6. DOCKER PS ---
+CONTAINER ID   IMAGE                                                             COMMAND                  CREATED         STATUS                            PORTS                                         NAMES
+60133556fb72   localhost:5000/construction-dashboard:0.0.1-SNAPSHOT-b2-f3cac90   "sh -c 'java $JAVA_O…"   6 seconds ago   Up 6 seconds (health: starting)   0.0.0.0:8082->8080/tcp, [::]:8082->8080/tcp   construction-dashboard
+
+--- 7. SYSTEMD JOURNAL RECOVERY SNIPPET ---
+Oct 15 00:15:57 cpd-target docker[62892]: 2026-10-14T18:45:57.237Z  INFO 7 --- [construction-progress-dashboard] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 65 ms. Found 3 JPA repository interfaces.
+Oct 15 00:15:58 cpd-target docker[62892]: 2026-10-14T18:45:58.013Z  INFO 7 --- [construction-progress-dashboard] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+Oct 15 00:15:58 cpd-target docker[62892]: 2026-10-14T18:45:58.035Z  INFO 7 --- [construction-progress-dashboard] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+Oct 15 00:15:58 cpd-target docker[62892]: 2026-10-14T18:45:58.035Z  INFO 7 --- [construction-progress-dashboard] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.30]
+Oct 15 00:15:58 cpd-target docker[62892]: 2026-10-14T18:45:58.141Z  INFO 7 --- [construction-progress-dashboard] [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+Oct 15 00:15:58 cpd-target docker[62892]: 2026-10-14T18:45:58.143Z  INFO 7 --- [construction-progress-dashboard] [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1833 ms
+Oct 15 00:15:58 cpd-target docker[62892]: 2026-10-14T18:45:58.192Z  INFO 7 --- [construction-progress-dashboard] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+Oct 15 00:15:58 cpd-target docker[62892]: 2026-10-14T18:45:58.465Z  INFO 7 --- [construction-progress-dashboard] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:constructiondb user=SA
+Oct 15 00:15:58 cpd-target docker[62892]: 2026-10-14T18:45:58.468Z  INFO 7 --- [construction-progress-dashboard] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+Oct 15 00:15:58 cpd-target docker[62892]: 2026-10-14T18:45:58.482Z  INFO 7 --- [construction-progress-dashboard] [           main] o.s.b.a.h2.H2ConsoleAutoConfiguration    : H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:constructiondb'
+Oct 15 00:15:58 cpd-target docker[62892]: 2026-10-14T18:45:58.751Z  INFO 7 --- [construction-progress-dashboard] [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+Oct 15 00:15:58 cpd-target docker[62892]: 2026-10-14T18:45:58.817Z  INFO 7 --- [construction-progress-dashboard] [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.3.Final
+Oct 15 00:15:58 cpd-target docker[62892]: 2026-10-14T18:45:58.871Z  INFO 7 --- [construction-progress-dashboard] [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+Oct 15 00:15:59 cpd-target docker[62892]: 2026-10-14T18:45:59.111Z  INFO 7 --- [construction-progress-dashboard] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+Oct 15 00:15:59 cpd-target docker[62892]: 2026-10-14T18:45:59.152Z  WARN 7 --- [construction-progress-dashboard] [           main] org.hibernate.orm.deprecation            : HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+Oct 15 00:15:59 cpd-target docker[62892]: 2026-10-14T18:45:59.836Z  INFO 7 --- [construction-progress-dashboard] [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+Oct 15 00:15:59 cpd-target docker[62892]: 2026-10-14T18:45:59.897Z  INFO 7 --- [construction-progress-dashboard] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+Oct 15 00:16:00 cpd-target docker[62892]: 2026-10-14T18:46:00.382Z  WARN 7 --- [construction-progress-dashboard] [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+Oct 15 00:16:00 cpd-target docker[62892]: 2026-10-14T18:46:00.415Z  INFO 7 --- [construction-progress-dashboard] [           main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
+Oct 15 00:16:00 cpd-target docker[62892]: 2026-10-14T18:46:00.478Z  INFO 7 --- [construction-progress-dashboard] [           main] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page template: index
+Oct 15 00:16:00 cpd-target docker[62892]: 2026-10-14T18:46:00.984Z  INFO 7 --- [construction-progress-dashboard] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+Oct 15 00:16:00 cpd-target docker[62892]: 2026-10-14T18:46:00.998Z  INFO 7 --- [construction-progress-dashboard] [           main] c.e.d.ConstructionDashboardApplication   : Started ConstructionDashboardApplication in 5.155 seconds (process running for 5.648)
+Oct 15 00:16:01 cpd-target docker[62892]: 2026-10-14T18:46:01.098Z  INFO 7 --- [construction-progress-dashboard] [nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+Oct 15 00:16:01 cpd-target docker[62892]: 2026-10-14T18:46:01.098Z  INFO 7 --- [construction-progress-dashboard] [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+Oct 15 00:16:01 cpd-target docker[62892]: 2026-10-14T18:46:01.100Z  INFO 7 --- [construction-progress-dashboard] [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
+
+--- 8. HEALTH ENDPOINT & LOGIN VERSION VERIFICATION ---
+Health: {"status":"UP"}
+Login:  Version: 0.0.1-SNAPSHOT-b2-f3cac90 - Jenkins-Docker CD demo
+
+=== CONTAINER CRASH RECOVERY SUMMARY ===
+Failure simulated: sudo docker kill construction-dashboard
+Supervisor: systemd (construction-dashboard.service, Restart=unless-stopped, RestartSec=10s)
+Result: Container restarted automatically
+Downtime: 17 seconds
+=========================================

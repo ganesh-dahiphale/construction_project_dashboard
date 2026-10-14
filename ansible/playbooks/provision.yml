@@ -1,0 +1,28 @@
+---
+- name: Provision target node and deploy application release
+  hosts: app_servers
+  become: true
+  vars_files:
+    - "../group_vars/app_servers.yml"
+  roles:
+    - role: common
+      tags:
+        - common
+    - role: docker
+      tags:
+        - docker
+    - role: app_user
+      tags:
+        - app_user
+    - role: app_dirs
+      tags:
+        - app_dirs
+    - role: firewall
+      tags:
+        - firewall
+    - role: app_config
+      tags:
+        - app_config
+    - role: deploy
+      tags:
+        - deploy

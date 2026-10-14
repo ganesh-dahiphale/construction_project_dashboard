@@ -1,0 +1,96 @@
+=== TARGET NODE AFTER ANSIBLE EXECUTION ===
+Wed Oct 14 17:03:28 UTC 2026
+--- Hostname and OS ---
+cpd-target
+PRETTY_NAME="Ubuntu 26.04.1 LTS"
+NAME="Ubuntu"
+VERSION_ID="26.04"
+VERSION="26.04.1 LTS (Resolute Raccoon)"
+VERSION_CODENAME=resolute
+ID=ubuntu
+ID_LIKE=debian
+HOME_URL="https://www.ubuntu.com/"
+SUPPORT_URL="https://help.ubuntu.com/"
+BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"
+PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-policy"
+UBUNTU_CODENAME=resolute
+LOGO=ubuntu-logo
+--- Docker Version and Service ---
+Docker version 29.9.0, build f415da8
+active
+--- App Service Status ---
+enabled
+inactive
+--- Appdeploy User ---
+uid=999(appdeploy) gid=986(docker) groups=986(docker)
+--- Directory Permissions ---
+drwxr-xr-x 5 appdeploy docker 4096 Oct 14 22:32 /opt/construction-dashboard
+drwxr-x--- 2 appdeploy docker 4096 Oct 14 22:32 /opt/construction-dashboard/config
+drwxr-x--- 2 appdeploy docker 4096 Oct 14 22:32 /opt/construction-dashboard/logs
+drwxr-xr-x 2 appdeploy docker 4096 Oct 14 22:32 /opt/construction-dashboard/releases
+--- Firewall Status ---
+Status: active
+Logging: on (low)
+Default: deny (incoming), allow (outgoing), deny (routed)
+New profiles: skip
+
+To                         Action      From
+--                         ------      ----
+22/tcp                     ALLOW IN    Anywhere                  
+8082/tcp                   ALLOW IN    Anywhere                  
+22/tcp (v6)                ALLOW IN    Anywhere (v6)             
+8082/tcp (v6)              ALLOW IN    Anywhere (v6)             
+
+--- Listening Ports ---
+State  Recv-Q Send-Q  Local Address:Port Peer Address:PortProcess
+LISTEN 0      1000   10.255.255.254:53        0.0.0.0:*          
+LISTEN 0      4096    127.0.0.53%lo:53        0.0.0.0:*          
+LISTEN 0      128           0.0.0.0:2222      0.0.0.0:*          
+LISTEN 0      4096          0.0.0.0:22        0.0.0.0:*          
+LISTEN 0      4096       127.0.0.54:53        0.0.0.0:*          
+LISTEN 0      4096                *:8082            *:*          
+LISTEN 0      128              [::]:2222         [::]:*          
+LISTEN 0      4096                *:5000            *:*          
+LISTEN 0      4096             [::]:22           [::]:*          
+--- Docker Daemon Config ---
+{
+  "log-driver": "json-file",
+  "log-opts": {
+    "max-size": "10m",
+    "max-file": "3"
+  }
+}
+--- App Env File ---
+# Construction Progress Dashboard Application Environment Configuration
+# Managed by Ansible - Week 13
+APP_VERSION=1.0.0
+# dev profile is for this course demo only
+SPRING_PROFILES_ACTIVE=dev
+SERVER_PORT=8080
+JAVA_OPTS=-Xms128m -Xmx256m
+--- Systemd Unit File ---
+[Unit]
+Description=Construction Progress Dashboard Container Service
+After=docker.service
+Requires=docker.service
+
+[Service]
+Type=simple
+User=appdeploy
+Group=docker
+Restart=unless-stopped
+RestartSec=10s
+TimeoutStartSec=120
+TimeoutStopSec=30
+EnvironmentFile=/opt/construction-dashboard/config/app.env
+ExecStartPre=-/usr/bin/docker stop construction-dashboard
+ExecStartPre=-/usr/bin/docker rm construction-dashboard
+ExecStart=/usr/bin/docker run --name construction-dashboard \
+  --rm \
+  -p 8082:8080 \
+  --env-file /opt/construction-dashboard/config/app.env \
+  ganesh/construction-dashboard:stable
+ExecStop=/usr/bin/docker stop -t 15 construction-dashboard
+
+[Install]
+WantedBy=multi-user.target

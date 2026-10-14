@@ -4,6 +4,30 @@ All notable changes to the **Construction Progress Dashboard** project will be d
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v1.1.0] - 2026-10-15 — Final End-to-End Release (CI/CD, Selenium Gate, Docker & Ansible)
+
+### Added
+- **Ansible Configuration Management & Continuous Deployment (`ansible/`)**:
+  - Full automated provisioning and deployment pipeline with modular Ansible roles: `common`, `docker`, `app_user`, `app_dirs`, `firewall`, `app_config`, and `deploy`.
+  - Atomic zero-downtime container deployment supervised by `systemd` unit (`construction-dashboard.service`).
+  - Automated deployment rollback protection: health verification gate triggers immediate atomic rollback to previous image on HTTP `/health` or UI version check failure.
+  - State tracking in `/opt/construction-dashboard/releases/` via `current.txt`, `previous.txt`, and append-only `history.log`.
+  - Manual operator rollback playbook (`ansible/playbooks/rollback.yml`) and status inspection playbook (`status.yml`).
+  - Production security controls: dedicated non-privileged service user (`appdeploy`), restricted file permissions (0600 on secrets), and strict UFW firewall configuration (22/tcp SSH, 8082/tcp App).
+- **Jenkins Pipeline Ansible Deployment & Verification Stages**:
+  - Added `Provision and Deploy (Ansible)` stage executing `provision.yml` with dynamic release parameters.
+  - Added `Verify Node` stage running `healthcheck.yml` and testing external HTTP health endpoints from build agent.
+  - Automatic promotion of verified releases to `:stable` Docker tag.
+  - Automated archival of `deploy-info.txt`, `ansible-deploy.log`, and `ansible-healthcheck.log`.
+  - Workstation deployment runners (`scripts/deploy-node.sh` and `scripts/deploy-node.ps1`) for hybrid CI/CD environments.
+- **Selenium Automated Quality Gate**:
+  - Headless Chrome end-to-end browser testing validating mission-critical user journeys.
+  - Quality gate blockade pattern preventing defective releases from proceeding to Docker packaging or server deployment.
+- **Production Audit & Idempotency**:
+  - Verified strict idempotency (`changed=0`) across consecutive Ansible provisioning runs.
+
+---
+
 ## [v1.0.0] - 2026-10-05 — Production-Ready MVP Release
 
 ### Added

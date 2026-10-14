@@ -1,0 +1,219 @@
+---
+- name: Validate that release_tag is defined
+  ansible.builtin.assert:
+    that:
+      - release_tag is defined
+      - release_tag | length > 0
+    fail_msg: "The 'release_tag' variable must be specified (e.g. -e release_tag=...)."
+
+- name: Initialize active release tag variable
+  ansible.builtin.set_fact:
+    active_release_tag: "{{ release_tag }}"
+
+- name: Check for existing release state record
+  ansible.builtin.stat:
+    path: "{{ state_dir }}/current.txt"
+  register: existing_current_stat
+
+- name: Read pre-deployment current release tag if present
+  ansible.builtin.slurp:
+    src: "{{ state_dir }}/current.txt"
+  register: existing_current_content
+  when: existing_current_stat.stat.exists
+
+- name: Set pre-deployment release tag fact
+  ansible.builtin.set_fact:
+    pre_deploy_tag: "{{ (existing_current_content.content | b64decode | trim) if existing_current_stat.stat.exists else '' }}"
+
+- name: Deploy application release with automatic rollback protection
+  block:
+    - name: Ensure target container image is present
+      community.docker.docker_image:
+        name: "{{ image_name }}:{{ active_release_tag }}"
+        source: pull
+      when: (image_source | default('pull')) != 'local'
+
+    - name: Deploy application environment configuration
+      ansible.builtin.template:
+        src: ../../app_config/templates/app.env.j2
+        dest: "{{ app_dir }}/config/app.env"
+        owner: "{{ app_user }}"
+        group: "{{ app_group }}"
+        mode: "0600"
+      notify: Restart construction-dashboard
+
+    - name: Deploy systemd unit service file
+      ansible.builtin.template:
+        src: ../../app_config/templates/construction-dashboard.service.j2
+        dest: "/etc/systemd/system/{{ container_name }}.service"
+        owner: root
+        group: root
+        mode: "0644"
+      notify: Restart construction-dashboard
+
+    - name: Flush handlers to restart application service immediately
+      ansible.builtin.meta: flush_handlers
+
+    - name: Restart application service when deploying a new release
+      ansible.builtin.systemd:
+        name: "{{ container_name }}"
+        state: restarted
+        enabled: true
+        daemon_reload: true
+      when:
+        - pre_deploy_tag | length > 0
+        - pre_deploy_tag != active_release_tag
+
+    - name: Ensure construction-dashboard service is active and running
+      ansible.builtin.systemd:
+        name: "{{ container_name }}"
+        state: started
+        enabled: true
+
+    - name: Wait for application health check endpoint
+      ansible.builtin.uri:
+        url: "{{ health_url }}"
+        status_code: 200
+        return_content: true
+      register: health_check_response
+      until: >-
+        health_check_response.status == 200 and
+        ('UP' in (health_check_response.content | default('')))
+      retries: "{{ health_retries }}"
+      delay: "{{ health_delay }}"
+
+    - name: Verify application login page displays correct release version
+      ansible.builtin.uri:
+        url: "http://127.0.0.1:{{ app_port }}/login"
+        status_code: 200
+        return_content: true
+      register: login_page_response
+      failed_when: active_release_tag not in login_page_response.content
+
+    - name: Update previous release pointer if changing releases
+      ansible.builtin.copy:
+        content: "{{ pre_deploy_tag ~ '\n' }}"
+        dest: "{{ state_dir }}/previous.txt"
+        owner: "{{ app_user }}"
+        group: "{{ app_group }}"
+        mode: "0644"
+      when:
+        - pre_deploy_tag | length > 0
+        - pre_deploy_tag != active_release_tag
+
+    - name: Record newly deployed release in current.txt
+      ansible.builtin.copy:
+        content: "{{ active_release_tag ~ '\n' }}"
+        dest: "{{ state_dir }}/current.txt"
+        owner: "{{ app_user }}"
+        group: "{{ app_group }}"
+        mode: "0644"
+      register: update_current_result
+
+    - name: Append deployment event to history.log
+      ansible.builtin.lineinfile:
+        path: "{{ state_dir }}/history.log"
+        line: "{{ lookup('pipe', 'date -u +\"%Y-%m-%d %H:%M:%S UTC\"') }} DEPLOYED {{ active_release_tag }}"
+        create: true
+        owner: "{{ app_user }}"
+        group: "{{ app_group }}"
+        mode: "0644"
+      when: update_current_result.changed
+
+  rescue:
+    - name: Check for previous release record
+      ansible.builtin.stat:
+        path: "{{ state_dir }}/previous.txt"
+      register: rescue_previous_stat
+
+    - name: Read previous release state if present
+      ansible.builtin.slurp:
+        src: "{{ state_dir }}/previous.txt"
+      register: rescue_previous_data
+      when: rescue_previous_stat.stat.exists
+
+    - name: Fail immediately if no previous release is recorded
+      ansible.builtin.fail:
+        msg: "Deployment of release '{{ release_tag }}' failed, and no previous release exists to roll back to."
+      when:
+        - pre_deploy_tag | length == 0
+        - not rescue_previous_stat.stat.exists
+
+    - name: Determine rollback target release tag
+      ansible.builtin.set_fact:
+        rollback_tag: "{{ pre_deploy_tag if (pre_deploy_tag | length > 0) else (rescue_previous_data.content | b64decode | trim) }}"
+
+    - name: Update active release tag to rollback target
+      ansible.builtin.set_fact:
+        active_release_tag: "{{ rollback_tag }}"
+
+    - name: Print rollback initiation notice
+      ansible.builtin.debug:
+        msg: "Deployment failed for '{{ release_tag }}'! Initiating automatic rollback to stable release '{{ rollback_tag }}'..."
+
+    - name: Rollback application environment configuration
+      ansible.builtin.template:
+        src: ../../app_config/templates/app.env.j2
+        dest: "{{ app_dir }}/config/app.env"
+        owner: "{{ app_user }}"
+        group: "{{ app_group }}"
+        mode: "0600"
+
+    - name: Rollback systemd unit service file
+      ansible.builtin.template:
+        src: ../../app_config/templates/construction-dashboard.service.j2
+        dest: "/etc/systemd/system/{{ container_name }}.service"
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Restart application service with rolled back release
+      ansible.builtin.systemd:
+        name: "{{ container_name }}"
+        state: restarted
+        daemon_reload: true
+
+    - name: Wait for rolled-back application health check endpoint
+      ansible.builtin.uri:
+        url: "{{ health_url }}"
+        status_code: 200
+        return_content: true
+      register: rollback_health_response
+      until: >-
+        rollback_health_response.status == 200 and
+        ('UP' in (rollback_health_response.content | default('')))
+      retries: "{{ health_retries }}"
+      delay: "{{ health_delay }}"
+
+    - name: Verify login page displays rolled-back version
+      ansible.builtin.uri:
+        url: "http://127.0.0.1:{{ app_port }}/login"
+        status_code: 200
+        return_content: true
+      register: rollback_login_response
+      failed_when: rollback_tag not in rollback_login_response.content
+
+    - name: Restore current.txt to rollback tag
+      ansible.builtin.copy:
+        content: "{{ rollback_tag ~ '\n' }}"
+        dest: "{{ state_dir }}/current.txt"
+        owner: "{{ app_user }}"
+        group: "{{ app_group }}"
+        mode: "0644"
+
+    - name: Record rollback event in history.log
+      ansible.builtin.lineinfile:
+        path: "{{ state_dir }}/history.log"
+        line: "{{ lookup('pipe', 'date -u +\"%Y-%m-%d %H:%M:%S UTC\"') }} ROLLED BACK from {{ release_tag }} to {{ rollback_tag }}"
+        create: true
+        owner: "{{ app_user }}"
+        group: "{{ app_group }}"
+        mode: "0644"
+
+    - name: Display successful automatic rollback message
+      ansible.builtin.debug:
+        msg: "ROLLED BACK from {{ release_tag }} to {{ rollback_tag }}: Application health confirmed UP."
+
+    - name: Fail the deployment play after successful rollback
+      ansible.builtin.fail:
+        msg: "Deployment failed for release '{{ release_tag }}'. Automatic rollback successfully restored and verified stable release '{{ rollback_tag }}'."

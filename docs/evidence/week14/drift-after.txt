@@ -1,0 +1,17 @@
+=== TARGET STATE AFTER ANSIBLE DRIFT REPAIR ===
+Wed Oct 14 17:34:27 UTC 2026
+--- Permissions of app.env: Repaired to 0600 ---
+-rw------- 1 appdeploy docker 256 Oct 14 22:58 /opt/construction-dashboard/config/app.env
+--- UFW Status: Port 8082 Restored ---
+Status: active
+Logging: on (low)
+Default: deny (incoming), allow (outgoing), deny (routed)
+New profiles: skip
+
+To                         Action      From
+--                         ------      ----
+22/tcp                     ALLOW IN    Anywhere                  
+8082/tcp                   ALLOW IN    Anywhere                  
+22/tcp (v6)                ALLOW IN    Anywhere (v6)             
+8082/tcp (v6)              ALLOW IN    Anywhere (v6)             
+

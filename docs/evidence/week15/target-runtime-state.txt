@@ -1,0 +1,46 @@
+=== DOCKER PS ===
+CONTAINER ID   IMAGE                                                             COMMAND                  CREATED       STATUS                 PORTS                                         NAMES
+f6b0eb8ba7d8   localhost:5000/construction-dashboard:0.0.1-SNAPSHOT-b3-73fa1bc   "sh -c 'java $JAVA_O…"   2 hours ago   Up 2 hours (healthy)   0.0.0.0:8082->8080/tcp, [::]:8082->8080/tcp   construction-dashboard
+
+=== SYSTEMD STATUS ===
+● construction-dashboard.service - Construction Progress Dashboard Container Service
+     Loaded: loaded (/etc/systemd/system/construction-dashboard.service; enabled; preset: enabled)
+     Active: active (running) since Thu 2026-10-15 01:37:02 IST; 2h 21min ago
+ Invocation: c9c9554dd69b492ebe41c3b71f98d0ad
+    Process: 12694 ExecStartPre=/usr/bin/docker stop construction-dashboard (code=exited, status=1/FAILURE)
+    Process: 12707 ExecStartPre=/usr/bin/docker rm construction-dashboard (code=exited, status=1/FAILURE)
+   Main PID: 12717 (docker)
+      Tasks: 13 (limit: 9334)
+     Memory: 10.6M (peak: 31.5M)
+        CPU: 376ms
+     CGroup: /system.slice/construction-dashboard.service
+             └─12717 /usr/bin/docker run --name construction-dashboard --rm -p 8082:8080 --env-file /opt/construction-dashboard/config/app.env localhost:5000/construction-dashboard:0.0.1-SNAPSHOT-b3-73fa1bc
+
+Oct 15 01:37:09 cpd-target docker[12717]: 2026-10-14T20:07:09.282Z  INFO 7 --- [construction-progress-dashboard] [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+Oct 15 01:37:09 cpd-target docker[12717]: 2026-10-14T20:07:09.350Z  INFO 7 --- [construction-progress-dashboard] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+Oct 15 01:37:09 cpd-target docker[12717]: 2026-10-14T20:07:09.926Z  WARN 7 --- [construction-progress-dashboard] [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+Oct 15 01:37:09 cpd-target docker[12717]: 2026-10-14T20:07:09.967Z  INFO 7 --- [construction-progress-dashboard] [           main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
+Oct 15 01:37:10 cpd-target docker[12717]: 2026-10-14T20:07:10.054Z  INFO 7 --- [construction-progress-dashboard] [           main] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page template: index
+Oct 15 01:37:10 cpd-target docker[12717]: 2026-10-14T20:07:10.679Z  INFO 7 --- [construction-progress-dashboard] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+Oct 15 01:37:10 cpd-target docker[12717]: 2026-10-14T20:07:10.698Z  INFO 7 --- [construction-progress-dashboard] [           main] c.e.d.ConstructionDashboardApplication   : Started ConstructionDashboardApplication in 6.532 seconds (process running for 7.438)
+Oct 15 01:37:13 cpd-target docker[12717]: 2026-10-14T20:07:13.379Z  INFO 7 --- [construction-progress-dashboard] [nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+Oct 15 01:37:13 cpd-target docker[12717]: 2026-10-14T20:07:13.380Z  INFO 7 --- [construction-progress-dashboard] [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+Oct 15 01:37:13 cpd-target docker[12717]: 2026-10-14T20:07:13.381Z  INFO 7 --- [construction-progress-dashboard] [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+
+=== CURRENT RELEASE ===
+0.0.1-SNAPSHOT-b3-73fa1bc
+
+=== PREVIOUS RELEASE ===
+0.0.1-SNAPSHOT-b2-f3cac90
+
+=== RECENT HISTORY LOG ===
+2026-10-14 17:26:39 UTC DEPLOYED 0.0.1-SNAPSHOT-b1-fe3efe3
+2026-10-14 17:28:56 UTC DEPLOYED 0.0.1-SNAPSHOT-b2-f3cac90
+2026-10-14 17:49:12 UTC DEPLOYED broken-demo
+2026-10-14 18:21:43 UTC ROLLED BACK from broken-demo to 0.0.1-SNAPSHOT-b2-f3cac90
+2026-10-14 18:25:50 UTC ROLLED BACK from 0.0.1-SNAPSHOT-b1-fe3efe3 to 0.0.1-SNAPSHOT-b2-f3cac90
+2026-10-14 18:27:50 UTC DEPLOYED 0.0.1-SNAPSHOT-b1-fe3efe3
+2026-10-14 18:27:51 UTC MANUAL ROLLBACK from 0.0.1-SNAPSHOT-b2-f3cac90 to 0.0.1-SNAPSHOT-b1-fe3efe3
+2026-10-14 18:29:29 UTC ROLLED BACK from 0.0.1-SNAPSHOT-b2-f3cac90 to 0.0.1-SNAPSHOT-b1-fe3efe3
+2026-10-14 18:37:34 UTC DEPLOYED 0.0.1-SNAPSHOT-b2-f3cac90
+2026-10-14 20:07:17 UTC DEPLOYED 0.0.1-SNAPSHOT-b3-73fa1bc

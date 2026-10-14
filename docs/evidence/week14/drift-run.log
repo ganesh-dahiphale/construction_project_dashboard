@@ -1,0 +1,129 @@
+
+PLAY [Provision target node and deploy application release] ********************
+
+TASK [Gathering Facts] *********************************************************
+[WARNING]: Host 'cpd-target-node' is using the discovered Python interpreter at '/usr/bin/python3.14', but future installation of another Python interpreter could cause a different interpreter to be discovered. See https://docs.ansible.com/ansible-core/2.20/reference_appendices/interpreter_discovery.html for more information.
+ok: [cpd-target-node]
+
+TASK [common : Update apt cache] ***********************************************
+ok: [cpd-target-node]
+
+TASK [common : Install base prerequisite packages] *****************************
+ok: [cpd-target-node]
+
+TASK [common : Set system timezone] ********************************************
+ok: [cpd-target-node]
+
+TASK [docker : Ensure apt keyrings directory exists] ***************************
+ok: [cpd-target-node]
+
+TASK [docker : Download official Docker GPG key] *******************************
+ok: [cpd-target-node]
+
+TASK [docker : Add official Docker apt repository] *****************************
+ok: [cpd-target-node]
+
+TASK [docker : Install Docker Engine packages] *********************************
+ok: [cpd-target-node]
+
+TASK [docker : Ensure /etc/docker directory exists] ****************************
+ok: [cpd-target-node]
+
+TASK [docker : Configure Docker daemon log rotation] ***************************
+ok: [cpd-target-node]
+
+TASK [docker : Ensure Docker service is enabled and started] *******************
+ok: [cpd-target-node]
+
+TASK [app_user : Ensure docker group exists] ***********************************
+ok: [cpd-target-node]
+
+TASK [app_user : Create application deployment system user] ********************
+ok: [cpd-target-node]
+
+TASK [app_dirs : Create application root directory] ****************************
+ok: [cpd-target-node]
+
+TASK [app_dirs : Create application configuration directory] *******************
+ok: [cpd-target-node]
+
+TASK [app_dirs : Create application logs directory] ****************************
+ok: [cpd-target-node]
+
+TASK [app_dirs : Create application releases directory] ************************
+ok: [cpd-target-node]
+
+TASK [firewall : Allow SSH port 22 first to prevent lockout] *******************
+ok: [cpd-target-node]
+
+TASK [firewall : Allow application traffic on host port] ***********************
+changed: [cpd-target-node]
+
+TASK [firewall : Configure UFW default incoming policy to deny] ****************
+ok: [cpd-target-node]
+
+TASK [firewall : Configure UFW default outgoing policy to allow] ***************
+ok: [cpd-target-node]
+
+TASK [firewall : Ensure UFW firewall is enabled] *******************************
+ok: [cpd-target-node]
+
+TASK [app_config : Deploy application environment configuration file] **********
+changed: [cpd-target-node]
+
+TASK [app_config : Deploy systemd unit service file] ***************************
+ok: [cpd-target-node]
+
+TASK [app_config : Flush handlers to reload systemd daemon immediately if unit changed] ***
+
+TASK [app_config : Ensure construction-dashboard service is enabled] ***********
+ok: [cpd-target-node]
+
+TASK [deploy : Validate that release_tag is defined] ***************************
+ok: [cpd-target-node] => {
+    "changed": false,
+    "msg": "All assertions passed"
+}
+
+TASK [deploy : Ensure target container image is present] ***********************
+ok: [cpd-target-node]
+
+TASK [deploy : Deploy application environment configuration] *******************
+ok: [cpd-target-node]
+
+TASK [deploy : Deploy systemd unit service file] *******************************
+ok: [cpd-target-node]
+
+TASK [deploy : Flush handlers to restart application service immediately] ******
+
+TASK [deploy : Ensure construction-dashboard service is active and running] ****
+ok: [cpd-target-node]
+
+TASK [deploy : Wait for application health check endpoint] *********************
+ok: [cpd-target-node]
+
+TASK [deploy : Verify application login page displays correct release version] ***
+ok: [cpd-target-node]
+
+TASK [deploy : Check if current release state record exists] *******************
+ok: [cpd-target-node]
+
+TASK [deploy : Read current release tag if present] ****************************
+ok: [cpd-target-node]
+
+TASK [deploy : Update previous release pointer if changing releases] ***********
+skipping: [cpd-target-node]
+
+TASK [deploy : Record newly deployed release in current.txt] *******************
+ok: [cpd-target-node]
+
+TASK [deploy : Append deployment event to history.log] *************************
+skipping: [cpd-target-node]
+
+PLAY RECAP *********************************************************************
+cpd-target-node            : ok=35   changed=2    unreachable=0    failed=0    skipped=2    rescued=0    ignored=0   
+
+
+PLAYBOOK RECAP *****************************************************************
+Playbook run took 0 days, 0 hours, 0 minutes, 24 seconds
+

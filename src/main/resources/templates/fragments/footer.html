@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+<footer th:fragment="footer" class="py-3 mt-auto border-top bg-light">
+    <div class="container d-flex flex-column flex-sm-row justify-content-between align-items-center gap-2">
+        <span class="text-muted small">&copy; 2026 Construction Progress Dashboard &bull; Final Release Demo &bull; DevOps Course Project</span>
+        <div class="d-flex align-items-center gap-3">
+            <a th:href="@{/health}" class="text-muted text-decoration-none small">
+                <i class="bi bi-heart-pulse me-1"></i>System Health
+            </a>
+            <span class="badge bg-secondary text-light" data-testid="app-version" th:text="'Version: ' + ${appVersion != null ? appVersion : @environment.getProperty('app.version')} + ' - Final Release Demo'">Version: dev - Final Release Demo</span>
+        </div>
+    </div>
+</footer>
+</body>
+</html>

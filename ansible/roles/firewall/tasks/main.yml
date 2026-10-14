@@ -1,0 +1,36 @@
+---
+- name: Allow SSH port 22 first to prevent lockout
+  community.general.ufw:
+    rule: allow
+    port: "22"
+    proto: tcp
+  tags:
+    - firewall
+
+- name: Allow application traffic on host port
+  community.general.ufw:
+    rule: allow
+    port: "{{ app_port | string }}"
+    proto: tcp
+  tags:
+    - firewall
+
+- name: Configure UFW default incoming policy to deny
+  community.general.ufw:
+    default: deny
+    direction: incoming
+  tags:
+    - firewall
+
+- name: Configure UFW default outgoing policy to allow
+  community.general.ufw:
+    default: allow
+    direction: outgoing
+  tags:
+    - firewall
+
+- name: Ensure UFW firewall is enabled
+  community.general.ufw:
+    state: enabled
+  tags:
+    - firewall
