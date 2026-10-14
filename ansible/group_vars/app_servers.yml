@@ -1,0 +1,17 @@
+---
+# Application Server Group Variables
+app_user: appdeploy
+app_group: docker
+app_dir: /opt/construction-dashboard
+app_port: 8082
+container_name: construction-dashboard
+docker_image: ganesh/construction-dashboard
+image_tag: stable
+# dev profile is for this course demo only
+spring_profile: dev
+app_version: "1.0.0"
+java_opts: "-Xms128m -Xmx256m"
+timezone: Asia/Kolkata
+firewall_allowed_ports:
+  - "22/tcp"
+  - "8082/tcp"
