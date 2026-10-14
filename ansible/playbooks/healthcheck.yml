@@ -1,0 +1,89 @@
+---
+- name: Application Health and Readiness Check
+  hosts: app_servers
+  become: true
+  vars_files:
+    - "../group_vars/app_servers.yml"
+  tasks:
+    - name: Check systemd service status
+      ansible.builtin.systemd:
+        name: "{{ container_name }}"
+      register: svc_status
+
+    - name: Check Docker container running status
+      ansible.builtin.command:
+        cmd: "docker inspect --format '{{ '{{' }} .State.Status {{ '}}' }}' {{ container_name }}"
+      register: container_status_cmd
+      changed_when: false
+      failed_when: false
+
+    - name: Check application health endpoint
+      ansible.builtin.uri:
+        url: "http://127.0.0.1:{{ app_port }}/health"
+        status_code: 200
+        return_content: true
+      register: health_endpoint_result
+      failed_when: false
+
+    - name: Check application login page and version badge
+      ansible.builtin.uri:
+        url: "http://127.0.0.1:{{ app_port }}/login"
+        status_code: 200
+        return_content: true
+      register: login_page_result
+      failed_when: false
+
+    - name: Query current release state file
+      ansible.builtin.slurp:
+        src: "{{ app_dir }}/releases/current.txt"
+      register: current_release_file
+      failed_when: false
+
+    - name: Check disk space for application directory
+      ansible.builtin.command:
+        cmd: "df -h {{ app_dir }}"
+      register: disk_info_cmd
+      changed_when: false
+
+    - name: Check memory usage
+      ansible.builtin.command:
+        cmd: "free -h"
+      register: memory_info_cmd
+      changed_when: false
+
+    - name: Format summary properties
+      ansible.builtin.set_fact:
+        svc_active: "{{ svc_status.status.ActiveState | default('unknown') }}"
+        container_state: "{{ container_status_cmd.stdout | default('not running') }}"
+        health_status: >-
+          {{ (health_endpoint_result.status == 200 and
+              'UP' in (health_endpoint_result.content | default(''))) |
+             ternary('UP (200 OK)', 'DOWN / UNHEALTHY') }}
+        recorded_release: "{{ (current_release_file.content | default('') | b64decode | trim) if current_release_file.content is defined else 'none' }}"
+        disk_usage: "{{ (disk_info_cmd.stdout_lines[1] | default('') | split)[4] | default('N/A') }}"
+        mem_available: "{{ (memory_info_cmd.stdout_lines[1] | default('') | split)[6] | default('N/A') }}"
+
+    - name: Display Health Check Summary Table
+      ansible.builtin.debug:
+        msg:
+          - "================================================================================"
+          - "                 APPLICATION HEALTH AND READINESS REPORT                        "
+          - "================================================================================"
+          - " Host:              {{ inventory_hostname }} ({{ ansible_host | default('127.0.0.1') }})"
+          - " Service State:     {{ svc_active }}"
+          - " Container State:   {{ container_state }}"
+          - " Endpoint /health:  {{ health_status }}"
+          - " Current Release:   {{ recorded_release }}"
+          - " Disk Usage (/opt): {{ disk_usage }}"
+          - " Memory Available:  {{ mem_available }}"
+          - "================================================================================"
+
+    - name: Assert all critical health criteria pass
+      ansible.builtin.assert:
+        that:
+          - svc_active == 'active'
+          - container_state == 'running'
+          - health_endpoint_result.status == 200
+          - "'UP' in (health_endpoint_result.content | default(''))"
+        fail_msg: "HEALTH CHECK FAILED! One or more critical health checks did not pass."
+        success_msg: "HEALTH CHECK PASSED! Application is healthy, responsive, and serving traffic."

@@ -1,0 +1,40 @@
+---
+- name: Display Application Release Status and History
+  hosts: app_servers
+  become: true
+  vars_files:
+    - "../group_vars/app_servers.yml"
+  tasks:
+    - name: Read current release tag
+      ansible.builtin.slurp:
+        src: "{{ app_dir }}/releases/current.txt"
+      register: current_tag_data
+      failed_when: false
+
+    - name: Read previous release tag
+      ansible.builtin.slurp:
+        src: "{{ app_dir }}/releases/previous.txt"
+      register: previous_tag_data
+      failed_when: false
+
+    - name: Read release history log
+      ansible.builtin.slurp:
+        src: "{{ app_dir }}/releases/history.log"
+      register: history_log_data
+      failed_when: false
+
+    - name: Display Release Status Summary
+      ansible.builtin.debug:
+        msg:
+          - "================================================================================"
+          - "                 APPLICATION RELEASE STATUS AND AUDIT TRAIL                     "
+          - "================================================================================"
+          - " CURRENT RELEASE:  {{ (current_tag_data.content | default('') | b64decode | trim) if current_tag_data.content is defined else 'None' }}"
+          - " PREVIOUS RELEASE: {{ (previous_tag_data.content | default('') | b64decode | trim) if previous_tag_data.content is defined else 'None' }}"
+          - "--------------------------------------------------------------------------------"
+          - " RECENT RELEASE HISTORY (from history.log):"
+          - >-
+            {{ (history_log_data.content | default('') | b64decode | trim | split('\n'))
+               if history_log_data.content is defined
+               else ['No history recorded yet.'] }}
+          - "================================================================================"
