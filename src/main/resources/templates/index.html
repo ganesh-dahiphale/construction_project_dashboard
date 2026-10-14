@@ -213,15 +213,7 @@
     </main>
 
     <!-- Footer -->
-    <footer>
-        <div class="container d-flex flex-column flex-sm-row justify-content-between align-items-center gap-2">
-            <span>&copy; 2026 Construction Progress Dashboard &bull; DevOps Course Project</span>
-            <span>
-                <a href="/health" class="text-decoration-none text-muted me-3">API Health Check</a>
-                <span class="badge bg-light text-dark border">Version 0.0.1-SNAPSHOT</span>
-            </span>
-        </div>
-    </footer>
+    <div th:replace="~{fragments/footer :: footer}"></div>
 
     <!-- Bootstrap 5 JS Bundle CDN -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
