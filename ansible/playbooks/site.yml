@@ -2,6 +2,8 @@
 - name: Configure application server target node
   hosts: app_servers
   become: true
+  vars_files:
+    - "../group_vars/app_servers.yml"
   roles:
     - role: common
       tags:

@@ -1,0 +1,147 @@
+Welcome to Ubuntu 26.04.1 LTS (GNU/Linux 6.18.40.1-microsoft-standard-WSL2 x86_64)
+
+ * Documentation:  https://docs.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/pro
+
+ System information as of Wed Oct 14 16:31:42 UTC 2026
+
+  System load:  5.52                Processes:             83
+  Usage of /:   0.2% of 1006.85GB   Users logged in:       0
+  Memory usage: 18%                 IPv4 address for eth0: 172.31.23.200
+  Swap usage:   0%
+
+ * Canonical Workshop gives developers fast, composable, reproducible, and
+   secure developer environments that are perfect for agentic workflows.
+
+   https://ubuntu.com/workshop
+=== TARGET NODE INITIAL STATE (BEFORE ANSIBLE) ===
+Captured At: Wed Oct 14 16:31:52 UTC 2026
+
+=== 1. OS & Kernel ===
+Distributor ID:	Ubuntu
+Description:	Ubuntu 26.04.1 LTS
+Release:	26.04
+Codename:	resolute
+Linux cpd-target 6.18.40.1-microsoft-standard-WSL2 #1 SMP PREEMPT_DYNAMIC Fri Jul 31 22:12:15 UTC 2026 x86_64 GNU/Linux
+
+=== 2. Docker Status ===
+Docker is NOT installed: 'docker' command not found (Clean State Confirmed)
+
+=== 3. Packages of Interest ===
+ii  libpython3-stdlib:amd64           3.14.3-0ubuntu2                            amd64        interactive high-level object-oriented language (default python3 version)
+ii  libpython3.14:amd64               3.14.4-1ubuntu0.1                          amd64        Shared Python runtime library (version 3.14)
+ii  libpython3.14-minimal:amd64       3.14.4-1ubuntu0.1                          amd64        Minimal subset of the Python language (version 3.14)
+ii  libpython3.14-stdlib:amd64        3.14.4-1ubuntu0.1                          amd64        Interactive high-level object-oriented language (standard library, version 3.14)
+ii  python3                           3.14.3-0ubuntu2                            amd64        interactive high-level object-oriented language (default python3 version)
+ii  python3-apport                    2.34.1-0ubuntu0.1                          all          Python 3 library for Apport crash report handling
+ii  python3-apt                       3.1.0ubuntu1.1                             amd64        Python 3 interface to libapt-pkg
+ii  python3-attr                      25.4.0-1build1                             all          Attributes without boilerplate (Python 3)
+ii  python3-autocommand               2.2.2-4                                    all          library to generate argparse parsers from function signatures
+ii  python3-automat                   25.4.16-1build1                            all          Self-service finite-state machines for the programmer on the go
+ii  python3-babel                     2.17.0-2                                   all          tools for internationalizing Python applications - Python 3.x
+ii  python3-bcrypt                    5.0.0-3build1                              amd64        password hashing library for Python 3
+ii  python3-blinker                   1.9.0-2build1                              all          Fast, simple object-to-object and broadcast signaling (Python3)
+ii  python3-certifi                   2026.1.4+ds-1                              all          root certificates for validating SSL certs and verifying TLS hosts (python3)
+ii  python3-cffi-backend:amd64        2.0.0-3build1                              amd64        Foreign Function Interface for Python 3 calling C code - runtime
+ii  python3-chardet                   5.2.0+dfsg-2build1                         all          Universal Character Encoding Detector (Python3)
+ii  python3-click                     8.2.0+0.really.8.1.8-1build1               all          Command-Line Interface Creation Kit - Python 3.x
+ii  python3-commandnotfound           23.04.0build1                              all          Python 3 bindings for command-not-found.
+ii  python3-configobj                 5.0.9-1build1                              all          simple but powerful config file reader and writer for Python 3
+ii  python3-constantly                23.10.4-2build1                            all          Symbolic constants in Python
+ii  python3-cryptography              46.0.5-1ubuntu2                            amd64        Python library exposing cryptographic recipes and primitives
+ii  python3-dbus                      1.4.0-1build2                              amd64        simple interprocess messaging system (Python 3 interface)
+ii  python3-debconf                   1.5.92                                     all          interact with debconf from Python 3
+ii  python3-distro                    1.9.0-1build1                              all          Linux OS platform information API
+ii  python3-distro-info               1.15                                       all          information about distributions' releases (Python 3 module)
+ii  python3-distupgrade               1:26.04.23                                 all          manage release upgrades
+ii  python3-gdbm                      3.14.3-0ubuntu2                            amd64        package depending on all supported Python 3 gdbm modules
+ii  python3-gi                        3.56.2-1                                   amd64        Python 3 bindings for gobject-introspection libraries
+ii  python3-hamcrest                  2.1.0-3                                    all          Hamcrest framework for matcher objects (Python 3)
+ii  python3-httplib2                  0.22.0-1ubuntu0.1                          all          comprehensive HTTP client library written for Python3
+ii  python3-hyperlink                 21.0.0-6build1                             all          Immutable, Pythonic, correct URLs.
+ii  python3-idna                      3.11-1ubuntu0.1                            all          Python IDNA2008 (RFC 5891) handling (Python 3)
+ii  python3-incremental               24.7.2-4                                   all          Library for versioning Python projects
+ii  python3-inflect                   7.5.0-1build1                              all          Generate plurals, singular nouns, ordinals, indefinite articles (Python 3)
+ii  python3-jaraco.context            6.0.1-2                                    all          jaraco contextlib extensions
+ii  python3-jaraco.functools          4.1.0-1build1                              all          additional functools in the spirit of stdlib's functools
+ii  python3-jaraco.text               4.0.0-1build1                              all          jaraco text manipulation functions
+ii  python3-jinja2                    3.1.6-1build1                              all          small but fast and easy to use stand-alone template engine
+ii  python3-json-pointer              2.4-4                                      all          resolve JSON pointers - Python 3.x
+ii  python3-jsonpatch                 1.32-6                                     all          library to apply JSON patches - Python 3.x
+ii  python3-jsonschema                4.19.2-6ubuntu2                            all          An(other) implementation of JSON Schema
+ii  python3-jsonschema-specifications 2023.12.1-4                                all          JSON Schema meta-schemas and vocabularies, exposed as a Registry
+ii  python3-jwt                       2.10.1-4ubuntu1                            all          Python 3 implementation of JSON Web Token
+ii  python3-launchpadlib              2.1.0-1build1                              all          Launchpad web services client library (Python 3)
+ii  python3-lazr.restfulclient        0.14.6-3build1                             all          client for lazr.restful-based web services (Python 3)
+ii  python3-lazr.uri                  1.0.6-7build1                              all          library for parsing, manipulating, and generating URIs
+ii  python3-linkify-it                2.0.3-1ubuntu3                             all          links recognition library with FULL unicode support
+ii  python3-markdown-it               3.0.0-3build1                              all          Python port of markdown-it and some its associated plugins
+ii  python3-markupsafe                3.0.3-1build1                              amd64        HTML/XHTML/XML string library
+ii  python3-mdurl                     0.1.2-1build1                              all          Python port of the JavaScript mdurl package
+ii  python3-minimal                   3.14.3-0ubuntu2                            amd64        minimal subset of the Python language (default python3 version)
+ii  python3-more-itertools            10.8.0-1build1                             all          library with routines for operating on iterables, beyond itertools (Python 3)
+ii  python3-netifaces:amd64           0.11.0-2build7                             amd64        portable network interface information - Python 3.x
+ii  python3-netplan                   1.2-1ubuntu5                               amd64        Declarative network configuration Python bindings
+ii  python3-newt:amd64                0.52.25-1ubuntu3                           amd64        NEWT module for Python3
+ii  python3-oauthlib                  3.3.1-1build1                              all          generic, spec-compliant implementation of OAuth for Python3
+ii  python3-openssl                   25.3.0-1ubuntu1                            all          Python 3 wrapper around the OpenSSL library
+ii  python3-packaging                 26.0-1                                     all          core utilities for python3 packages
+ii  python3-passlib                   1.9.3-1ubuntu1                             all          comprehensive password hashing framework
+ii  python3-pkg-resources             78.1.1-0.1build1                           all          Package Discovery and Resource Access using pkg_resources
+ii  python3-problem-report            2.34.1-0ubuntu0.1                          all          Python 3 library to handle problem reports
+ii  python3-pyasn1                    0.6.3-1                                    all          ASN.1 library for Python (Python 3 module)
+ii  python3-pyasn1-modules            0.4.1-2build1                              all          Collection of protocols modules written in ASN.1 language (Python 3)
+ii  python3-pycurl                    7.45.7-3build1                             amd64        Python bindings to libcurl (Python 3)
+ii  python3-pygments                  2.19.2+dfsg-1                              all          syntax highlighting package written in Python 3
+ii  python3-pyparsing                 3.3.2-2                                    all          alternative to creating and executing simple grammars - Python 3.x
+ii  python3-referencing               0.36.2-1ubuntu2                            all          Implementation-agnostic implementation of JSON reference resolution
+ii  python3-requests                  2.32.5+dfsg-1ubuntu1                       all          elegant and simple HTTP library for Python3, built for human beings
+ii  python3-rich                      13.9.4-1.2                                 all          render rich text, tables, progress bars, syntax highlighting, markdown and more
+ii  python3-rpds-py                   0.27.1-2ubuntu3                            amd64        Python bindings to Rust's persistent data structures (rpds)
+ii  python3-serial                    3.5-2build1                                all          pyserial - module encapsulating access for the serial port
+ii  python3-service-identity          24.2.0-1build1                             all          Service identity verification for pyOpenSSL (Python 3 module)
+ii  python3-setuptools                78.1.1-0.1build1                           all          Python3 Distutils Enhancements
+ii  python3-software-properties       0.120.1                                    all          manage the repositories that you install software from
+ii  python3-systemd                   235-1build9                                amd64        Python 3 bindings for systemd
+ii  python3-twisted                   25.5.0-5ubuntu0.1                          all          Event-based framework for internet applications
+ii  python3-typeguard                 4.4.4-2                                    all          Run-time type checker for Python
+ii  python3-typing-extensions         4.15.0-2                                   all          Backported and Experimental Type Hints for Python
+ii  python3-uc-micro                  1.0.3-1build1                              all          python port of uc.micro
+ii  python3-update-manager            1:26.04.5                                  all          Python 3.x module for update-manager
+ii  python3-urllib3                   2.6.3-1ubuntu1.1                           all          HTTP library with thread-safe connection pooling for Python3
+ii  python3-wadllib                   2.0.0-3                                    all          Python 3 library for navigating WADL files
+ii  python3-yaml                      6.0.3-1build1                              amd64        YAML parser and emitter for Python3
+ii  python3-zipp                      3.23.0-1build1                             all          pathlib-compatible Zipfile object wrapper - Python 3.x
+ii  python3-zope.interface            8.2-1build1                                amd64        Interfaces for Python3
+ii  python3.14                        3.14.4-1ubuntu0.1                          amd64        Interactive high-level object-oriented language (version 3.14)
+ii  python3.14-gdbm                   3.14.4-1ubuntu0.1                          amd64        GNU dbm database support for Python (v3.14)
+ii  python3.14-minimal                3.14.4-1ubuntu0.1                          amd64        Minimal subset of the Python language (version 3.14)
+
+=== 4. System Users ===
+root:x:0:0:root:/root:/bin/bash
+ganesh:x:1000:1000::/home/ganesh:/bin/bash
+Check user 'appdeploy': id: 'appdeploy': no such user
+User appdeploy does not exist
+
+=== 5. Listening Ports ===
+State  Recv-Q Send-Q  Local Address:Port Peer Address:PortProcess
+LISTEN 0      1000   10.255.255.254:53        0.0.0.0:*          
+LISTEN 0      4096    127.0.0.53%lo:53        0.0.0.0:*          
+LISTEN 0      128           0.0.0.0:2222      0.0.0.0:*          
+LISTEN 0      4096          0.0.0.0:22        0.0.0.0:*          
+LISTEN 0      4096       127.0.0.54:53        0.0.0.0:*          
+LISTEN 0      4096                *:8082            *:*          
+LISTEN 0      128              [::]:2222         [::]:*          
+LISTEN 0      4096                *:5000            *:*          
+LISTEN 0      4096             [::]:22           [::]:*          
+
+=== 6. UFW Firewall State ===
+UFW is not installed yet
+
+=== 7. Systemd Service State ===
+inactive
+construction-dashboard.service: not found / inactive
+inactive
+docker.service: not installed / inactive
+=== END OF INITIAL STATE ===
