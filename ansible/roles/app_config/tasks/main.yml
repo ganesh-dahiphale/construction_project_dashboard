@@ -1,0 +1,35 @@
+---
+- name: Deploy application environment configuration file
+  ansible.builtin.template:
+    src: app.env.j2
+    dest: "{{ app_dir }}/config/app.env"
+    owner: "{{ app_user }}"
+    group: "{{ app_group }}"
+    mode: "0640"
+  tags:
+    - config
+
+- name: Deploy systemd unit service file
+  ansible.builtin.template:
+    src: construction-dashboard.service.j2
+    dest: /etc/systemd/system/construction-dashboard.service
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Reload systemd daemon
+  tags:
+    - config
+
+- name: Flush handlers to reload systemd daemon immediately if unit changed
+  ansible.builtin.meta: flush_handlers
+  tags:
+    - config
+
+# Service is explicitly stopped this week; deployment and launch occur in Week 14
+- name: Ensure construction-dashboard service is enabled on boot but stopped in Week 13
+  ansible.builtin.systemd:
+    name: construction-dashboard
+    enabled: true
+    state: stopped
+  tags:
+    - config

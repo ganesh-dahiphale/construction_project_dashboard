@@ -1,0 +1,36 @@
+---
+- name: Allow SSH port 22 first to prevent lockout
+  ansible.posix.ufw:
+    rule: allow
+    port: "22"
+    proto: tcp
+  tags:
+    - firewall
+
+- name: Allow application traffic on host port
+  ansible.posix.ufw:
+    rule: allow
+    port: "{{ app_port | string }}"
+    proto: tcp
+  tags:
+    - firewall
+
+- name: Configure UFW default incoming policy to deny
+  ansible.posix.ufw:
+    default: deny
+    direction: incoming
+  tags:
+    - firewall
+
+- name: Configure UFW default outgoing policy to allow
+  ansible.posix.ufw:
+    default: allow
+    direction: outgoing
+  tags:
+    - firewall
+
+- name: Ensure UFW firewall is enabled
+  ansible.posix.ufw:
+    state: enabled
+  tags:
+    - firewall
