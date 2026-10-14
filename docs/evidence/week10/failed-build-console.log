@@ -1,0 +1,549 @@
+==========================================
+PIPELINE FAILED RUN (Build #2 - Quality Gate Failure)
+Target Environment: dev
+Target Context Path: /construction-dashboard-dev
+Tomcat Server URL: http://localhost:8081
+Run Unit Tests: True
+Run Selenium Quality Gate: True
+==========================================
+[Stage: Checkout] Fetching Git HEAD...
+Branch: develop, Commit: 995addaba27e62ad93de36a0990ee568e3acf9e6
+
+[Stage: Build] Compiling application sources...
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] -----------------------< com.example:dashboard >------------------------
+[INFO] Building construction-progress-dashboard 0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ war ]---------------------------------
+[INFO] 
+[INFO] --- clean:3.3.2:clean (default-clean) @ dashboard ---
+[INFO] Deleting C:\Users\Ganesh\OneDrive\Desktop\DevOps\target
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ dashboard ---
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] Copying 16 resources from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ dashboard ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 29 source files with javac [debug parameters release 17] to target\classes
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  2.724 s
+[INFO] Finished at: 2026-10-07T19:36:49+05:30
+[INFO] ------------------------------------------------------------------------
+
+[Stage: Unit Tests] Executing Unit and Integration Test Suite...
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] -----------------------< com.example:dashboard >------------------------
+[INFO] Building construction-progress-dashboard 0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ war ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ dashboard ---
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] Copying 16 resources from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ dashboard ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ dashboard ---
+[INFO] Copying 1 resource from src\test\resources to target\test-classes
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ dashboard ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 28 source files with javac [debug parameters release 17] to target\test-classes
+[INFO] 
+[INFO] --- surefire:3.2.5:test (default-test) @ dashboard ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running com.example.dashboard.controller.AdminProjectControllerTest
+19:36:56.121 [main] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [com.example.dashboard.controller.AdminProjectControllerTest]: AdminProjectControllerTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+19:36:56.269 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration com.example.dashboard.ConstructionDashboardApplication for test class com.example.dashboard.controller.AdminProjectControllerTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.3.4)
+
+2026-10-07T19:36:56.616+05:30  INFO 4560 --- [construction-progress-dashboard] [           main] c.e.d.c.AdminProjectControllerTest       : Starting AdminProjectControllerTest using Java 21.0.12.1 with PID 4560 (started by Ganesh in C:\Users\Ganesh\OneDrive\Desktop\DevOps)
+2026-10-07T19:36:56.617+05:30  INFO 4560 --- [construction-progress-dashboard] [           main] c.e.d.c.AdminProjectControllerTest       : No active profile set, falling back to 1 default profile: "default"
+Java HotSpot(TM) 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+WARNING: A Java agent has been loaded dynamically (C:\Users\Ganesh\.m2\repository\net\bytebuddy\byte-buddy-agent\1.14.19\byte-buddy-agent-1.14.19.jar)
+WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
+WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
+WARNING: Dynamic loading of agents will be disallowed by default in a future release
+2026-10-07T19:36:58.572+05:30  INFO 4560 --- [construction-progress-dashboard] [           main] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page template: index
+2026-10-07T19:36:59.281+05:30  WARN 4560 --- [construction-progress-dashboard] [           main] .s.s.UserDetailsServiceAutoConfiguration : 
+
+Using generated security password: 5e034c5a-0396-4a40-a9af-f3e2eb64445a
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2026-10-07T19:36:59.359+05:30  INFO 4560 --- [construction-progress-dashboard] [           main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2026-10-07T19:36:59.634+05:30  INFO 4560 --- [construction-progress-dashboard] [           main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-10-07T19:36:59.634+05:30  INFO 4560 --- [construction-progress-dashboard] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-10-07T19:36:59.635+05:30  INFO 4560 --- [construction-progress-dashboard] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 0 ms
+2026-10-07T19:36:59.669+05:30  INFO 4560 --- [construction-progress-dashboard] [           main] c.e.d.c.AdminProjectControllerTest       : Started AdminProjectControllerTest in 3.337 seconds (process running for 4.366)
+[INFO] Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 4.475 s -- in com.example.dashboard.controller.AdminProjectControllerTest
+[INFO] Running com.example.dashboard.controller.AlertControllerTest
+2026-10-07T19:37:00.447+05:30  INFO 4560 --- [construction-progress-dashboard] [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.example.dashboard.controller.AlertControllerTest]: AlertControllerTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-10-07T19:37:00.467+05:30  INFO 4560 --- [construction-progress-dashboard] [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.example.dashboard.ConstructionDashboardApplication for test class com.example.dashboard.controller.AlertControllerTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.3.4)
+
+2026-10-07T19:37:00.511+05:30  INFO 4560 --- [construction-progress-dashboard] [           main] c.e.d.controller.AlertControllerTest     : Starting AlertControllerTest using Java 21.0.12.1 with PID 4560 (started by Ganesh in C:\Users\Ganesh\OneDrive\Desktop\DevOps)
+2026-10-07T19:37:00.512+05:30  INFO 4560 --- [construction-progress-dashboard] [           main] c.e.d.controller.AlertControllerTest     : No active profile set, falling back to 1 default profile: "default"
+2026-10-07T19:37:00.770+05:30  INFO 4560 --- [construction-progress-dashboard] [           main] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page template: index
+2026-10-07T19:37:00.841+05:30  WARN 4560 --- [construction-progress-dashboard] [           main] .s.s.UserDetailsServiceAutoConfiguration : 
+
+Using generated security password: 06721a41-12b9-412a-b866-176c4af0a5e4
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2026-10-07T19:37:00.842+05:30  INFO 4560 --- [construction-progress-dashboard] [           main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2026-10-07T19:37:00.853+05:30  INFO 4560 --- [construction-progress-dashboard] [           main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-10-07T19:37:00.854+05:30  INFO 4560 --- [construction-progress-dashboard] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-10-07T19:37:00.854+05:30  INFO 4560 --- [construction-progress-dashboard] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 0 ms
+2026-10-07T19:37:00.860+05:30  INFO 4560 --- [construction-progress-dashboard] [           main] c.e.d.controller.AlertControllerTest     : Started AlertControllerTest in 0.389 seconds (process running for 5.557)
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.537 s -- in com.example.dashboard.controller.AlertControllerTest
+[INFO] Running com.example.dashboard.controller.DashboardControllerTest
+2026-10-07T19:37:00.990+05:30  INFO 4560 --- [construction-progress-dashboard] [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.example.dashboard.controller.DashboardControllerTest]: DashboardControllerTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-10-07T19:37:01.001+05:30  INFO 4560 --- [construction-progress-dashboard] [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.example.dashboard.ConstructionDashboardApplication for test class com.example.dashboard.controller.DashboardControllerTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.3.4)
+
+2026-10-07T19:37:01.030+05:30  INFO 4560 --- [construction-progress-dashboard] [           main] c.e.d.c.DashboardControllerTest          : Starting DashboardControllerTest using Java 21.0.12.1 with PID 4560 (started by Ganesh in C:\Users\Ganesh\OneDrive\Desktop\DevOps)
+2026-10-07T19:37:01.030+05:30  INFO 4560 --- [construction-progress-dashboard] [           main] c.e.d.c.DashboardControllerTest          : No active profile set, falling back to 1 default profile: "default"
+2026-10-07T19:37:01.188+05:30  INFO 4560 --- [construction-progress-dashboard] [           main] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page template: index
+2026-10-07T19:37:01.250+05:30  WARN 4560 --- [construction-progress-dashboard] [           main] .s.s.UserDetailsServiceAutoConfiguration : 
+
+Using generated security password: 926d6df1-115e-450e-bf58-16e18c8aae68
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2026-10-07T19:37:01.251+05:30  INFO 4560 --- [construction-progress-dashboard] [           main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2026-10-07T19:37:01.259+05:30  INFO 4560 --- [construction-progress-dashboard] [           main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-10-07T19:37:01.259+05:30  INFO 4560 --- [construction-progress-dashboard] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-10-07T19:37:01.259+05:30  INFO 4560 --- [construction-progress-dashboard] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 0 ms
+2026-10-07T19:37:01.265+05:30  INFO 4560 --- [construction-progress-dashboard] [           main] c.e.d.c.DashboardControllerTest          : Started DashboardControllerTest in 0.26 seconds (process running for 5.962)
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.414 s -- in com.example.dashboard.controller.DashboardControllerTest
+[INFO] Running com.example.dashboard.controller.StatusControllerTest
+2026-10-07T19:37:01.407+05:30  INFO 4560 --- [construction-progress-dashboard] [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.example.dashboard.controller.StatusControllerTest]: StatusControllerTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-10-07T19:37:01.419+05:30  INFO 4560 --- [construction-progress-dashboard] [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.example.dashboard.ConstructionDashboardApplication for test class com.example.dashboard.controller.StatusControllerTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.3.4)
+
+2026-10-07T19:37:01.448+05:30  INFO 4560 --- [construction-progress-dashboard] [           main] c.e.d.controller.StatusControllerTest    : Starting StatusControllerTest using Java 21.0.12.1 with PID 4560 (started by Ganesh in C:\Users\Ganesh\OneDrive\Desktop\DevOps)
+2026-10-07T19:37:01.448+05:30  INFO 4560 --- [construction-progress-dashboard] [           main] c.e.d.controller.StatusControllerTest    : No active profile set, falling back to 1 default profile: "default"
+2026-10-07T19:37:01.571+05:30  INFO 4560 --- [construction-progress-dashboard] [           main] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page template: index
+2026-10-07T19:37:01.613+05:30  WARN 4560 --- [construction-progress-dashboard] [           main] .s.s.UserDetailsServiceAutoConfiguration : 
+
+Using generated security password: 3f8bdc90-4331-4d36-be87-2ff6578a4106
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2026-10-07T19:37:01.614+05:30  INFO 4560 --- [construction-progress-dashboard] [           main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2026-10-07T19:37:01.623+05:30  INFO 4560 --- [construction-progress-dashboard] [           main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-10-07T19:37:01.623+05:30  INFO 4560 --- [construction-progress-dashboard] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-10-07T19:37:01.624+05:30  INFO 4560 --- [construction-progress-dashboard] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 1 ms
+2026-10-07T19:37:01.627+05:30  INFO 4560 --- [construction-progress-dashboard] [           main] c.e.d.controller.StatusControllerTest    : Started StatusControllerTest in 0.2 seconds (process running for 6.324)
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.282 s -- in com.example.dashboard.controller.StatusControllerTest
+[INFO] Running com.example.dashboard.controller.TaskControllerTest
+2026-10-07T19:37:01.692+05:30  INFO 4560 --- [construction-progress-dashboard] [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.example.dashboard.controller.TaskControllerTest]: TaskControllerTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-10-07T19:37:01.699+05:30  INFO 4560 --- [construction-progress-dashboard] [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.example.dashboard.ConstructionDashboardApplication for test class com.example.dashboard.controller.TaskControllerTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.3.4)
+
+2026-10-07T19:37:01.715+05:30  INFO 4560 --- [construction-progress-dashboard] [           main] c.e.d.controller.TaskControllerTest      : Starting TaskControllerTest using Java 21.0.12.1 with PID 4560 (started by Ganesh in C:\Users\Ganesh\OneDrive\Desktop\DevOps)
+2026-10-07T19:37:01.715+05:30  INFO 4560 --- [construction-progress-dashboard] [           main] c.e.d.controller.TaskControllerTest      : No active profile set, falling back to 1 default profile: "default"
+2026-10-07T19:37:01.865+05:30  INFO 4560 --- [construction-progress-dashboard] [           main] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page template: index
+2026-10-07T19:37:01.910+05:30  WARN 4560 --- [construction-progress-dashboard] [           main] .s.s.UserDetailsServiceAutoConfiguration : 
+
+Using generated security password: c5ca6a82-fad5-4eae-857d-d362b61822fe
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2026-10-07T19:37:01.911+05:30  INFO 4560 --- [construction-progress-dashboard] [           main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2026-10-07T19:37:01.919+05:30  INFO 4560 --- [construction-progress-dashboard] [           main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-10-07T19:37:01.919+05:30  INFO 4560 --- [construction-progress-dashboard] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-10-07T19:37:01.919+05:30  INFO 4560 --- [construction-progress-dashboard] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 0 ms
+2026-10-07T19:37:01.925+05:30  INFO 4560 --- [construction-progress-dashboard] [           main] c.e.d.controller.TaskControllerTest      : Started TaskControllerTest in 0.225 seconds (process running for 6.621)
+[INFO] Tests run: 9, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.364 s -- in com.example.dashboard.controller.TaskControllerTest
+[INFO] Running com.example.dashboard.EdgeCasesTest
+2026-10-07T19:37:02.058+05:30  INFO 4560 --- [construction-progress-dashboard] [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.example.dashboard.EdgeCasesTest]: EdgeCasesTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-10-07T19:37:02.066+05:30  INFO 4560 --- [construction-progress-dashboard] [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.example.dashboard.ConstructionDashboardApplication for test class com.example.dashboard.EdgeCasesTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.3.4)
+
+2026-10-07T19:37:02.088+05:30  INFO 4560 --- [construction-progress-dashboard] [           main] com.example.dashboard.EdgeCasesTest      : Starting EdgeCasesTest using Java 21.0.12.1 with PID 4560 (started by Ganesh in C:\Users\Ganesh\OneDrive\Desktop\DevOps)
+2026-10-07T19:37:02.088+05:30  INFO 4560 --- [construction-progress-dashboard] [           main] com.example.dashboard.EdgeCasesTest      : The following 1 profile is active: "dev"
+2026-10-07T19:37:02.582+05:30  INFO 4560 --- [construction-progress-dashboard] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-10-07T19:37:02.726+05:30  INFO 4560 --- [construction-progress-dashboard] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 119 ms. Found 3 JPA repository interfaces.
+2026-10-07T19:37:03.341+05:30  INFO 4560 --- [construction-progress-dashboard] [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-10-07T19:37:03.418+05:30  INFO 4560 --- [construction-progress-dashboard] [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.3.Final
+2026-10-07T19:37:03.447+05:30  INFO 4560 --- [construction-progress-dashboard] [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-10-07T19:37:03.548+05:30  INFO 4560 --- [construction-progress-dashboard] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-10-07T19:37:03.576+05:30  INFO 4560 --- [construction-progress-dashboard] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-10-07T19:37:03.740+05:30  INFO 4560 --- [construction-progress-dashboard] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:constructiondb user=SA
+2026-10-07T19:37:03.743+05:30  INFO 4560 --- [construction-progress-dashboard] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-10-07T19:37:03.760+05:30  WARN 4560 --- [construction-progress-dashboard] [           main] org.hibernate.orm.deprecation            : HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-10-07T19:37:04.377+05:30  INFO 4560 --- [construction-progress-dashboard] [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-10-07T19:37:04.433+05:30  INFO 4560 --- [construction-progress-dashboard] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-10-07T19:37:04.848+05:30  WARN 4560 --- [construction-progress-dashboard] [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-10-07T19:37:04.855+05:30  INFO 4560 --- [construction-progress-dashboard] [           main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
+2026-10-07T19:37:04.865+05:30  INFO 4560 --- [construction-progress-dashboard] [           main] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page template: index
+2026-10-07T19:37:05.136+05:30  INFO 4560 --- [construction-progress-dashboard] [           main] o.s.b.a.h2.H2ConsoleAutoConfiguration    : H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:constructiondb'
+2026-10-07T19:37:05.198+05:30  INFO 4560 --- [construction-progress-dashboard] [           main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-10-07T19:37:05.198+05:30  INFO 4560 --- [construction-progress-dashboard] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-10-07T19:37:05.199+05:30  INFO 4560 --- [construction-progress-dashboard] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 1 ms
+2026-10-07T19:37:05.206+05:30  INFO 4560 --- [construction-progress-dashboard] [           main] com.example.dashboard.EdgeCasesTest      : Started EdgeCasesTest in 3.133 seconds (process running for 9.902)
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 3.988 s -- in com.example.dashboard.EdgeCasesTest
+[INFO] Running com.example.dashboard.HealthControllerTest
+2026-10-07T19:37:06.046+05:30  INFO 4560 --- [construction-progress-dashboard] [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.example.dashboard.HealthControllerTest]: HealthControllerTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-10-07T19:37:06.048+05:30  INFO 4560 --- [construction-progress-dashboard] [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.example.dashboard.ConstructionDashboardApplication for test class com.example.dashboard.HealthControllerTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.3.4)
+
+2026-10-07T19:37:06.065+05:30  INFO 4560 --- [construction-progress-dashboard] [           main] c.e.dashboard.HealthControllerTest       : Starting HealthControllerTest using Java 21.0.12.1 with PID 4560 (started by Ganesh in C:\Users\Ganesh\OneDrive\Desktop\DevOps)
+2026-10-07T19:37:06.066+05:30  INFO 4560 --- [construction-progress-dashboard] [           main] c.e.dashboard.HealthControllerTest       : No active profile set, falling back to 1 default profile: "default"
+2026-10-07T19:37:06.197+05:30  INFO 4560 --- [construction-progress-dashboard] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-10-07T19:37:06.213+05:30  INFO 4560 --- [construction-progress-dashboard] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 15 ms. Found 3 JPA repository interfaces.
+2026-10-07T19:37:06.285+05:30  INFO 4560 --- [construction-progress-dashboard] [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-10-07T19:37:06.287+05:30  INFO 4560 --- [construction-progress-dashboard] [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-10-07T19:37:06.293+05:30  INFO 4560 --- [construction-progress-dashboard] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-10-07T19:37:06.294+05:30  INFO 4560 --- [construction-progress-dashboard] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Starting...
+2026-10-07T19:37:06.295+05:30  INFO 4560 --- [construction-progress-dashboard] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-2 - Added connection conn10: url=jdbc:h2:mem:constructiondb user=SA
+2026-10-07T19:37:06.295+05:30  INFO 4560 --- [construction-progress-dashboard] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Start completed.
+2026-10-07T19:37:06.296+05:30  WARN 4560 --- [construction-progress-dashboard] [           main] org.hibernate.orm.deprecation            : HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-10-07T19:37:06.363+05:30  INFO 4560 --- [construction-progress-dashboard] [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-10-07T19:37:06.385+05:30  INFO 4560 --- [construction-progress-dashboard] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-10-07T19:37:06.446+05:30  WARN 4560 --- [construction-progress-dashboard] [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-10-07T19:37:06.451+05:30  INFO 4560 --- [construction-progress-dashboard] [           main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
+2026-10-07T19:37:06.459+05:30  INFO 4560 --- [construction-progress-dashboard] [           main] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page template: index
+2026-10-07T19:37:06.575+05:30  INFO 4560 --- [construction-progress-dashboard] [           main] o.s.b.a.h2.H2ConsoleAutoConfiguration    : H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:constructiondb'
+2026-10-07T19:37:06.589+05:30  INFO 4560 --- [construction-progress-dashboard] [           main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-10-07T19:37:06.589+05:30  INFO 4560 --- [construction-progress-dashboard] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-10-07T19:37:06.589+05:30  INFO 4560 --- [construction-progress-dashboard] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 0 ms
+2026-10-07T19:37:06.596+05:30  INFO 4560 --- [construction-progress-dashboard] [           main] c.e.dashboard.HealthControllerTest       : Started HealthControllerTest in 0.545 seconds (process running for 11.292)
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.599 s -- in com.example.dashboard.HealthControllerTest
+[INFO] Running com.example.dashboard.security.SecurityTest
+2026-10-07T19:37:06.647+05:30  INFO 4560 --- [construction-progress-dashboard] [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.example.dashboard.security.SecurityTest]: SecurityTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-10-07T19:37:06.651+05:30  INFO 4560 --- [construction-progress-dashboard] [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.example.dashboard.ConstructionDashboardApplication for test class com.example.dashboard.security.SecurityTest
+[INFO] Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.338 s -- in com.example.dashboard.security.SecurityTest
+[INFO] Running com.example.dashboard.service.AlertServiceTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.135 s -- in com.example.dashboard.service.AlertServiceTest
+[INFO] Running com.example.dashboard.service.DashboardServiceTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.058 s -- in com.example.dashboard.service.DashboardServiceTest
+[INFO] Running com.example.dashboard.service.ProjectServiceTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.019 s -- in com.example.dashboard.service.ProjectServiceTest
+[INFO] Running com.example.dashboard.service.TaskServiceTest
+[INFO] Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.014 s -- in com.example.dashboard.service.TaskServiceTest
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 58, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  15.921 s
+[INFO] Finished at: 2026-10-07T19:37:07+05:30
+[INFO] ------------------------------------------------------------------------
+
+[Stage: Package] Packaging WAR archive...
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] -----------------------< com.example:dashboard >------------------------
+[INFO] Building construction-progress-dashboard 0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ war ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ dashboard ---
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] Copying 16 resources from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ dashboard ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ dashboard ---
+[INFO] Copying 1 resource from src\test\resources to target\test-classes
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ dashboard ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- surefire:3.2.5:test (default-test) @ dashboard ---
+[INFO] Tests are skipped.
+[INFO] 
+[INFO] --- war:3.4.0:war (default-war) @ dashboard ---
+[INFO] Packaging webapp
+[INFO] Assembling webapp [dashboard] in [C:\Users\Ganesh\OneDrive\Desktop\DevOps\target\dashboard]
+[INFO] Processing war project
+[INFO] Building war: C:\Users\Ganesh\OneDrive\Desktop\DevOps\target\dashboard.war
+[INFO] 
+[INFO] --- spring-boot:3.3.4:repackage (repackage) @ dashboard ---
+[INFO] Replacing main artifact C:\Users\Ganesh\OneDrive\Desktop\DevOps\target\dashboard.war with repackaged archive, adding nested dependencies in BOOT-INF/.
+[INFO] The original artifact has been renamed to C:\Users\Ganesh\OneDrive\Desktop\DevOps\target\dashboard.war.original
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  3.496 s
+[INFO] Finished at: 2026-10-07T19:37:12+05:30
+[INFO] ------------------------------------------------------------------------
+
+[Stage: Selenium Tests] Executing Selenium E2E Tests Quality Gate (Headless Chrome)...
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] -----------------------< com.example:dashboard >------------------------
+[INFO] Building construction-progress-dashboard 0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ war ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ dashboard ---
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] Copying 16 resources from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ dashboard ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ dashboard ---
+[INFO] Copying 1 resource from src\test\resources to target\test-classes
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ dashboard ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- surefire:3.2.5:test (default-test) @ dashboard ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running com.example.dashboard.e2e.AddTaskJourneyTest
+19:37:15.860 [main] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [com.example.dashboard.e2e.AddTaskJourneyTest]: AddTaskJourneyTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+19:37:15.953 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration com.example.dashboard.ConstructionDashboardApplication for test class com.example.dashboard.e2e.AddTaskJourneyTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.3.4)
+
+2026-10-07T19:37:16.295+05:30  INFO 2116 --- [construction-progress-dashboard] [           main] c.e.dashboard.e2e.AddTaskJourneyTest     : Starting AddTaskJourneyTest using Java 21.0.12.1 with PID 2116 (started by Ganesh in C:\Users\Ganesh\OneDrive\Desktop\DevOps)
+2026-10-07T19:37:16.296+05:30  INFO 2116 --- [construction-progress-dashboard] [           main] c.e.dashboard.e2e.AddTaskJourneyTest     : The following 1 profile is active: "dev"
+2026-10-07T19:37:17.037+05:30  INFO 2116 --- [construction-progress-dashboard] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-10-07T19:37:17.100+05:30  INFO 2116 --- [construction-progress-dashboard] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 56 ms. Found 3 JPA repository interfaces.
+2026-10-07T19:37:17.935+05:30  INFO 2116 --- [construction-progress-dashboard] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 0 (http)
+2026-10-07T19:37:17.951+05:30  INFO 2116 --- [construction-progress-dashboard] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-10-07T19:37:17.951+05:30  INFO 2116 --- [construction-progress-dashboard] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.30]
+2026-10-07T19:37:18.043+05:30  INFO 2116 --- [construction-progress-dashboard] [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-10-07T19:37:18.044+05:30  INFO 2116 --- [construction-progress-dashboard] [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1732 ms
+2026-10-07T19:37:18.106+05:30  INFO 2116 --- [construction-progress-dashboard] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-10-07T19:37:18.346+05:30  INFO 2116 --- [construction-progress-dashboard] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:constructiondb user=SA
+2026-10-07T19:37:18.348+05:30  INFO 2116 --- [construction-progress-dashboard] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-10-07T19:37:18.358+05:30  INFO 2116 --- [construction-progress-dashboard] [           main] o.s.b.a.h2.H2ConsoleAutoConfiguration    : H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:constructiondb'
+2026-10-07T19:37:18.720+05:30  INFO 2116 --- [construction-progress-dashboard] [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-10-07T19:37:18.835+05:30  INFO 2116 --- [construction-progress-dashboard] [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.3.Final
+2026-10-07T19:37:18.864+05:30  INFO 2116 --- [construction-progress-dashboard] [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-10-07T19:37:19.088+05:30  INFO 2116 --- [construction-progress-dashboard] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-10-07T19:37:19.123+05:30  WARN 2116 --- [construction-progress-dashboard] [           main] org.hibernate.orm.deprecation            : HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-10-07T19:37:19.821+05:30  INFO 2116 --- [construction-progress-dashboard] [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-10-07T19:37:19.876+05:30  INFO 2116 --- [construction-progress-dashboard] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-10-07T19:37:20.267+05:30  WARN 2116 --- [construction-progress-dashboard] [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-10-07T19:37:20.293+05:30  INFO 2116 --- [construction-progress-dashboard] [           main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
+2026-10-07T19:37:20.345+05:30  INFO 2116 --- [construction-progress-dashboard] [           main] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page template: index
+2026-10-07T19:37:20.926+05:30  INFO 2116 --- [construction-progress-dashboard] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 50063 (http) with context path '/'
+2026-10-07T19:37:20.932+05:30  INFO 2116 --- [construction-progress-dashboard] [           main] c.e.dashboard.e2e.AddTaskJourneyTest     : Started AddTaskJourneyTest in 4.86 seconds (process running for 5.795)
+Java HotSpot(TM) 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+WARNING: A Java agent has been loaded dynamically (C:\Users\Ganesh\.m2\repository\net\bytebuddy\byte-buddy-agent\1.14.19\byte-buddy-agent-1.14.19.jar)
+WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
+WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
+WARNING: Dynamic loading of agents will be disallowed by default in a future release
+2026-10-07T19:37:22.593+05:30  WARN 2116 --- [construction-progress-dashboard] [           main] o.o.selenium.devtools.CdpVersionFinder   : Unable to find CDP implementation matching 154
+2026-10-07T19:37:22.593+05:30  WARN 2116 --- [construction-progress-dashboard] [           main] o.o.selenium.chromium.ChromiumDriver     : Unable to find version of CDP to use for 154.0.8037.98. You may need to include a dependency on a specific version of the CDP using something similar to `org.seleniumhq.selenium:selenium-devtools-v86:4.19.1` where the version ("v86") matches the version of the chromium-based browser you're using and the version number of the artifact is the same as Selenium's.
+2026-10-07T19:37:22.665+05:30  INFO 2116 --- [construction-progress-dashboard] [o-auto-1-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-10-07T19:37:22.665+05:30  INFO 2116 --- [construction-progress-dashboard] [o-auto-1-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-10-07T19:37:22.666+05:30  INFO 2116 --- [construction-progress-dashboard] [o-auto-1-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2026-10-07T19:37:25.883+05:30  WARN 2116 --- [construction-progress-dashboard] [           main] o.o.selenium.devtools.CdpVersionFinder   : Unable to find CDP implementation matching 154
+2026-10-07T19:37:25.883+05:30  WARN 2116 --- [construction-progress-dashboard] [           main] o.o.selenium.chromium.ChromiumDriver     : Unable to find version of CDP to use for 154.0.8037.98. You may need to include a dependency on a specific version of the CDP using something similar to `org.seleniumhq.selenium:selenium-devtools-v86:4.19.1` where the version ("v86") matches the version of the chromium-based browser you're using and the version number of the artifact is the same as Selenium's.
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 12.11 s -- in com.example.dashboard.e2e.AddTaskJourneyTest
+[INFO] Running com.example.dashboard.e2e.DrilldownAlertsJourneyTest
+2026-10-07T19:37:27.840+05:30  INFO 2116 --- [construction-progress-dashboard] [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.example.dashboard.e2e.DrilldownAlertsJourneyTest]: DrilldownAlertsJourneyTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-10-07T19:37:27.842+05:30  INFO 2116 --- [construction-progress-dashboard] [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.example.dashboard.ConstructionDashboardApplication for test class com.example.dashboard.e2e.DrilldownAlertsJourneyTest
+2026-10-07T19:37:28.327+05:30  WARN 2116 --- [construction-progress-dashboard] [           main] o.o.selenium.devtools.CdpVersionFinder   : Unable to find CDP implementation matching 154
+2026-10-07T19:37:28.327+05:30  WARN 2116 --- [construction-progress-dashboard] [           main] o.o.selenium.chromium.ChromiumDriver     : Unable to find version of CDP to use for 154.0.8037.98. You may need to include a dependency on a specific version of the CDP using something similar to `org.seleniumhq.selenium:selenium-devtools-v86:4.19.1` where the version ("v86") matches the version of the chromium-based browser you're using and the version number of the artifact is the same as Selenium's.
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 5.744 s -- in com.example.dashboard.e2e.DrilldownAlertsJourneyTest
+[INFO] Running com.example.dashboard.e2e.LoginJourneyTest
+2026-10-07T19:37:33.585+05:30  INFO 2116 --- [construction-progress-dashboard] [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.example.dashboard.e2e.LoginJourneyTest]: LoginJourneyTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-10-07T19:37:33.586+05:30  INFO 2116 --- [construction-progress-dashboard] [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.example.dashboard.ConstructionDashboardApplication for test class com.example.dashboard.e2e.LoginJourneyTest
+2026-10-07T19:37:34.080+05:30  WARN 2116 --- [construction-progress-dashboard] [           main] o.o.selenium.devtools.CdpVersionFinder   : Unable to find CDP implementation matching 154
+2026-10-07T19:37:34.081+05:30  WARN 2116 --- [construction-progress-dashboard] [           main] o.o.selenium.chromium.ChromiumDriver     : Unable to find version of CDP to use for 154.0.8037.98. You may need to include a dependency on a specific version of the CDP using something similar to `org.seleniumhq.selenium:selenium-devtools-v86:4.19.1` where the version ("v86") matches the version of the chromium-based browser you're using and the version number of the artifact is the same as Selenium's.
+2026-10-07T19:37:35.837+05:30  WARN 2116 --- [construction-progress-dashboard] [           main] o.o.selenium.devtools.CdpVersionFinder   : Unable to find CDP implementation matching 154
+2026-10-07T19:37:35.837+05:30  WARN 2116 --- [construction-progress-dashboard] [           main] o.o.selenium.chromium.ChromiumDriver     : Unable to find version of CDP to use for 154.0.8037.98. You may need to include a dependency on a specific version of the CDP using something similar to `org.seleniumhq.selenium:selenium-devtools-v86:4.19.1` where the version ("v86") matches the version of the chromium-based browser you're using and the version number of the artifact is the same as Selenium's.
+2026-10-07T19:37:38.470+05:30  WARN 2116 --- [construction-progress-dashboard] [           main] o.o.selenium.devtools.CdpVersionFinder   : Unable to find CDP implementation matching 154
+2026-10-07T19:37:38.470+05:30  WARN 2116 --- [construction-progress-dashboard] [           main] o.o.selenium.chromium.ChromiumDriver     : Unable to find version of CDP to use for 154.0.8037.98. You may need to include a dependency on a specific version of the CDP using something similar to `org.seleniumhq.selenium:selenium-devtools-v86:4.19.1` where the version ("v86") matches the version of the chromium-based browser you're using and the version number of the artifact is the same as Selenium's.
+2026-10-07T19:37:43.015+05:30  WARN 2116 --- [construction-progress-dashboard] [           main] o.o.selenium.devtools.CdpVersionFinder   : Unable to find CDP implementation matching 154
+2026-10-07T19:37:43.015+05:30  WARN 2116 --- [construction-progress-dashboard] [           main] o.o.selenium.chromium.ChromiumDriver     : Unable to find version of CDP to use for 154.0.8037.98. You may need to include a dependency on a specific version of the CDP using something similar to `org.seleniumhq.selenium:selenium-devtools-v86:4.19.1` where the version ("v86") matches the version of the chromium-based browser you're using and the version number of the artifact is the same as Selenium's.
+2026-10-07T19:37:44.881+05:30  WARN 2116 --- [construction-progress-dashboard] [           main] o.o.selenium.devtools.CdpVersionFinder   : Unable to find CDP implementation matching 154
+2026-10-07T19:37:44.881+05:30  WARN 2116 --- [construction-progress-dashboard] [           main] o.o.selenium.chromium.ChromiumDriver     : Unable to find version of CDP to use for 154.0.8037.98. You may need to include a dependency on a specific version of the CDP using something similar to `org.seleniumhq.selenium:selenium-devtools-v86:4.19.1` where the version ("v86") matches the version of the chromium-based browser you're using and the version number of the artifact is the same as Selenium's.
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 15.43 s -- in com.example.dashboard.e2e.LoginJourneyTest
+[INFO] Running com.example.dashboard.e2e.ScreenshotMechanismDemoTest
+2026-10-07T19:37:49.018+05:30  INFO 2116 --- [construction-progress-dashboard] [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.example.dashboard.e2e.ScreenshotMechanismDemoTest]: ScreenshotMechanismDemoTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-10-07T19:37:49.020+05:30  INFO 2116 --- [construction-progress-dashboard] [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.example.dashboard.ConstructionDashboardApplication for test class com.example.dashboard.e2e.ScreenshotMechanismDemoTest
+2026-10-07T19:37:49.562+05:30  WARN 2116 --- [construction-progress-dashboard] [           main] o.o.selenium.devtools.CdpVersionFinder   : Unable to find CDP implementation matching 154
+2026-10-07T19:37:49.562+05:30  WARN 2116 --- [construction-progress-dashboard] [           main] o.o.selenium.chromium.ChromiumDriver     : Unable to find version of CDP to use for 154.0.8037.98. You may need to include a dependency on a specific version of the CDP using something similar to `org.seleniumhq.selenium:selenium-devtools-v86:4.19.1` where the version ("v86") matches the version of the chromium-based browser you're using and the version number of the artifact is the same as Selenium's.
+[WARNING] Tests run: 1, Failures: 0, Errors: 0, Skipped: 1, Time elapsed: 0.655 s -- in com.example.dashboard.e2e.ScreenshotMechanismDemoTest
+[INFO] Running com.example.dashboard.e2e.SearchDashboardJourneyTest
+2026-10-07T19:37:49.673+05:30  INFO 2116 --- [construction-progress-dashboard] [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.example.dashboard.e2e.SearchDashboardJourneyTest]: SearchDashboardJourneyTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-10-07T19:37:49.674+05:30  INFO 2116 --- [construction-progress-dashboard] [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.example.dashboard.ConstructionDashboardApplication for test class com.example.dashboard.e2e.SearchDashboardJourneyTest
+2026-10-07T19:37:50.231+05:30  WARN 2116 --- [construction-progress-dashboard] [           main] o.o.selenium.devtools.CdpVersionFinder   : Unable to find CDP implementation matching 154
+2026-10-07T19:37:50.231+05:30  WARN 2116 --- [construction-progress-dashboard] [           main] o.o.selenium.chromium.ChromiumDriver     : Unable to find version of CDP to use for 154.0.8037.98. You may need to include a dependency on a specific version of the CDP using something similar to `org.seleniumhq.selenium:selenium-devtools-v86:4.19.1` where the version ("v86") matches the version of the chromium-based browser you're using and the version number of the artifact is the same as Selenium's.
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 6.887 s -- in com.example.dashboard.e2e.SearchDashboardJourneyTest
+[INFO] Running com.example.dashboard.e2e.UpdateTaskJourneyTest
+2026-10-07T19:37:56.562+05:30  INFO 2116 --- [construction-progress-dashboard] [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.example.dashboard.e2e.UpdateTaskJourneyTest]: UpdateTaskJourneyTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-10-07T19:37:56.564+05:30  INFO 2116 --- [construction-progress-dashboard] [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.example.dashboard.ConstructionDashboardApplication for test class com.example.dashboard.e2e.UpdateTaskJourneyTest
+2026-10-07T19:37:57.098+05:30  WARN 2116 --- [construction-progress-dashboard] [           main] o.o.selenium.devtools.CdpVersionFinder   : Unable to find CDP implementation matching 154
+2026-10-07T19:37:57.099+05:30  WARN 2116 --- [construction-progress-dashboard] [           main] o.o.selenium.chromium.ChromiumDriver     : Unable to find version of CDP to use for 154.0.8037.98. You may need to include a dependency on a specific version of the CDP using something similar to `org.seleniumhq.selenium:selenium-devtools-v86:4.19.1` where the version ("v86") matches the version of the chromium-based browser you're using and the version number of the artifact is the same as Selenium's.
+=================================================================
+❌ TEST FAILED: UpdateTaskJourneyTest.testUpdateTaskStatusToCompleted
+📸 Failure screenshot captured at: C:\Users\Ganesh\OneDrive\Desktop\DevOps\target\screenshots\UpdateTaskJourneyTest_testUpdateTaskStatusToCompleted_20261007-193812.png
+🌐 Failed Page URL: http://localhost:50063/tasks
+📄 Failed Page Title: Task List - Construction Progress Dashboard
+💥 Failure Cause: Expected condition failed: waiting for presence of element located by: By.xpath: //table//tr[contains(., 'E2E Task to Complete - 1791382081892')]//a[contains(@href, '/edit')] (tried for 10 second(s) with 500 milliseconds interval)
+=================================================================
+[ERROR] Tests run: 1, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 16.38 s <<< FAILURE! -- in com.example.dashboard.e2e.UpdateTaskJourneyTest
+[ERROR] com.example.dashboard.e2e.UpdateTaskJourneyTest.testUpdateTaskStatusToCompleted -- Time elapsed: 16.37 s <<< ERROR!
+org.openqa.selenium.TimeoutException: Expected condition failed: waiting for presence of element located by: By.xpath: //table//tr[contains(., 'E2E Task to Complete - 1791382081892')]//a[contains(@href, '/edit')] (tried for 10 second(s) with 500 milliseconds interval)
+	at org.openqa.selenium.support.ui.WebDriverWait.timeoutException(WebDriverWait.java:84)
+	at org.openqa.selenium.support.ui.FluentWait.until(FluentWait.java:228)
+	at com.example.dashboard.e2e.pages.TaskListPage.clickEditTask(TaskListPage.java:77)
+	at com.example.dashboard.e2e.UpdateTaskJourneyTest.testUpdateTaskStatusToCompleted(UpdateTaskJourneyTest.java:42)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+Caused by: org.openqa.selenium.NoSuchElementException: no such element: Unable to locate element: {"method":"xpath","selector":"//table//tr[contains(., 'E2E Task to Complete - 1791382081892')]//a[contains(@href, '/edit')]"}
+  (Session info: chrome=154.0.8037.98)
+For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#no-such-element-exception
+Build info: version: '4.19.1', revision: 'abe0ee07dc'
+System info: os.name: 'Windows 11', os.arch: 'amd64', os.version: '10.0', java.version: '21.0.12.1'
+Driver info: org.openqa.selenium.chrome.ChromeDriver
+Command: [5048133ee1f277d009f5662ddc7f072b, findElement {value=//table//tr[contains(., 'E2E Task to Complete - 1791382081892')]//a[contains(@href, '/edit')], using=xpath}]
+Capabilities {acceptInsecureCerts: false, browserName: chrome, browserVersion: 154.0.8037.98, chrome: {chromedriverVersion: 154.0.8037.92 (334b65d254cc..., userDataDir: C:\Users\Ganesh\AppData\Loc...}, fedcm:accounts: true, goog:chromeOptions: {debuggerAddress: localhost:53877}, goog:processID: 22984, networkConnectionEnabled: false, pageLoadStrategy: normal, platformName: windows, proxy: Proxy(), se:cdp: ws://localhost:53877/devtoo..., se:cdpVersion: 154.0.8037.98, setWindowRect: true, strictFileInteractability: false, timeouts: {implicit: 0, pageLoad: 300000, script: 30000}, unhandledPromptBehavior: dismiss and notify, webauthn:extension:cmtgKey: true, webauthn:extension:credBlob: true, webauthn:extension:largeBlob: true, webauthn:extension:minPinLength: true, webauthn:extension:prf: true, webauthn:virtualAuthenticators: true}
+Session ID: 5048133ee1f277d009f5662ddc7f072b
+	at java.base/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:62)
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:502)
+	at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:486)
+	at org.openqa.selenium.remote.ErrorCodec.decode(ErrorCodec.java:167)
+	at org.openqa.selenium.remote.codec.w3c.W3CHttpResponseCodec.decode(W3CHttpResponseCodec.java:138)
+	at org.openqa.selenium.remote.codec.w3c.W3CHttpResponseCodec.decode(W3CHttpResponseCodec.java:50)
+	at org.openqa.selenium.remote.HttpCommandExecutor.execute(HttpCommandExecutor.java:190)
+	at org.openqa.selenium.remote.service.DriverCommandExecutor.invokeExecute(DriverCommandExecutor.java:216)
+	at org.openqa.selenium.remote.service.DriverCommandExecutor.execute(DriverCommandExecutor.java:174)
+	at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:518)
+	at org.openqa.selenium.remote.ElementLocation$ElementFinder$2.findElement(ElementLocation.java:165)
+	at org.openqa.selenium.remote.ElementLocation.findElement(ElementLocation.java:59)
+	at org.openqa.selenium.remote.RemoteWebDriver.findElement(RemoteWebDriver.java:355)
+	at org.openqa.selenium.remote.RemoteWebDriver.findElement(RemoteWebDriver.java:349)
+	at org.openqa.selenium.support.ui.ExpectedConditions$6.apply(ExpectedConditions.java:171)
+	at org.openqa.selenium.support.ui.ExpectedConditions$6.apply(ExpectedConditions.java:168)
+	at org.openqa.selenium.support.ui.FluentWait.until(FluentWait.java:203)
+	... 5 more
+
+[INFO] 
+[INFO] Results:
+[INFO] 
+[ERROR] Errors: 
+[ERROR]   UpdateTaskJourneyTest.testUpdateTaskStatusToCompleted:42 » Timeout Expected condition failed: waiting for presence of element located by: By.xpath: //table//tr[contains(., 'E2E Task to Complete - 1791382081892')]//a[contains(@href, '/edit')] (tried for 10 second(s) with 500 milliseconds interval)
+[INFO] 
+[ERROR] Tests run: 11, Failures: 0, Errors: 1, Skipped: 1
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  01:00 min
+[INFO] Finished at: 2026-10-07T19:38:13+05:30
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-surefire-plugin:3.2.5:test (default-test) on project dashboard: 
+[ERROR] 
+[ERROR] Please refer to C:\Users\Ganesh\OneDrive\Desktop\DevOps\target\surefire-reports for the individual test results.
+[ERROR] Please refer to dump files (if any exist) [date].dump, [date]-jvmRun[N].dump and [date].dumpstream.
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException
+
+===========================================================
+�?O QUALITY GATE FAILED: Selenium E2E Tests returned exit code 1
+Archiving JUnit reports, Surefire HTML reports, and failure screenshots...
+Deployment skipped because tests failed.
+[Stage: Deploy] SKIPPED due to test failure.
+[Stage: Verify] SKIPPED due to test failure.
+===========================================================
+FAILURE: Pipeline execution failed.
+===========================================================
+
+--- PROOF OF DEPLOYMENT BLOCKED ---
+1. Verifying Tomcat Manager Context List:
+OK - Listed applications for virtual host [localhost] /:running:0:ROOT /construction-dashboard-dev:running:0:construction-dashboard-dev /examples:running:0:examples /host-manager:running:0:host-manager /construction-dashboard-staging:running:0:construction-dashboard-staging /manager:running:0:manager /docs:running:0:docs
+
+2. Verifying existing deployment health on Tomcat:
+Health Status: {"status":"UP"}
+
+3. Verifying deployed app on Tomcat still has the baseline version (Edit button present):
+Warning: Edit button not found.
