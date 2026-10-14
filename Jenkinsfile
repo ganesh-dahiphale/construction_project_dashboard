@@ -18,7 +18,8 @@ pipeline {
 
     parameters {
         choice(name: 'REGISTRY_MODE', choices: ['dockerhub', 'local'], description: 'Docker registry target (dockerhub or local registry on localhost:5000)')
-        choice(name: 'DEPLOY_TARGET', choices: ['docker', 'tomcat'], description: 'Deployment target runtime (docker container or standalone tomcat)')
+        choice(name: 'DEPLOY_TARGET', choices: ['ansible', 'docker', 'tomcat'], description: 'Deployment target runtime: ansible (remote target node), docker (local container), or tomcat (standalone)')
+        string(name: 'TARGET_HOST', defaultValue: '127.0.0.1', description: 'Target node host address for Ansible deployment and verification')
         string(name: 'HOST_PORT', defaultValue: '8082', description: 'Host port for Docker container')
         string(name: 'CONTAINER_NAME', defaultValue: 'construction-dashboard', description: 'Docker container name')
         choice(name: 'DEPLOY_ENV', choices: ['dev', 'staging'], description: 'Target deployment environment')
@@ -262,7 +263,7 @@ pipeline {
         // ========================================================
         stage('Docker Build') {
             when {
-                expression { params.DEPLOY_TARGET == 'docker' }
+                expression { params.DEPLOY_TARGET == 'docker' || params.DEPLOY_TARGET == 'ansible' }
             }
             steps {
                 script {
@@ -283,7 +284,7 @@ pipeline {
 
         stage('Docker Push') {
             when {
-                expression { params.DEPLOY_TARGET == 'docker' }
+                expression { params.DEPLOY_TARGET == 'docker' || params.DEPLOY_TARGET == 'ansible' }
             }
             steps {
                 script {
@@ -424,9 +425,92 @@ pipeline {
             }
         }
 
+        // ========================================================
+        // Ansible Continuous Deployment Stages (DEPLOY_TARGET == 'ansible')
+        // ========================================================
+        stage('Provision and Deploy (Ansible)') {
+            when {
+                expression { params.DEPLOY_TARGET == 'ansible' }
+            }
+            steps {
+                script {
+                    echo "==========================================================="
+                    echo "Provisioning and Deploying Release ${env.IMAGE_TAG} via Ansible..."
+                    echo "==========================================================="
+                    def extraVars = "-e release_tag=${env.IMAGE_TAG} -e docker_image=${env.IMAGE_REPO}"
+                    runAnsiblePlaybook('ansible/playbooks/provision.yml', extraVars, 'ansible-deploy.log')
+                }
+            }
+        }
+
+        stage('Verify Node') {
+            when {
+                expression { params.DEPLOY_TARGET == 'ansible' }
+            }
+            steps {
+                script {
+                    echo "==========================================================="
+                    echo "Verifying Target Node Health and Release Version..."
+                    echo "==========================================================="
+                    // 1. Run Ansible healthcheck playbook
+                    runAnsiblePlaybook('ansible/playbooks/healthcheck.yml', '', 'ansible-healthcheck.log')
+
+                    // 2. HTTP Verification from Jenkins machine: /health
+                    def targetHost = params.TARGET_HOST ?: '127.0.0.1'
+                    def targetPort = params.HOST_PORT ?: '8082'
+                    def healthUrl = "http://${targetHost}:${targetPort}/health"
+                    def loginUrl = "http://${targetHost}:${targetPort}/login"
+
+                    echo "Testing HTTP endpoint from Jenkins machine: ${healthUrl}..."
+                    def healthResponse = ""
+                    def maxRetries = 12
+                    def isUp = false
+
+                    for (int i = 1; i <= maxRetries; i++) {
+                        try {
+                            if (isUnix()) {
+                                healthResponse = sh(script: "curl -s -m 5 ${healthUrl} || true", returnStdout: true).trim()
+                            } else {
+                                healthResponse = bat(script: "@curl.exe -s -m 5 ${healthUrl}", returnStdout: true).trim()
+                            }
+                            echo "Health response (poll ${i}/${maxRetries}): ${healthResponse}"
+                            if (healthResponse.contains('"status":"UP"') || healthResponse.contains('"UP"') || healthResponse.contains('UP')) {
+                                isUp = true
+                                break
+                            }
+                        } catch (Exception e) {
+                            echo "Health poll attempt ${i} notice: ${e.message}"
+                        }
+                        sleep(5)
+                    }
+
+                    if (!isUp) {
+                        error("Node health verification failed: ${healthUrl} did not return UP (Response: ${healthResponse})")
+                    }
+
+                    // 3. Verify page content contains IMAGE_TAG
+                    echo "Testing HTTP login page contains IMAGE_TAG '${env.IMAGE_TAG}'..."
+                    def pageHtml = ""
+                    if (isUnix()) {
+                        pageHtml = sh(script: "curl -s -m 5 ${loginUrl} || true", returnStdout: true).trim()
+                    } else {
+                        pageHtml = bat(script: "@curl.exe -s -m 5 ${loginUrl}", returnStdout: true).trim()
+                    }
+
+                    if (!pageHtml.contains(env.IMAGE_TAG)) {
+                        error("Node UI verification failed: ${loginUrl} does not contain IMAGE_TAG '${env.IMAGE_TAG}'")
+                    }
+
+                    echo "==========================================================="
+                    echo "VERIFY NODE PASSED: Target node is healthy and running ${env.IMAGE_TAG}!"
+                    echo "==========================================================="
+                }
+            }
+        }
+
         stage('Promote') {
             when {
-                expression { params.DEPLOY_TARGET == 'docker' }
+                expression { params.DEPLOY_TARGET == 'docker' || params.DEPLOY_TARGET == 'ansible' }
             }
             steps {
                 script {
@@ -461,7 +545,7 @@ pipeline {
     post {
         always {
             script {
-                if (params.DEPLOY_TARGET == 'docker') {
+                if (params.DEPLOY_TARGET == 'docker' || params.DEPLOY_TARGET == 'ansible') {
                     try {
                         echo "Pruning dangling image layers..."
                         runCmd("docker image prune -f")
@@ -469,7 +553,10 @@ pipeline {
                         echo "Dangling layer prune notice: ${e.message}"
                     }
 
-                    def deployInfoContent = """Deployment Information - Week 12
+                    def targetHost = (params.DEPLOY_TARGET == 'ansible') ? (params.TARGET_HOST ?: '127.0.0.1') : 'localhost'
+                    def targetPort = params.HOST_PORT ?: '8082'
+
+                    def deployInfoContent = """Deployment Information - Week 15 Final Release
 -----------------------------------------------------------
 Application Name: Construction Progress Dashboard
 Deploy Target:    ${params.DEPLOY_TARGET}
@@ -479,19 +566,26 @@ Image Tag:        ${env.IMAGE_TAG}
 Image Digest:     ${env.IMAGE_DIGEST}
 Git Commit:       ${env.SHORT_SHA}
 Build Number:     #${env.BUILD_NUMBER}
-Access URL:       http://localhost:${params.HOST_PORT}
-Health URL:       http://localhost:${params.HOST_PORT}/health
+Target Node URL:  http://${targetHost}:${targetPort}
+Health URL:       http://${targetHost}:${targetPort}/health
 Timestamp:        ${new Date().format('yyyy-MM-dd HH:mm:ss')}
 """
                     writeFile file: 'deploy-info.txt', text: deployInfoContent
-                    archiveArtifacts artifacts: 'deploy-info.txt', allowEmptyArchive: false
+                    archiveArtifacts artifacts: 'deploy-info.txt, ansible-deploy.log, ansible-healthcheck.log', allowEmptyArchive: true
                 }
             }
             cleanWs()
         }
         success {
             script {
-                if (params.DEPLOY_TARGET == 'docker') {
+                if (params.DEPLOY_TARGET == 'ansible') {
+                    def targetHost = params.TARGET_HOST ?: '127.0.0.1'
+                    echo "==========================================================="
+                    echo "SUCCESS: Remote node provisioned, deployed and verified via Ansible at:"
+                    echo "http://${targetHost}:${params.HOST_PORT}/ (Version: ${env.IMAGE_TAG})"
+                    echo "Promoted Image Tag: ${env.IMAGE_REPO}:stable"
+                    echo "==========================================================="
+                } else if (params.DEPLOY_TARGET == 'docker') {
                     echo "==========================================================="
                     echo "SUCCESS: Container deployed and verified healthy at:"
                     echo "http://localhost:${params.HOST_PORT}/ (Version: ${env.IMAGE_TAG})"
@@ -538,3 +632,33 @@ def rollback(String containerName, String prevImage, String hostPort, String rea
     }
     error("Deployment verification failed: ${reason}")
 }
+
+def runAnsiblePlaybook(String playbook, String extraVars, String logFile) {
+    try {
+        withCredentials([sshUserPrivateKey(credentialsId: 'cpd-ansible-ssh', keyFileVariable: 'SSH_KEY_FILE', usernameVariable: 'SSH_USER')]) {
+            executeAnsibleCmd(playbook, extraVars, "--private-key=${SSH_KEY_FILE}", logFile)
+        }
+    } catch (Throwable t) {
+        echo "Notice: Credential 'cpd-ansible-ssh' not resolved in current credentials store (${t.message}). Falling back to inventory SSH key configuration..."
+        executeAnsibleCmd(playbook, extraVars, "", logFile)
+    }
+}
+
+def executeAnsibleCmd(String playbook, String extraVars, String sshOpt, String logFile) {
+    echo "Executing playbook: ${playbook} (log: ${logFile})"
+    if (isUnix()) {
+        sh "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ansible/inventory/hosts.yml ${playbook} ${extraVars} ${sshOpt} 2>&1 | tee ${logFile}"
+    } else {
+        def hasNativeAnsible = bat(script: '@where.exe ansible-playbook 2>NUL || exit 0', returnStdout: true).trim()
+        if (hasNativeAnsible && hasNativeAnsible != '') {
+            bat "set ANSIBLE_HOST_KEY_CHECKING=False && ansible-playbook -i ansible/inventory/hosts.yml ${playbook} ${extraVars} ${sshOpt} > ${logFile} 2>&1"
+            bat "type ${logFile}"
+        } else {
+            def wslPath = "/mnt/c/Users/Ganesh/OneDrive/Desktop/DevOps"
+            def wslCmd = "wsl.exe -d Ubuntu -u ganesh -- bash -c \"cd ${wslPath} && ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ansible/inventory/hosts.yml ${playbook} ${extraVars} ${sshOpt}\""
+            bat "${wslCmd} > ${logFile} 2>&1"
+            bat "type ${logFile}"
+        }
+    }
+}
+
