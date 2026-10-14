@@ -25,8 +25,9 @@
   tags:
     - config
 
-# Service is explicitly stopped this week; deployment and launch occur in Week 14
-- name: Ensure construction-dashboard service is enabled on boot but stopped in Week 13
+# Service is explicitly stopped this week;
+# deployment and launch occur in Week 14
+- name: Ensure construction-dashboard service is enabled but stopped
   ansible.builtin.systemd:
     name: construction-dashboard
     enabled: true
