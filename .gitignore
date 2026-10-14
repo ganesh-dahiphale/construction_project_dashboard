@@ -112,3 +112,4 @@ docker-compose.override.yml
 .docker/
 jenkins_home/
 .jenkins/
+scratch/
