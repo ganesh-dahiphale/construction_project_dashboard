@@ -375,3 +375,24 @@ The test framework includes a JUnit 5 `ScreenshotOnFailureExtension` (`AfterTest
 - The failure log records the exact page URL, document title, and failure cause.
 - Permanent evidence files and reports are preserved under `docs/evidence/week9/`.
 
+---
+
+## 🚀 Week 14 — Target Node Provisioning, Idempotency & Automated Rollback
+
+**Delivered in:** `feature/55-provision-rollback` (merged into `develop`).  
+**Closes:** Issue [#55 — Provision clean target environment and implement release deployment with rollback](https://github.com/ganesh-dahiphale/construction_project_dashboard/issues/55)
+
+### Highlights & Architecture
+- **Ansible Automation**: Full target node configuration via Ansible roles (`common`, `docker`, `app_user`, `app_dirs`, `firewall`, `app_config`, `deploy`).
+- **Idempotency**: Demonstrated zero state change (`changed=0`) across consecutive playbook runs and automatic reconciliation upon configuration drift.
+- **Health Gate & Atomic Rollback**: Integrated post-deployment HTTP `/health` polling (up to 25 retries) and login page version verification with Ansible `block` / `rescue` automatic rollback to the previous stable release.
+- **Operational Playbooks**:
+  - `provision.yml`: Full node provisioning and versioned release deployment.
+  - `healthcheck.yml`: Synthetic health and infrastructure readiness auditing.
+  - `rollback.yml`: Operator-confirmed manual rollback to `previous.txt`.
+  - `status.yml`: Release audit trail and history reporting from `history.log`.
+- **Fault Recovery**: Tested and verified systemd container auto-recovery (17s downtime) and node reboot recovery (22s recovery).
+
+For complete playbook usage, role architecture, and evidence, see [`ansible/README.md`](ansible/README.md) and [`docs/evidence/week14/week14-evidence.md`](docs/evidence/week14/week14-evidence.md).
+
+
