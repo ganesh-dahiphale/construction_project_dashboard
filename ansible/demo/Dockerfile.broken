@@ -1,0 +1,6 @@
+FROM localhost:5000/construction-dashboard:0.0.1-SNAPSHOT-b2-f3cac90
+USER root
+RUN printf '#!/bin/sh\nexec java $JAVA_OPTS -Dserver.port=9999 -jar /app/app.war\n' > /app/entrypoint.sh && \
+    chmod 755 /app/entrypoint.sh
+USER appuser
+ENTRYPOINT ["/app/entrypoint.sh"]
