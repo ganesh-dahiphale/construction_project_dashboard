@@ -1,0 +1,44 @@
+=== TARGET CLEAN STATE BEFORE PROVISIONING ===
+Wed Oct 14 17:25:28 UTC 2026
+--- OS and Hostname ---
+cpd-target
+PRETTY_NAME="Ubuntu 26.04.1 LTS"
+NAME="Ubuntu"
+VERSION_ID="26.04"
+VERSION="26.04.1 LTS (Resolute Raccoon)"
+VERSION_CODENAME=resolute
+ID=ubuntu
+ID_LIKE=debian
+HOME_URL="https://www.ubuntu.com/"
+SUPPORT_URL="https://help.ubuntu.com/"
+BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"
+PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-policy"
+UBUNTU_CODENAME=resolute
+LOGO=ubuntu-logo
+Linux cpd-target 6.18.40.1-microsoft-standard-WSL2 #1 SMP PREEMPT_DYNAMIC Fri Jul 31 22:12:15 UTC 2026 x86_64 GNU/Linux
+--- Docker Status (Must Not Exist) ---
+bash: line 8: docker: command not found
+docker: command not found
+Unit docker.service could not be found.
+docker.service not found
+--- Appdeploy User (Must Not Exist) ---
+id: 'appdeploy': no such user
+appdeploy: no such user
+--- App Directory (Must Not Exist) ---
+ls: cannot access '/opt/construction-dashboard': No such file or directory
+/opt/construction-dashboard: not found
+--- Firewall Status (Must Be Inactive) ---
+Status: inactive
+--- Listening Ports ---
+State  Recv-Q Send-Q  Local Address:Port Peer Address:PortProcess
+LISTEN 0      1000   10.255.255.254:53        0.0.0.0:*          
+LISTEN 0      4096    127.0.0.53%lo:53        0.0.0.0:*          
+LISTEN 0      128           0.0.0.0:2222      0.0.0.0:*          
+LISTEN 0      4096          0.0.0.0:22        0.0.0.0:*          
+LISTEN 0      4096       127.0.0.54:53        0.0.0.0:*          
+LISTEN 0      128              [::]:2222         [::]:*          
+LISTEN 0      4096                *:5000            *:*          
+LISTEN 0      4096             [::]:22           [::]:*          
+--- Systemd Units ---
+Unit construction-dashboard.service could not be found.
+construction-dashboard.service: not found

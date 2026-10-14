@@ -1,0 +1,196 @@
+
+PLAY [Provision target node and deploy application release] ********************
+
+TASK [Gathering Facts] *********************************************************
+[WARNING]: Host 'cpd-target-node' is using the discovered Python interpreter at '/usr/bin/python3.14', but future installation of another Python interpreter could cause a different interpreter to be discovered. See https://docs.ansible.com/ansible-core/2.20/reference_appendices/interpreter_discovery.html for more information.
+ok: [cpd-target-node]
+
+TASK [common : Update apt cache] ***********************************************
+ok: [cpd-target-node]
+
+TASK [common : Install base prerequisite packages] *****************************
+ok: [cpd-target-node]
+
+TASK [common : Set system timezone] ********************************************
+ok: [cpd-target-node]
+
+TASK [docker : Ensure apt keyrings directory exists] ***************************
+ok: [cpd-target-node]
+
+TASK [docker : Download official Docker GPG key] *******************************
+ok: [cpd-target-node]
+
+TASK [docker : Add official Docker apt repository] *****************************
+ok: [cpd-target-node]
+
+TASK [docker : Install Docker Engine packages] *********************************
+ok: [cpd-target-node]
+
+TASK [docker : Ensure /etc/docker directory exists] ****************************
+ok: [cpd-target-node]
+
+TASK [docker : Configure Docker daemon log rotation] ***************************
+ok: [cpd-target-node]
+
+TASK [docker : Ensure Docker service is enabled and started] *******************
+ok: [cpd-target-node]
+
+TASK [app_user : Ensure docker group exists] ***********************************
+ok: [cpd-target-node]
+
+TASK [app_user : Create application deployment system user] ********************
+ok: [cpd-target-node]
+
+TASK [app_dirs : Create application root directory] ****************************
+ok: [cpd-target-node]
+
+TASK [app_dirs : Create application configuration directory] *******************
+ok: [cpd-target-node]
+
+TASK [app_dirs : Create application logs directory] ****************************
+ok: [cpd-target-node]
+
+TASK [app_dirs : Create application releases directory] ************************
+ok: [cpd-target-node]
+
+TASK [firewall : Allow SSH port 22 first to prevent lockout] *******************
+ok: [cpd-target-node]
+
+TASK [firewall : Allow application traffic on host port] ***********************
+ok: [cpd-target-node]
+
+TASK [firewall : Configure UFW default incoming policy to deny] ****************
+ok: [cpd-target-node]
+
+TASK [firewall : Configure UFW default outgoing policy to allow] ***************
+ok: [cpd-target-node]
+
+TASK [firewall : Ensure UFW firewall is enabled] *******************************
+ok: [cpd-target-node]
+
+TASK [app_config : Deploy application environment configuration file] **********
+changed: [cpd-target-node]
+
+TASK [app_config : Deploy systemd unit service file] ***************************
+changed: [cpd-target-node]
+
+TASK [app_config : Flush handlers to reload systemd daemon immediately if unit changed] ***
+
+RUNNING HANDLER [app_config : Reload systemd daemon] ***************************
+ok: [cpd-target-node]
+
+TASK [app_config : Ensure construction-dashboard service is enabled] ***********
+ok: [cpd-target-node]
+
+TASK [deploy : Validate that release_tag is defined] ***************************
+ok: [cpd-target-node] => {
+    "changed": false,
+    "msg": "All assertions passed"
+}
+
+TASK [deploy : Initialize active release tag variable] *************************
+ok: [cpd-target-node]
+
+TASK [deploy : Check for existing release state record] ************************
+ok: [cpd-target-node]
+
+TASK [deploy : Read pre-deployment current release tag if present] *************
+ok: [cpd-target-node]
+
+TASK [deploy : Set pre-deployment release tag fact] ****************************
+ok: [cpd-target-node]
+
+TASK [deploy : Ensure target container image is present] ***********************
+skipping: [cpd-target-node]
+
+TASK [deploy : Deploy application environment configuration] *******************
+ok: [cpd-target-node]
+
+TASK [deploy : Deploy systemd unit service file] *******************************
+ok: [cpd-target-node]
+
+TASK [deploy : Flush handlers to restart application service immediately] ******
+
+TASK [deploy : Ensure construction-dashboard service is active and running] ****
+ok: [cpd-target-node]
+
+TASK [deploy : Wait for application health check endpoint] *********************
+ok: [cpd-target-node]
+
+TASK [deploy : Verify application login page displays correct release version] ***
+[ERROR]: Task failed: Action failed: OK (unknown bytes)
+Origin: /mnt/c/Users/Ganesh/OneDrive/Desktop/DevOps/ansible/roles/deploy/tasks/main.yml:75:7
+
+73       delay: "{{ health_delay }}"
+74
+75     - name: Verify application login page displays correct release version
+         ^ column 7
+
+fatal: [cpd-target-node]: FAILED! => {"cache_control": "no-cache, no-store, max-age=0, must-revalidate", "changed": false, "connection": "close", "content": "<!DOCTYPE html>\r\n<html lang=\"en\">\r\n<head>\r\n    <meta charset=\"UTF-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\r\n    <title>Login - Construction Progress Dashboard</title>\r\n    <!-- Bootstrap 5 CSS & Icons CDN -->\r\n    <link href=\"https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css\" rel=\"stylesheet\">\r\n    <link href=\"https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css\" rel=\"stylesheet\">\r\n    <style>\r\n        body {\r\n            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);\r\n        }\r\n        .login-card {\r\n            border-radius: 16px;\r\n            box-shadow: 0 20px 40px rgba(0,0,0,0.3);\r\n        }\r\n    </style>\r\n</head>\r\n<body class=\"d-flex align-items-center justify-content-center min-vh-100 py-4\">\r\n\r\n<div class=\"container\" style=\"max-width: 460px;\">\r\n\r\n    <!-- Logo & Header -->\r\n    <div class=\"text-center mb-4\">\r\n        <div class=\"d-inline-flex align-items-center justify-content-center bg-warning text-dark rounded-circle p-3 mb-3 shadow\">\r\n            <i class=\"bi bi-building-gear fs-1\"></i>\r\n        </div>\r\n        <h1 class=\"h3 fw-bold text-white mb-1\">Construction Progress</h1>\r\n        <p class=\"text-white-50 small mb-0\">Sign in with your role-based credentials</p>\r\n    </div>\r\n\r\n    <!-- Login Form Card -->\r\n    <div class=\"card login-card border-0 p-4 p-md-5 bg-white\">\r\n\r\n        <!-- Error Message Alert -->\r\n        \r\n\r\n        <!-- Logout Message Alert -->\r\n        \r\n\r\n        <form action=\"/login\" method=\"post\"><input type=\"hidden\" name=\"_csrf\" value=\"djM1E7GDVCcxwizAJpQfgQ75CyBTn-sGhbdRtB9FH5ibN-Y7QlVTctewYEUc9x6jRLkruG2dJhg3_Ngr5IVjhSh9ffuvVtIC\"/>\r\n            <!-- Username Input -->\r\n            <div class=\"mb-3\">\r\n                <label for=\"username\" class=\"form-label small fw-semibold text-muted\">Username</label>\r\n                <div class=\"input-group\">\r\n                    <span class=\"input-group-text bg-light\"><i class=\"bi bi-person\"></i></span>\r\n                    <input type=\"text\" class=\"form-control\" id=\"username\" name=\"username\"\r\n                           placeholder=\"admin, manager, or engineer\" required autofocus>\r\n                </div>\r\n            </div>\r\n\r\n            <!-- Password Input -->\r\n            <div class=\"mb-4\">\r\n                <label for=\"password\" class=\"form-label small fw-semibold text-muted\">Password</label>\r\n                <div class=\"input-group\">\r\n                    <span class=\"input-group-text bg-light\"><i class=\"bi bi-lock\"></i></span>\r\n                    <input type=\"password\" class=\"form-control\" id=\"password\" name=\"password\"\r\n                           placeholder=\"••••••••\" required>\r\n                </div>\r\n            </div>\r\n\r\n            <!-- Submit Button -->\r\n            <button type=\"submit\" class=\"btn btn-warning w-100 py-2 fw-semibold shadow-sm mb-3\" id=\"loginSubmitBtn\">\r\n                <i class=\"bi bi-box-arrow-in-right me-1\"></i>Sign In\r\n            </button>\r\n        </form>\r\n\r\n        <!-- Dev Credentials Info Box -->\r\n        <div class=\"bg-light rounded-3 p-3 mt-2 border\">\r\n            <h2 class=\"h6 fw-bold mb-2 text-dark d-flex align-items-center gap-1\">\r\n                <i class=\"bi bi-key text-warning\"></i>\r\n                <span>Development Logins</span>\r\n            </h2>\r\n            <ul class=\"list-unstyled small mb-0 text-muted\">\r\n                <li>&bull; <code>admin</code> / <code>admin123</code> (Admin)</li>\r\n                <li>&bull; <code>manager</code> / <code>manager123</code> (Manager)</li>\r\n                <li>&bull; <code>engineer</code> / <code>engineer123</code> (Engineer)</li>\r\n            </ul>\r\n        </div>\r\n    </div>\r\n\r\n    <!-- Footer link to health & version -->\r\n    <div class=\"text-center mt-3 d-flex flex-column align-items-center gap-1\">\r\n        <a href=\"/health\" class=\"text-white-50 small text-decoration-none\">\r\n            <i class=\"bi bi-heart-pulse me-1\"></i>System Health Endpoint\r\n        </a>\r\n        <span class=\"badge bg-secondary text-light mt-1\" data-testid=\"app-version\">Version: 0.0.1-SNAPSHOT-b2-f3cac90 - Jenkins-Docker CD demo</span>\r\n    </div>\r\n\r\n</div>\r\n\r\n<script src=\"https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js\"></script>\r\n</body>\r\n</html>\r\n", "content_language": "en-US", "content_type": "text/html;charset=UTF-8", "cookies": {"JSESSIONID": "5B8B55FE00169EB3382BDCAAC74D893D"}, "cookies_string": "JSESSIONID=5B8B55FE00169EB3382BDCAAC74D893D", "date": "Wed, 14 Oct 2026 18:21:09 GMT", "elapsed": 0, "expires": "0", "failed_when_result": true, "msg": "OK (unknown bytes)", "pragma": "no-cache", "redirected": false, "set_cookie": "JSESSIONID=5B8B55FE00169EB3382BDCAAC74D893D; Path=/; HttpOnly", "status": 200, "transfer_encoding": "chunked", "url": "http://127.0.0.1:8082/login", "x_content_type_options": "nosniff", "x_frame_options": "SAMEORIGIN", "x_xss_protection": "0"}
+
+TASK [deploy : Check for previous release record] ******************************
+ok: [cpd-target-node]
+
+TASK [deploy : Read previous release state if present] *************************
+ok: [cpd-target-node]
+
+TASK [deploy : Fail immediately if no previous release is recorded] ************
+skipping: [cpd-target-node]
+
+TASK [deploy : Determine rollback target release tag] **************************
+ok: [cpd-target-node]
+
+TASK [deploy : Update active release tag to rollback target] *******************
+ok: [cpd-target-node]
+
+TASK [deploy : Print rollback initiation notice] *******************************
+ok: [cpd-target-node] => {
+    "msg": "Deployment failed for 'broken-demo'! Initiating automatic rollback to stable release '0.0.1-SNAPSHOT-b2-f3cac90'..."
+}
+
+TASK [deploy : Rollback application environment configuration] *****************
+changed: [cpd-target-node]
+
+TASK [deploy : Rollback systemd unit service file] *****************************
+changed: [cpd-target-node]
+
+TASK [deploy : Restart application service with rolled back release] ***********
+changed: [cpd-target-node]
+
+TASK [deploy : Wait for rolled-back application health check endpoint] *********
+FAILED - RETRYING: [cpd-target-node]: Wait for rolled-back application health check endpoint (24 retries left).
+FAILED - RETRYING: [cpd-target-node]: Wait for rolled-back application health check endpoint (23 retries left).
+ok: [cpd-target-node]
+
+TASK [deploy : Verify login page displays rolled-back version] *****************
+ok: [cpd-target-node]
+
+TASK [deploy : Restore current.txt to rollback tag] ****************************
+ok: [cpd-target-node]
+
+TASK [deploy : Record rollback event in history.log] ***************************
+changed: [cpd-target-node]
+
+TASK [deploy : Display successful automatic rollback message] ******************
+ok: [cpd-target-node] => {
+    "msg": "ROLLED BACK from broken-demo to 0.0.1-SNAPSHOT-b2-f3cac90: Application health confirmed UP."
+}
+
+TASK [deploy : Fail the deployment play after successful rollback] *************
+[ERROR]: Task failed: Action failed: Deployment failed for release 'broken-demo'. Automatic rollback successfully restored and verified stable release '0.0.1-SNAPSHOT-b2-f3cac90'.
+Origin: /mnt/c/Users/Ganesh/OneDrive/Desktop/DevOps/ansible/roles/deploy/tasks/main.yml:207:7
+
+205         msg: "ROLLED BACK from {{ release_tag }} to {{ rollback_tag }}: Application health confirmed UP."
+206
+207     - name: Fail the deployment play after successful rollback
+          ^ column 7
+
+fatal: [cpd-target-node]: FAILED! => {"changed": false, "msg": "Deployment failed for release 'broken-demo'. Automatic rollback successfully restored and verified stable release '0.0.1-SNAPSHOT-b2-f3cac90'."}
+
+PLAY RECAP *********************************************************************
+cpd-target-node            : ok=48   changed=6    unreachable=0    failed=1    skipped=2    rescued=1    ignored=0   
+
+
+PLAYBOOK RECAP *****************************************************************
+Playbook run took 0 days, 0 hours, 1 minutes, 30 seconds
+
