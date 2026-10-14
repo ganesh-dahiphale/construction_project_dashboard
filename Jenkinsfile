@@ -646,16 +646,17 @@ def runAnsiblePlaybook(String playbook, String extraVars, String logFile) {
 
 def executeAnsibleCmd(String playbook, String extraVars, String sshOpt, String logFile) {
     echo "Executing playbook: ${playbook} (log: ${logFile})"
+    def envPrefix = "ANSIBLE_CONFIG=ansible/ansible.cfg ANSIBLE_ROLES_PATH=ansible/roles ANSIBLE_HOST_KEY_CHECKING=False"
     if (isUnix()) {
-        sh "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ansible/inventory/hosts.yml ${playbook} ${extraVars} ${sshOpt} 2>&1 | tee ${logFile}"
+        sh "${envPrefix} ansible-playbook -i ansible/inventory/hosts.yml ${playbook} ${extraVars} ${sshOpt} 2>&1 | tee ${logFile}"
     } else {
         def hasNativeAnsible = bat(script: '@where.exe ansible-playbook 2>NUL || exit 0', returnStdout: true).trim()
         if (hasNativeAnsible && hasNativeAnsible != '') {
-            bat "set ANSIBLE_HOST_KEY_CHECKING=False && ansible-playbook -i ansible/inventory/hosts.yml ${playbook} ${extraVars} ${sshOpt} > ${logFile} 2>&1"
+            bat "set ANSIBLE_CONFIG=ansible/ansible.cfg&& set ANSIBLE_ROLES_PATH=ansible/roles&& set ANSIBLE_HOST_KEY_CHECKING=False&& ansible-playbook -i ansible/inventory/hosts.yml ${playbook} ${extraVars} ${sshOpt} > ${logFile} 2>&1"
             bat "type ${logFile}"
         } else {
             def wslPath = "/mnt/c/Users/Ganesh/OneDrive/Desktop/DevOps"
-            def wslCmd = "wsl.exe -d Ubuntu -u ganesh -- bash -c \"cd ${wslPath} && ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ansible/inventory/hosts.yml ${playbook} ${extraVars} ${sshOpt}\""
+            def wslCmd = "wsl.exe -d Ubuntu -u ganesh -- bash -c \"cd ${wslPath} && ${envPrefix} ansible-playbook -i ansible/inventory/hosts.yml ${playbook} ${extraVars} ${sshOpt}\""
             bat "${wslCmd} > ${logFile} 2>&1"
             bat "type ${logFile}"
         }

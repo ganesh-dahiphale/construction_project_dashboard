@@ -37,7 +37,9 @@ echo "Inventory:    ${INVENTORY}"
 echo "Target Host:  ${TARGET_HOST}:${TARGET_PORT}"
 echo "================================================================================"
 
-# Ensure host key checking is disabled for local test lab
+# Ensure host key checking is disabled for local test lab and roles path is resolved
+export ANSIBLE_CONFIG="${WORKSPACE_ROOT}/ansible/ansible.cfg"
+export ANSIBLE_ROLES_PATH="${WORKSPACE_ROOT}/ansible/roles"
 export ANSIBLE_HOST_KEY_CHECKING=False
 
 # 1. Run Ansible Provision & Deployment Playbook

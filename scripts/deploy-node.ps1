@@ -38,6 +38,8 @@ $hasNativeAnsible = (Get-Command ansible-playbook -ErrorAction SilentlyContinue)
 
 if ($hasNativeAnsible) {
     Write-Host "Executing via native Ansible CLI..." -ForegroundColor Green
+    $env:ANSIBLE_CONFIG = "ansible/ansible.cfg"
+    $env:ANSIBLE_ROLES_PATH = "ansible/roles"
     $env:ANSIBLE_HOST_KEY_CHECKING = "False"
     ansible-playbook -i ansible/inventory/hosts.yml ansible/playbooks/provision.yml `
         -e "release_tag=$ReleaseTag" -e "docker_image=$ImageRepo" | Tee-Object -FilePath ansible-deploy.log
@@ -48,11 +50,12 @@ if ($hasNativeAnsible) {
     $drive = $wslPath.Substring(0, 1)
     $rest = $wslPath.Substring(2)
     $wslWorkspace = "/mnt/$drive$rest"
+    $envPrefix = "ANSIBLE_CONFIG=ansible/ansible.cfg ANSIBLE_ROLES_PATH=ansible/roles ANSIBLE_HOST_KEY_CHECKING=False"
     
-    $deployCmd = "cd $wslWorkspace && ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ansible/inventory/hosts.yml ansible/playbooks/provision.yml -e release_tag=$ReleaseTag -e docker_image=$ImageRepo"
+    $deployCmd = "cd $wslWorkspace && $envPrefix ansible-playbook -i ansible/inventory/hosts.yml ansible/playbooks/provision.yml -e release_tag=$ReleaseTag -e docker_image=$ImageRepo"
     wsl.exe -d Ubuntu -u ganesh -- bash -c "$deployCmd" | Tee-Object -FilePath ansible-deploy.log
 
-    $hcCmd = "cd $wslWorkspace && ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ansible/inventory/hosts.yml ansible/playbooks/healthcheck.yml"
+    $hcCmd = "cd $wslWorkspace && $envPrefix ansible-playbook -i ansible/inventory/hosts.yml ansible/playbooks/healthcheck.yml"
     wsl.exe -d Ubuntu -u ganesh -- bash -c "$hcCmd" | Tee-Object -FilePath ansible-healthcheck.log
 }
 

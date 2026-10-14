@@ -1,0 +1,60 @@
+
+PLAY [Application Health and Readiness Check] **********************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [cpd-target-node]
+
+TASK [Check systemd service status] ********************************************
+ok: [cpd-target-node]
+
+TASK [Check Docker container running status] ***********************************
+ok: [cpd-target-node]
+
+TASK [Check application health endpoint] ***************************************
+ok: [cpd-target-node]
+
+TASK [Check application login page and version badge] **************************
+ok: [cpd-target-node]
+
+TASK [Query current release state file] ****************************************
+ok: [cpd-target-node]
+
+TASK [Check disk space for application directory] ******************************
+ok: [cpd-target-node]
+
+TASK [Check memory usage] ******************************************************
+ok: [cpd-target-node]
+
+TASK [Format summary properties] ***********************************************
+ok: [cpd-target-node]
+
+TASK [Display Health Check Summary Table] **************************************
+ok: [cpd-target-node] => {
+    "msg": [
+        "================================================================================",
+        "                 APPLICATION HEALTH AND READINESS REPORT                        ",
+        "================================================================================",
+        " Host:              cpd-target-node (127.0.0.1)",
+        " Service State:     active",
+        " Container State:   running",
+        " Endpoint /health:  UP (200 OK)",
+        " Current Release:   0.0.1-SNAPSHOT-b3-73fa1bc",
+        " Disk Usage (/opt): 1%",
+        " Memory Available:  5.8Gi",
+        "================================================================================"
+    ]
+}
+
+TASK [Assert all critical health criteria pass] ********************************
+ok: [cpd-target-node] => {
+    "changed": false,
+    "msg": "HEALTH CHECK PASSED! Application is healthy, responsive, and serving traffic."
+}
+
+PLAY RECAP *********************************************************************
+cpd-target-node            : ok=11   changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+
+
+PLAYBOOK RECAP *****************************************************************
+Playbook run took 0 days, 0 hours, 0 minutes, 4 seconds
+
