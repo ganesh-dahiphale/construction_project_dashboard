@@ -43,10 +43,14 @@
                         <i class="bi bi-plus-circle me-1"></i>Add Task
                     </a>
                 </li>
-                <li class="nav-item ms-lg-2 mt-2 mt-lg-0" sec:authorize="hasRole('ADMIN')">
-                    <a class="btn btn-outline-info btn-sm fw-semibold" th:href="@{/admin/projects}">
+                <li class="nav-item dropdown ms-lg-2 mt-2 mt-lg-0" sec:authorize="hasRole('ADMIN')">
+                    <a class="btn btn-outline-info btn-sm fw-semibold dropdown-toggle" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="bi bi-gear-wide-connected me-1"></i>Admin
                     </a>
+                    <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end shadow" aria-labelledby="adminDropdown">
+                        <li><a class="dropdown-item" th:href="@{/admin/projects}"><i class="bi bi-building me-2 text-info"></i>Manage Projects</a></li>
+                        <li><a class="dropdown-item" th:href="@{/admin/users}"><i class="bi bi-people me-2 text-warning"></i>Manage Users</a></li>
+                    </ul>
                 </li>
                 <li class="nav-item ms-lg-3 mt-2 mt-lg-0" sec:authorize="isAuthenticated()">
                     <div class="d-flex align-items-center gap-2">

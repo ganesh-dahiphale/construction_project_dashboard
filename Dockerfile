@@ -9,14 +9,11 @@ LABEL maintainer="Ganesh Dahiphale" \
 
 WORKDIR /build
 
-# 1. Copy POM first for dependency caching layer
+# 1. Copy POM and source code
 COPY pom.xml .
-
-# Download dependencies offline to optimize Docker cache
-RUN mvn -B dependency:go-offline
-
-# 2. Copy source code and build production WAR package
 COPY src ./src
+
+# 2. Build production WAR package
 RUN mvn -B clean package -DskipTests
 
 # ========================================================

@@ -45,6 +45,12 @@
             <span th:text="${logoutMessage}">Logged out successfully.</span>
         </div>
 
+        <!-- Registration Success Alert -->
+        <div th:if="${registrationSuccess != null}" class="alert alert-success d-flex align-items-center gap-2 mb-3 py-2 small" role="alert" id="registrationSuccessAlert">
+            <i class="bi bi-check-circle-fill text-success"></i>
+            <span th:text="${registrationSuccess}">Account created successfully!</span>
+        </div>
+
         <form th:action="@{/login}" method="post">
             <!-- Username Input -->
             <div class="mb-3">
@@ -67,10 +73,18 @@
             </div>
 
             <!-- Submit Button -->
-            <button type="submit" class="btn btn-warning w-100 py-2 fw-semibold shadow-sm mb-3" id="loginSubmitBtn">
+            <button type="submit" class="btn btn-warning w-100 py-2 fw-semibold shadow-sm mb-2" id="loginSubmitBtn">
                 <i class="bi bi-box-arrow-in-right me-1"></i>Sign In
             </button>
         </form>
+
+        <!-- Register Link -->
+        <div class="text-center my-3 py-2 border-top border-bottom">
+            <span class="text-muted small">Don't have an account? </span>
+            <a th:href="@{/register}" class="small fw-semibold text-decoration-none">
+                <i class="bi bi-person-plus me-1"></i>Register as Site Engineer
+            </a>
+        </div>
 
         <!-- Dev Credentials Info Box -->
         <div class="bg-light rounded-3 p-3 mt-2 border">
