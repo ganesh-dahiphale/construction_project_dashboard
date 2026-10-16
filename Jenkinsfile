@@ -317,7 +317,7 @@ pipeline {
                         if (isUnix()) {
                             env.IMAGE_DIGEST = sh(script: "docker inspect --format='{{index .RepoDigests 0}}' ${env.IMAGE_REPO}:${env.IMAGE_TAG} 2>/dev/null || true", returnStdout: true).trim()
                         } else {
-                            env.IMAGE_DIGEST = bat(script: "@powershell -Command \"(docker inspect --format '{{index .RepoDigests 0}}' ${env.IMAGE_REPO}:${env.IMAGE_TAG} 2>`$null)\"", returnStdout: true).trim()
+                            env.IMAGE_DIGEST = bat(script: "@docker inspect --format \"{{index .RepoDigests 0}}\" ${env.IMAGE_REPO}:${env.IMAGE_TAG} 2>NUL || exit 0", returnStdout: true).trim()
                         }
                     } catch (Exception e) {
                         echo "Notice: Could not parse RepoDigests: ${e.message}"
@@ -337,7 +337,7 @@ pipeline {
                     if (isUnix()) {
                         env.PREVIOUS_IMAGE = sh(script: "docker inspect --format='{{.Config.Image}}' ${params.CONTAINER_NAME} 2>/dev/null || true", returnStdout: true).trim()
                     } else {
-                        env.PREVIOUS_IMAGE = bat(script: "@powershell -Command \"docker inspect --format '{{.Config.Image}}' ${params.CONTAINER_NAME} 2>`$null\"", returnStdout: true).trim()
+                        env.PREVIOUS_IMAGE = bat(script: "@docker inspect --format \"{{.Config.Image}}\" ${params.CONTAINER_NAME} 2>NUL || exit 0", returnStdout: true).trim()
                     }
                     echo "Previous container image: ${env.PREVIOUS_IMAGE ?: 'None'}"
 
@@ -348,7 +348,7 @@ pipeline {
                     if (isUnix()) {
                         sh "docker rm -f ${params.CONTAINER_NAME} 2>/dev/null || true"
                     } else {
-                        bat "@powershell -Command \"docker rm -f ${params.CONTAINER_NAME} 2>`$null; exit 0\""
+                        bat "@docker rm -f ${params.CONTAINER_NAME} 2>NUL || exit 0"
                     }
 
                     echo "Running fresh container '${params.CONTAINER_NAME}' on port ${params.HOST_PORT}:8080..."
@@ -379,7 +379,7 @@ pipeline {
                         if (isUnix()) {
                             healthStatus = sh(script: "docker inspect --format='{{.State.Health.Status}}' ${params.CONTAINER_NAME} 2>/dev/null || true", returnStdout: true).trim()
                         } else {
-                            healthStatus = bat(script: "@powershell -Command \"(docker inspect --format '{{.State.Health.Status}}' ${params.CONTAINER_NAME} 2>`$null).Trim()\"", returnStdout: true).trim()
+                            healthStatus = bat(script: "@docker inspect --format \"{{.State.Health.Status}}\" ${params.CONTAINER_NAME} 2>NUL || exit 0", returnStdout: true).trim()
                         }
                         echo "Health check poll [${elapsed}s/${maxSeconds}s]: ${healthStatus}"
                         if (healthStatus == 'healthy') {
@@ -628,7 +628,7 @@ def rollback(String containerName, String prevImage, String hostPort, String rea
             sh "docker rm -f ${containerName} 2>/dev/null || true"
             sh "docker run -d --name ${containerName} --restart unless-stopped -v construction-dashboard-data:/app/data -p ${hostPort}:8080 -e SPRING_PROFILES_ACTIVE=dev ${prevImage}"
         } else {
-            bat "@powershell -Command \"docker rm -f ${containerName} 2>`$null; docker run -d --name ${containerName} --restart unless-stopped -v construction-dashboard-data:/app/data -p ${hostPort}:8080 -e SPRING_PROFILES_ACTIVE=dev ${prevImage}\""
+            bat "@docker rm -f ${containerName} 2>NUL || exit 0 && docker run -d --name ${containerName} --restart unless-stopped -v construction-dashboard-data:/app/data -p ${hostPort}:8080 -e SPRING_PROFILES_ACTIVE=dev ${prevImage}"
         }
     }
     error("Deployment verification failed: ${reason}")
