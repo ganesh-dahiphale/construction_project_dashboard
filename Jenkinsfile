@@ -52,16 +52,14 @@ pipeline {
 
                     // 1. Evaluate APP_VERSION from pom.xml
                     def pomContent = readFile('pom.xml')
-                    def vMatcher = pomContent =~ '<version>(.*?)</version>'
-                    env.APP_VERSION = vMatcher.find() ? vMatcher.group(1).trim() : '1.1.0'
+                    env.APP_VERSION = parseAppVersion(pomContent)
 
                     // 2. Evaluate SHORT_SHA (first 7 characters of commit)
                     if (isUnix()) {
                         env.SHORT_SHA = sh(script: 'git rev-parse --short=7 HEAD', returnStdout: true).trim()
                     } else {
                         def shaRaw = bat(script: '@git.exe rev-parse --short=7 HEAD', returnStdout: true).trim()
-                        def shaMatcher = shaRaw =~ /([0-9a-f]{7,40})/
-                        env.SHORT_SHA = shaMatcher.find() ? shaMatcher.group(1).substring(0, 7) : 'unknown'
+                        env.SHORT_SHA = parseShortSha(shaRaw)
                     }
 
                     // 3. Compute IMAGE_TAG
@@ -643,4 +641,17 @@ def executeAnsibleCmd(String playbook, String extraVars, String sshOpt, String l
         }
     }
 }
+
+@NonCPS
+def parseAppVersion(String pomContent) {
+    def m = pomContent =~ '<version>(.*?)</version>'
+    return m.find() ? m.group(1).trim() : '1.1.0'
+}
+
+@NonCPS
+def parseShortSha(String rawSha) {
+    def m = rawSha =~ /([0-9a-f]{7,40})/
+    return m.find() ? m.group(1).substring(0, 7) : 'unknown'
+}
+
 
