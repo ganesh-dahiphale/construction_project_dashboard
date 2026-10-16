@@ -29,13 +29,6 @@ pipeline {
         PATH = "C:\\Users\\Ganesh\\AppData\\Local\\Programs\\DockerDesktop\\resources\\bin;C:\\Program Files\\Google\\Chrome\\Application;${env.PATH}"
         WAR_FILE = 'target/dashboard.war'
         TARGET_PATH = "/${params.APP_CONTEXT}-${params.DEPLOY_ENV}"
-        APP_VERSION = ''
-        SHORT_SHA = ''
-        IMAGE_TAG = ''
-        IMAGE_REPO = ''
-        DOCKER_HUB_USER = ''
-        IMAGE_DIGEST = ''
-        PREVIOUS_IMAGE = ''
     }
 
     stages {
@@ -58,30 +51,17 @@ pipeline {
                     echo "=========================================="
 
                     // 1. Evaluate APP_VERSION from pom.xml
-                    try {
-                        if (isUnix()) {
-                            env.APP_VERSION = sh(script: 'mvn -q -DforceStdout help:evaluate -Dexpression=project.version 2>/dev/null || ./mvnw -q -DforceStdout help:evaluate -Dexpression=project.version', returnStdout: true).trim()
-                        } else {
-                            env.APP_VERSION = bat(script: '@mvn.cmd -q -DforceStdout help:evaluate -Dexpression=project.version 2>NUL || .\\mvnw.cmd -q -DforceStdout help:evaluate -Dexpression=project.version', returnStdout: true).trim()
-                        }
-                    } catch (Exception e) {
-                        echo "Notice: Maven help:evaluate fallback (${e.message})"
-                    }
-                    if (!env.APP_VERSION || env.APP_VERSION == '') {
-                        def pom = readFile('pom.xml')
-                        def matcher = pom =~ '<version>(.*?)</version>'
-                        if (matcher.find()) {
-                            env.APP_VERSION = matcher.group(1).trim()
-                        } else {
-                            env.APP_VERSION = '1.0.0'
-                        }
-                    }
+                    def pomContent = readFile('pom.xml')
+                    def vMatcher = pomContent =~ '<version>(.*?)</version>'
+                    env.APP_VERSION = vMatcher.find() ? vMatcher.group(1).trim() : '1.1.0'
 
                     // 2. Evaluate SHORT_SHA (first 7 characters of commit)
                     if (isUnix()) {
                         env.SHORT_SHA = sh(script: 'git rev-parse --short=7 HEAD', returnStdout: true).trim()
                     } else {
-                        env.SHORT_SHA = bat(script: '@git.exe rev-parse --short=7 HEAD', returnStdout: true).trim()
+                        def shaRaw = bat(script: '@git.exe rev-parse --short=7 HEAD', returnStdout: true).trim()
+                        def shaMatcher = shaRaw =~ /([0-9a-f]{7,40})/
+                        env.SHORT_SHA = shaMatcher.find() ? shaMatcher.group(1).substring(0, 7) : 'unknown'
                     }
 
                     // 3. Compute IMAGE_TAG
@@ -157,7 +137,8 @@ pipeline {
                         echo "==========================================================="
                         echo "Executing Selenium E2E Tests Quality Gate (Headless Chrome)..."
                         echo "==========================================================="
-                        runCmd('mvn -B -Pselenium test -Dheadless=true')
+                        def chromeDriverOpt = isUnix() ? "" : "-Dwebdriver.chrome.driver=C:\\ProgramData\\chromedriver.exe"
+                        runCmd("mvn -B -Pselenium test -Dheadless=true ${chromeDriverOpt}")
                     } else {
                         echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
                         echo "WARNING: Selenium Quality Gate is explicitly DISABLED!"
