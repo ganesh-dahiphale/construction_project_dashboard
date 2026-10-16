@@ -4,6 +4,29 @@ All notable changes to the **Construction Progress Dashboard** project will be d
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+- **Admin User Management (`/admin/users`)**:
+  - Central administrative registry to create, view, update, and delete staff accounts.
+  - Role restriction: admin can only register staff as `ENGINEER` or `MANAGER`; `ADMIN` role is rejected server-side.
+  - User model extensions: `fullName`, unique `email`, validated `username`, employment `jobStatus` (`ACTIVE`, `ON_LEAVE`, `INACTIVE`), and audit timestamps (`createdAt`, `lastUpdated`, `createdBy`).
+  - Account lifecycle controls: dynamic status change, profile edits, password resets (min 8 chars with letter and digit), and account deletion with Bootstrap confirmation modal.
+  - Server-side guards: administrators cannot delete, deactivate, or change the role of their own account; the last active administrator cannot be removed or deactivated; administrator accounts are read-only.
+  - Login access control: only accounts with `ACTIVE` status can authenticate; non-active users are rejected with `"Account is inactive or on leave"`.
+  - Session invalidation: deactivating or deleting a user immediately terminates their active sessions via `SessionRegistry`.
+  - Data integrity: task records preserve historical `updatedBy` references without foreign key deletion cascade.
+- **Persistent Database Storage**:
+  - Default development and container runtime database switched to file-based H2 (`jdbc:h2:file:./data/dashboard;AUTO_SERVER=false`).
+  - Idempotent `DataInitializer` that prevents seed duplication on restarts.
+  - Volume mount `-v construction-dashboard-data:/app/data` added to Docker runtime and Jenkins deployment pipeline.
+  - Persistent `/opt/construction-dashboard/data` managed by Ansible `app_dirs` role and mounted in systemd service unit.
+- **Automated Quality Testing**:
+  - `UserManagementServiceTest`: 14 unit tests validating all guards, validation rules, password constraints, and task safety.
+  - `AdminUserSecurityTest`: 12 MockMvc tests verifying role-based authorization, 403 enforcement, CSRF requirements, and disabled login rejection.
+  - `AdminUserManagementJourneyTest`: Selenium Journey J6 validating end-to-end admin user creation, engineer login, status changes, deletion, and non-admin restrictions.
+  - Updated `docs/TEST_PLAN.md` with Journey J6 specifications.
+
 ## [v1.1.0] - 2026-10-15 — Final End-to-End Release (CI/CD, Selenium Gate, Docker & Ansible)
 
 ### Added

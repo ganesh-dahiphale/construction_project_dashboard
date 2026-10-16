@@ -1,5 +1,6 @@
 package com.example.dashboard.service;
 
+import com.example.dashboard.model.JobStatus;
 import com.example.dashboard.model.User;
 import com.example.dashboard.repository.UserRepository;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -26,11 +27,13 @@ public class CustomUserDetailsService implements UserDetailsService {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
 
+        boolean isAccountActive = user.isEnabled() && user.getJobStatus() == JobStatus.ACTIVE;
+
         return org.springframework.security.core.userdetails.User.builder()
                 .username(user.getUsername())
                 .password(user.getPassword())
                 .authorities(Collections.singletonList(new SimpleGrantedAuthority(user.getRole().getAuthority())))
-                .disabled(!user.isEnabled())
+                .disabled(!isAccountActive)
                 .build();
     }
 }

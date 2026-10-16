@@ -354,6 +354,7 @@ pipeline {
                     echo "Running fresh container '${params.CONTAINER_NAME}' on port ${params.HOST_PORT}:8080..."
                     // Note: SPRING_PROFILES_ACTIVE=dev enables seed users and dev tasks for this course demo only
                     def runContainerCmd = "docker run -d --name ${params.CONTAINER_NAME} --restart unless-stopped " +
+                        "-v construction-dashboard-data:/app/data " +
                         "-p ${params.HOST_PORT}:8080 -e SPRING_PROFILES_ACTIVE=dev -e APP_VERSION=${env.IMAGE_TAG} " +
                         "${env.IMAGE_REPO}:${env.IMAGE_TAG}"
                     runCmd(runContainerCmd)
@@ -625,9 +626,9 @@ def rollback(String containerName, String prevImage, String hostPort, String rea
         echo "Rolling back to previous image ${prevImage}..."
         if (isUnix()) {
             sh "docker rm -f ${containerName} 2>/dev/null || true"
-            sh "docker run -d --name ${containerName} --restart unless-stopped -p ${hostPort}:8080 -e SPRING_PROFILES_ACTIVE=dev ${prevImage}"
+            sh "docker run -d --name ${containerName} --restart unless-stopped -v construction-dashboard-data:/app/data -p ${hostPort}:8080 -e SPRING_PROFILES_ACTIVE=dev ${prevImage}"
         } else {
-            bat "@powershell -Command \"docker rm -f ${containerName} 2>`$null; docker run -d --name ${containerName} --restart unless-stopped -p ${hostPort}:8080 -e SPRING_PROFILES_ACTIVE=dev ${prevImage}\""
+            bat "@powershell -Command \"docker rm -f ${containerName} 2>`$null; docker run -d --name ${containerName} --restart unless-stopped -v construction-dashboard-data:/app/data -p ${hostPort}:8080 -e SPRING_PROFILES_ACTIVE=dev ${prevImage}\""
         }
     }
     error("Deployment verification failed: ${reason}")

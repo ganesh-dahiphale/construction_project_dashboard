@@ -32,9 +32,11 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends curl && \
     rm -rf /var/lib/apt/lists/*
 
-# Create dedicated non-root user and group for security
+# Create dedicated non-root user, group, and persistent data directory
 RUN groupadd -r appgroup && \
-    useradd -r -g appgroup -d /app -s /sbin/nologin appuser
+    useradd -r -g appgroup -d /app -s /sbin/nologin appuser && \
+    mkdir -p /app/data && \
+    chown -R appuser:appgroup /app
 
 WORKDIR /app
 
@@ -44,6 +46,9 @@ COPY --from=build --chown=appuser:appgroup /build/target/dashboard.war /app/app.
 # Set directory permissions
 RUN chown -R appuser:appgroup /app
 
+# Declare persistent storage volume
+VOLUME ["/app/data"]
+
 # Switch to non-root execution user
 USER appuser
 
@@ -52,7 +57,8 @@ EXPOSE 8080
 
 # Environment variables
 ENV JAVA_OPTS="" \
-    SERVER_PORT=8080
+    SERVER_PORT=8080 \
+    DB_URL="jdbc:h2:file:/app/data/dashboard;AUTO_SERVER=false"
 
 # Container healthcheck against /health endpoint
 HEALTHCHECK --interval=15s --timeout=5s --start-period=20s --retries=3 \

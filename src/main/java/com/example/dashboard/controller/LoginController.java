@@ -21,7 +21,11 @@ public class LoginController {
         }
 
         if (error != null) {
-            model.addAttribute("errorMessage", "Invalid username or password. Please try again.");
+            if ("inactive".equalsIgnoreCase(error)) {
+                model.addAttribute("errorMessage", "Account is inactive or on leave");
+            } else {
+                model.addAttribute("errorMessage", "Invalid username or password. Please try again.");
+            }
         }
         if (logout != null) {
             model.addAttribute("logoutMessage", "You have been logged out successfully.");

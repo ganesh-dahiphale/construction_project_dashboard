@@ -15,9 +15,11 @@ LABEL maintainer="Ganesh Dahiphale" \
       org.opencontainers.image.build="${BUILD_NUMBER}" \
       org.opencontainers.image.source="https://github.com/ganesh-dahiphale/construction_project_dashboard"
 
-# Create dedicated non-root user and group
+# Create dedicated non-root user, group, and persistent data directory
 RUN groupadd -r appgroup && \
-    useradd -r -g appgroup -d /app -s /sbin/nologin appuser
+    useradd -r -g appgroup -d /app -s /sbin/nologin appuser && \
+    mkdir -p /app/data && \
+    chown -R appuser:appgroup /app
 
 WORKDIR /app
 
@@ -27,16 +29,20 @@ COPY --chown=appuser:appgroup target/dashboard.war /app/app.war
 # Set directory permissions
 RUN chown -R appuser:appgroup /app
 
+# Declare persistent storage volume for file-based H2 database
+VOLUME ["/app/data"]
+
 # Switch to non-root execution user
 USER appuser
 
 # Expose standard application HTTP port
 EXPOSE 8080
 
-# Environment variables
+# Environment variables with persistent file-based H2 default
 ENV JAVA_OPTS="" \
     SERVER_PORT=8080 \
-    APP_VERSION=dev
+    APP_VERSION=dev \
+    DB_URL="jdbc:h2:file:/app/data/dashboard;AUTO_SERVER=false"
 
 # Container healthcheck against /health endpoint using built-in curl
 HEALTHCHECK --interval=15s --timeout=5s --start-period=20s --retries=3 \

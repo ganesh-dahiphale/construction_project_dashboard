@@ -16,7 +16,7 @@ The objective of this end-to-end (E2E) testing suite is to provide automated reg
 ## 2. Scope
 
 ### In Scope
-- Verification of 5 critical end-to-end user journeys (J1 through J5).
+- Verification of 6 critical end-to-end user journeys (J1 through J6).
 - Cross-role authorization and access control boundary checks (`ADMIN`, `MANAGER`, `ENGINEER`).
 - Form validations, CSRF handling, flash messaging, and page navigation flows.
 - Automated screenshot-on-failure capture for triage and defect reporting.
@@ -76,6 +76,7 @@ The objective of this end-to-end (E2E) testing suite is to provide automated reg
 | **J3** | **Task Progress & Status Update** | Existing task present on `/tasks` | 1. Authenticate as `engineer`<br>2. Navigate to `/tasks`<br>3. Click Edit on task<br>4. Change status to `COMPLETED`<br>5. Submit form<br>6. Verify task row in `/tasks` | Status: `COMPLETED`<br>Remarks: `Sign-off completed by QA` | Auto-completion business rule forces progress to 100%; Task status badge updates to `Completed` with 100% bar | **P0 (Critical)** |
 | **J4** | **Executive Dashboard & Search Filtering** | Manager user authenticated, tasks exist | 1. Navigate to `/dashboard`<br>2. Inspect KPI summary cards<br>3. Filter by keyword<br>4. Filter by status dropdown<br>5. Reset filters | Keywords: `Foundation`, `NonExistentKeyword`<br>Status: `IN_PROGRESS` | KPI summary cards display positive non-blank counts; Results table filters accurately matching criteria; Total tasks card reflects accurate system state | **P1 (High)** |
 | **J5** | **Status Drill-Down & Alert Exceptions** | Overdue task seeded (`dueDate < today`), Manager logged in | 1. Navigate to `/dashboard` and click Delayed indicator (or `/status/delayed`)<br>2. Verify delayed tasks table<br>3. Navigate to `/alerts`<br>4. Verify overdue and blocked task alert tables | Seeded overdue task: `Structural Framing Inspection` | Only overdue tasks shown in `/status/delayed`; `/alerts` page displays overdue warning badges and days overdue calculation | **P1 (High)** |
+| **J6** | **Admin User Management Lifecycle** | Admin user authenticated | 1. Admin registers new engineer (`unique username`)<br>2. New engineer logs in successfully<br>3. Verify engineer has no access to `/admin/users` (403) and no Users navbar link<br>4. Admin sets engineer status to `INACTIVE`<br>5. Engineer login blocked with "Account is inactive or on leave"<br>6. Admin reactivates to `ACTIVE`<br>7. Admin deletes user with confirmation modal<br>8. Deleted user cannot log in | Role: `ENGINEER`<br>JobStatus: `ACTIVE` -> `INACTIVE` -> `ACTIVE` -> Deleted | New user created with hashed password; login controlled by status; session invalidation enforced; modal confirmation protects deletion; tasks remain intact | **P0 (Critical)** |
 
 ---
 

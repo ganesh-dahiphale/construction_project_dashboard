@@ -39,7 +39,8 @@ On construction jobsites, lack of immediate visibility into daily activities lea
 4. **Status Drill-Down**: In-depth inspection view for individual site task categories (`/status`, `/status/{status}`).
 5. **Overdue Task Alert Engine**: Automated flagging of tasks that exceed their target completion deadlines or stall without updates (`/alerts`).
 6. **Project Boundary Administration**: Administrative portal for configuring construction site definitions and timelines (`/admin/projects`).
-7. **Synthetic Health Monitoring**: RESTful actuator endpoint (`/health`) returning JSON health status for CI/CD gates and system monitoring.
+7. **Admin-Only Staff User Management**: Central administrative portal for registering staff (`ENGINEER` or `MANAGER`), updating profile information and roles, toggling employment job status (`ACTIVE`, `ON_LEAVE`, `INACTIVE`), resetting passwords, and permanently removing staff accounts with modal confirmation (`/admin/users`).
+8. **Synthetic Health Monitoring**: RESTful actuator endpoint (`/health`) returning JSON health status for CI/CD gates and system monitoring.
 
 ---
 
@@ -113,11 +114,27 @@ For complete architectural specifications, entity relationship diagrams (ERD), a
 
 ## 🔐 Role-Based Access & Default Credentials
 
-The platform enforces Role-Based Access Control (RBAC) via Spring Security:
-- **`ADMIN`**: Full administrative privileges including project site management (`/admin/**`), task creation, status updates, and executive dashboard access.
-- **`MANAGER`**: Access to Executive Dashboard (`/dashboard`), Status Drill-Down (`/status/**`), Alerts (`/alerts`), and task workflows.
-- **`ENGINEER`**: Access to create and update field tasks (`/tasks/**`).
-- **`Public`**: Access to `/login`, `/health`, and static styling assets.
+The platform enforces strict Role-Based Access Control (RBAC) via Spring Security URL rules and method-level security (`@PreAuthorize`):
+
+### Access Control Matrix
+
+| Role | Accessible Views & Endpoints | User Management Access | Allowed Actions |
+|---|---|---|---|
+| **`ADMIN`** | `/admin/users/**`, `/admin/projects/**`, `/dashboard`, `/status/**`, `/alerts`, `/tasks/**` | **Full Management** | Register engineers/managers, toggle status, reset passwords, edit profiles, delete accounts. Protected from self-deletion/demotion. |
+| **`MANAGER`** | `/dashboard`, `/status/**`, `/alerts`, `/tasks/**` | **None (HTTP 403)** | Monitor executive metrics, review delays, inspect category drill-downs, update task assignments. |
+| **`ENGINEER`** | `/tasks/**` | **None (HTTP 403)** | Log daily progress, update completion percentages, add execution remarks. |
+| **`Anonymous`** | `/login`, `/register`, `/health`, static assets | **Redirected to `/login`** | Authenticate or view synthetic health endpoint. |
+
+### Employment Status & Login Authorization
+- **`ACTIVE`**: User account is authorized to log in and access permitted system views.
+- **`ON_LEAVE` / `INACTIVE`**: User account is prevented from authenticating (`UserDetails.enabled = false`). Attempting to log in displays `"Account is inactive or on leave"`. Transitioning an account to `INACTIVE` or `ON_LEAVE` immediately invalidates any active HTTP sessions via `SessionRegistry`.
+
+### Persistent File-Based Storage & Volume Mounts
+The application uses a persistent file-based H2 database by default (`jdbc:h2:file:./data/dashboard;AUTO_SERVER=false`):
+- **Local Dev**: Saved to `./data/dashboard.mv.db`.
+- **Docker Container**: Persisted on named volume `construction-dashboard-data` mounted at `/app/data`.
+- **Ansible Deployment**: Mounted from host directory `/opt/construction-dashboard/data:/app/data` under dedicated `appdeploy` ownership.
+- **Idempotent Seed Runner**: `DataInitializer` seeds accounts only when not already present, guaranteeing that all admin-created users, modified roles, and task records survive restarts and redeployments.
 
 ### Development Seed Accounts (`dev` Profile)
 
