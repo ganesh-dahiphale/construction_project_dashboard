@@ -26,6 +26,7 @@ pipeline {
     }
 
     environment {
+        PATH = "C:\\Users\\Ganesh\\AppData\\Local\\Programs\\DockerDesktop\\resources\\bin;C:\\Program Files\\Google\\Chrome\\Application;${env.PATH}"
         WAR_FILE = 'target/dashboard.war'
         TARGET_PATH = "/${params.APP_CONTEXT}-${params.DEPLOY_ENV}"
         APP_VERSION = ''
@@ -607,9 +608,11 @@ Timestamp:        ${new Date().format('yyyy-MM-dd HH:mm:ss')}
 
 def runCmd(String cmd) {
     if (isUnix()) {
-        sh cmd
+        def unixCmd = cmd.startsWith('mvn ') ? './mvnw ' + cmd.substring(4) : cmd
+        sh unixCmd
     } else {
-        bat cmd
+        def winCmd = cmd.startsWith('mvn ') ? '.\\mvnw.cmd ' + cmd.substring(4) : cmd
+        bat winCmd
     }
 }
 
