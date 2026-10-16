@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -129,7 +129,7 @@
                     </div>
                 </div>
 
-                <div class="col-md-6 col-lg-3">
+                <div class="col-md-6 col-lg-3" sec:authorize="hasAnyRole('ADMIN', 'MANAGER')">
                     <div class="card card-custom h-100 p-3">
                         <div class="card-body">
                             <div class="feature-icon bg-success-subtle text-success">
@@ -144,7 +144,7 @@
                     </div>
                 </div>
 
-                <div class="col-md-6 col-lg-3">
+                <div class="col-md-6 col-lg-3" sec:authorize="hasAnyRole('ADMIN', 'MANAGER')">
                     <div class="card card-custom h-100 p-3">
                         <div class="card-body">
                             <div class="feature-icon bg-danger-subtle text-danger">
