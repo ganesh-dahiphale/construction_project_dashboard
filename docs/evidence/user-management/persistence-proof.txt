@@ -1,0 +1,78 @@
+=================================================================
+PHASE 4 DOCKER PERSISTENCE PROOF
+Date: 2026-10-16 11:11:11
+=================================================================
+
+[STEP 1] Building Docker runtime image test-persist:latest...
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile.runtime
+#1 transferring dockerfile: 2.40kB 0.0s done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/eclipse-temurin:17-jre
+#2 DONE 0.1s
+
+#3 [1/5] FROM docker.io/library/eclipse-temurin:17-jre@sha256:a9b54b51aaa867507be76277a98c6b11b99515cac6330891b534d070f607214c
+#3 resolve docker.io/library/eclipse-temurin:17-jre@sha256:a9b54b51aaa867507be76277a98c6b11b99515cac6330891b534d070f607214c 0.0s done
+#3 DONE 0.0s
+
+#4 [internal] load build context
+#4 transferring context: 70B done
+#4 DONE 0.0s
+
+#5 [2/5] RUN groupadd -r appgroup &&     useradd -r -g appgroup -d /app -s /sbin/nologin appuser &&     mkdir -p /app/data &&     chown -R appuser:appgroup /app
+#5 CACHED
+
+#6 [3/5] WORKDIR /app
+#6 CACHED
+
+#7 [4/5] COPY --chown=appuser:appgroup target/dashboard.war /app/app.war
+#7 CACHED
+
+#8 [5/5] RUN chown -R appuser:appgroup /app
+#8 CACHED
+
+#9 exporting to image
+#9 exporting layers done
+#9 exporting manifest sha256:a040366e0c6ebbade8a1c15f1a75c16458ab1bd06a1e23334ef96b5836a96ff5 done
+#9 exporting config sha256:e9c50de766c132edb2c851e0cadc4d9f761cda272d649145141b546429a6172b done
+#9 exporting attestation manifest sha256:9d11f4a8271aa9cbdf81f499b63130ad9554fee86e4c14431c30c7334551c7ee 0.0s done
+#9 exporting manifest list sha256:60ef0c8bf325c871c2245fc245129c20b1b50d5d14506f49cb1ae043ce470e4b 0.0s done
+#9 naming to docker.io/library/test-persist:latest
+#9 naming to docker.io/library/test-persist:latest done
+#9 unpacking to docker.io/library/test-persist:latest 0.0s done
+#9 DONE 0.2s
+
+[STEP 2] Running initial container cpd-persist-test with volume construction-dashboard-data...
+Command: docker run -d --name cpd-persist-test -p 8089:8080 -v construction-dashboard-data:/app/data -e SPRING_PROFILES_ACTIVE=dev test-persist:latest
+Container ID: 4cfd6b00cb0f947fcb1c97236054f9af28a7cc912f72142cbbca50b1a57b7027
+
+Waiting for container to become healthy on http://localhost:8089/health...
+Health check poll 5: UP
+
+[STEP 3] Authenticating as admin and registering user 'persist_eng'...
+Retrieved login CSRF: -jyVxu_-...
+Admin login response HTTP status: HTTP/1.1 302 
+Retrieved /admin/users/new CSRF: cI0UIviw...
+User registration POST response: HTTP/1.1 302 
+VERIFIED: 'persist_eng' found in admin users table!
+Pre-destruction login attempt for 'persist_eng' status: HTTP/1.1 302 
+
+[STEP 4] Destroying the container: docker rm -f cpd-persist-test...
+Removed container: cpd-persist-test
+
+[STEP 5] Starting FRESH container cpd-persist-test-fresh with SAME volume...
+Command: docker run -d --name cpd-persist-test-fresh -p 8089:8080 -v construction-dashboard-data:/app/data -e SPRING_PROFILES_ACTIVE=dev test-persist:latest
+Fresh Container ID: bd81592e7263112d05e0ed7a3fbb3abdb675f3b603b05ff142361c633a0882a8
+
+Waiting for fresh container to become healthy...
+Fresh container health check poll 5: UP
+
+[STEP 6] Authenticating as 'persist_eng' on FRESH container...
+Fresh container login response: HTTP/1.1 302 
+VERIFIED: 'persist_eng' successfully authenticated and accessed /tasks on the brand new container!
+
+[STEP 7] Cleaning up test container: docker rm -f cpd-persist-test-fresh...
+SUCCESS: Docker persistence verified completely across container destruction and recreation!
+=================================================================
