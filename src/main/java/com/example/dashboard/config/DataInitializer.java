@@ -1,5 +1,6 @@
 package com.example.dashboard.config;
 
+import com.example.dashboard.model.JobStatus;
 import com.example.dashboard.model.Project;
 import com.example.dashboard.model.Role;
 import com.example.dashboard.model.Task;
@@ -8,18 +9,24 @@ import com.example.dashboard.model.User;
 import com.example.dashboard.repository.ProjectRepository;
 import com.example.dashboard.repository.TaskRepository;
 import com.example.dashboard.repository.UserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.io.File;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Component
 @Profile({"dev", "default"})
 public class DataInitializer implements CommandLineRunner {
+
+    private static final Logger log = LoggerFactory.getLogger(DataInitializer.class);
 
     private final ProjectRepository projectRepository;
     private final TaskRepository taskRepository;
@@ -47,22 +54,47 @@ public class DataInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
+        ensureDataDirectoryExists();
         seedUsers();
         seedProjectsAndTasks();
+        migrateExistingUserData();
+    }
+
+    private void ensureDataDirectoryExists() {
+        try {
+            File dataDir = new File("./data");
+            if (!dataDir.exists()) {
+                boolean created = dataDir.mkdirs();
+                if (created) {
+                    log.info("Created local persistent data directory at: {}", dataDir.getAbsolutePath());
+                }
+            }
+        } catch (Exception e) {
+            log.warn("Could not pre-create data directory: {}", e.getMessage());
+        }
     }
 
     private void seedUsers() {
-        if (userRepository.count() > 0) {
-            return;
+        seedUserIfMissing("admin", adminPassword, Role.ADMIN, "System Administrator", "admin@construction.local");
+        seedUserIfMissing("manager", managerPassword, Role.MANAGER, "Project Manager", "manager@construction.local");
+        seedUserIfMissing("engineer", engineerPassword, Role.ENGINEER, "Lead Site Engineer", "engineer@construction.local");
+    }
+
+    private void seedUserIfMissing(String username, String rawPassword, Role role, String fullName, String email) {
+        if (!userRepository.existsByUsername(username)) {
+            User user = new User(
+                    username,
+                    passwordEncoder.encode(rawPassword),
+                    role,
+                    fullName,
+                    email,
+                    JobStatus.ACTIVE,
+                    "system"
+            );
+            user.setEnabled(true);
+            userRepository.save(user);
+            log.info("Idempotently seeded user '{}' with role {}", username, role);
         }
-
-        User adminUser = new User("admin", passwordEncoder.encode(adminPassword), Role.ADMIN);
-        User managerUser = new User("manager", passwordEncoder.encode(managerPassword), Role.MANAGER);
-        User engineerUser = new User("engineer", passwordEncoder.encode(engineerPassword), Role.ENGINEER);
-
-        userRepository.save(adminUser);
-        userRepository.save(managerUser);
-        userRepository.save(engineerUser);
     }
 
     private void seedProjectsAndTasks() {
@@ -99,6 +131,7 @@ public class DataInitializer implements CommandLineRunner {
                 "Piling depth tested and certified by geotechnical team."
         );
         task1.setLastUpdated(LocalDateTime.now().minusDays(15));
+        task1.setUpdatedBy("engineer");
 
         Task task2 = new Task(
                 metroProject,
@@ -109,6 +142,7 @@ public class DataInitializer implements CommandLineRunner {
                 "Pillars 1 to 8 completed; pouring pillars 9-12 currently underway."
         );
         task2.setLastUpdated(LocalDateTime.now().minusDays(1));
+        task2.setUpdatedBy("engineer");
 
         Task task3 = new Task(
                 metroProject,
@@ -119,6 +153,7 @@ public class DataInitializer implements CommandLineRunner {
                 "Delayed awaiting shipment of high-tensile bolts from supplier."
         );
         task3.setLastUpdated(LocalDateTime.now().minusDays(3));
+        task3.setUpdatedBy("manager");
 
         Task task4 = new Task(
                 highwayProject,
@@ -129,6 +164,7 @@ public class DataInitializer implements CommandLineRunner {
                 "Crane mechanical breakdown caused a 5-day schedule overrun."
         );
         task4.setLastUpdated(LocalDateTime.now().minusDays(5));
+        task4.setUpdatedBy("engineer");
 
         Task task5 = new Task(
                 highwayProject,
@@ -139,11 +175,48 @@ public class DataInitializer implements CommandLineRunner {
                 "Scheduled to begin immediately after girder inspection sign-off."
         );
         task5.setLastUpdated(LocalDateTime.now().minusDays(10));
+        task5.setUpdatedBy("system");
 
         taskRepository.save(task1);
         taskRepository.save(task2);
         taskRepository.save(task3);
         taskRepository.save(task4);
         taskRepository.save(task5);
+        log.info("Idempotently seeded 2 projects and 5 initial tasks");
+    }
+
+    private void migrateExistingUserData() {
+        List<User> existingUsers = userRepository.findAll();
+        for (User u : existingUsers) {
+            boolean modified = false;
+            if (u.getFullName() == null || u.getFullName().isBlank()) {
+                String capitalized = u.getUsername().substring(0, 1).toUpperCase() + u.getUsername().substring(1);
+                u.setFullName(capitalized + " User");
+                modified = true;
+            }
+            if (u.getEmail() == null || u.getEmail().isBlank()) {
+                u.setEmail(u.getUsername().toLowerCase() + "@construction.local");
+                modified = true;
+            }
+            if (u.getJobStatus() == null) {
+                u.setJobStatus(JobStatus.ACTIVE);
+                modified = true;
+            }
+            if (u.getCreatedBy() == null || u.getCreatedBy().isBlank()) {
+                u.setCreatedBy("system");
+                modified = true;
+            }
+            if (u.getCreatedAt() == null) {
+                u.setCreatedAt(LocalDateTime.now());
+                modified = true;
+            }
+            if (u.getLastUpdated() == null) {
+                u.setLastUpdated(LocalDateTime.now());
+                modified = true;
+            }
+            if (modified) {
+                userRepository.save(u);
+            }
+        }
     }
 }

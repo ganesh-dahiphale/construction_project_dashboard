@@ -113,3 +113,11 @@ docker-compose.override.yml
 jenkins_home/
 .jenkins/
 scratch/
+
+# ===================================================================
+# Local Persistent Database Files
+# ===================================================================
+data/
+*.mv.db
+*.trace.db
+
