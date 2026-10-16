@@ -14,29 +14,19 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto align-items-lg-center">
                 <li class="nav-item">
-                    <a class="nav-link" th:classappend="${activeTab == 'home' ? 'active' : ''}" th:href="@{/}" data-testid="nav-home">
-                        <i class="bi bi-house-door me-1"></i>Home
-                    </a>
+                    <a class="nav-link" th:classappend="${activeTab == 'home' ? 'active' : ''}" th:href="@{/}" data-testid="nav-home">Home</a>
+                </li>
+                <li class="nav-item" sec:authorize="hasAnyRole('ADMIN', 'MANAGER')">
+                    <a class="nav-link" th:classappend="${activeTab == 'dashboard' ? 'active' : ''}" th:href="@{/dashboard}" data-testid="nav-dashboard">Dashboard</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" th:classappend="${activeTab == 'dashboard' ? 'active' : ''}" th:href="@{/dashboard}" data-testid="nav-dashboard">
-                        <i class="bi bi-speedometer2 me-1"></i>Dashboard
-                    </a>
+                    <a class="nav-link" th:classappend="${activeTab == 'tasks' ? 'active' : ''}" th:href="@{/tasks}" data-testid="nav-tasks">Tasks</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" th:classappend="${activeTab == 'tasks' ? 'active' : ''}" th:href="@{/tasks}" data-testid="nav-tasks">
-                        <i class="bi bi-list-task me-1"></i>Tasks
-                    </a>
+                <li class="nav-item" sec:authorize="hasAnyRole('ADMIN', 'MANAGER')">
+                    <a class="nav-link" th:classappend="${activeTab == 'status' ? 'active' : ''}" th:href="@{/status}" data-testid="nav-status">Status</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" th:classappend="${activeTab == 'status' ? 'active' : ''}" th:href="@{/status}" data-testid="nav-status">
-                        <i class="bi bi-diagram-3 me-1"></i>Status
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" th:classappend="${activeTab == 'alerts' ? 'active' : ''}" th:href="@{/alerts}" data-testid="nav-alerts">
-                        <i class="bi bi-bell me-1"></i>Alerts
-                    </a>
+                <li class="nav-item" sec:authorize="hasAnyRole('ADMIN', 'MANAGER')">
+                    <a class="nav-link" th:classappend="${activeTab == 'alerts' ? 'active' : ''}" th:href="@{/alerts}" data-testid="nav-alerts">Alerts</a>
                 </li>
                 <li class="nav-item ms-lg-2 mt-2 mt-lg-0">
                     <a class="btn btn-warning btn-sm fw-semibold" th:href="@{/tasks/new}" data-testid="nav-add-task">
@@ -45,11 +35,11 @@
                 </li>
                 <li class="nav-item dropdown ms-lg-2 mt-2 mt-lg-0" sec:authorize="hasRole('ADMIN')" data-testid="nav-admin-section">
                     <a class="btn btn-outline-info btn-sm fw-semibold dropdown-toggle" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" data-testid="admin-dropdown-btn">
-                        <i class="bi bi-gear-wide-connected me-1"></i>Admin
+                        Admin
                     </a>
                     <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end shadow" aria-labelledby="adminDropdown">
-                        <li><a class="dropdown-item" th:href="@{/admin/projects}" data-testid="nav-projects"><i class="bi bi-building me-2 text-info"></i>Manage Projects</a></li>
-                        <li><a class="dropdown-item" th:href="@{/admin/users}" data-testid="nav-users"><i class="bi bi-people me-2 text-warning"></i>Users</a></li>
+                        <li><a class="dropdown-item" th:href="@{/admin/projects}" data-testid="nav-projects">Manage Projects</a></li>
+                        <li><a class="dropdown-item" th:href="@{/admin/users}" data-testid="nav-users">Users</a></li>
                     </ul>
                 </li>
                 <li class="nav-item ms-lg-3 mt-2 mt-lg-0" sec:authorize="isAuthenticated()">

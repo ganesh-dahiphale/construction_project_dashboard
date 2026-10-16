@@ -33,6 +33,14 @@ public class LoginJourneyTest extends BaseE2ETest {
         NavBar navBar = new NavBar(driver);
         assertThat(navBar.isUserLoggedIn()).isTrue();
         assertThat(navBar.getLoggedInUsername()).containsIgnoringCase("engineer");
+
+        // Verify engineer navbar only shows accessible pages (Tasks, Add Task) and hides Dashboard, Status, Alerts, Admin
+        assertThat(driver.findElements(By.cssSelector("[data-testid='nav-dashboard']"))).isEmpty();
+        assertThat(driver.findElements(By.cssSelector("[data-testid='nav-status']"))).isEmpty();
+        assertThat(driver.findElements(By.cssSelector("[data-testid='nav-alerts']"))).isEmpty();
+        assertThat(driver.findElements(By.cssSelector("[data-testid='nav-admin-section']"))).isEmpty();
+        assertThat(driver.findElements(By.cssSelector("[data-testid='nav-tasks']"))).isNotEmpty();
+        assertThat(driver.findElements(By.cssSelector("[data-testid='nav-add-task']"))).isNotEmpty();
     }
 
     @Test
@@ -64,6 +72,12 @@ public class LoginJourneyTest extends BaseE2ETest {
 
         NavBar navBar = new NavBar(driver);
         assertThat(navBar.isUserLoggedIn()).isTrue();
+
+        // Verify manager cannot see Admin section, but sees Dashboard, Status, Alerts, Tasks
+        assertThat(driver.findElements(By.cssSelector("[data-testid='nav-admin-section']"))).isEmpty();
+        assertThat(driver.findElements(By.cssSelector("[data-testid='nav-dashboard']"))).isNotEmpty();
+        assertThat(driver.findElements(By.cssSelector("[data-testid='nav-status']"))).isNotEmpty();
+        assertThat(driver.findElements(By.cssSelector("[data-testid='nav-alerts']"))).isNotEmpty();
 
         navBar.clickDashboard();
         wait.until(org.openqa.selenium.support.ui.ExpectedConditions.urlContains("/dashboard"));

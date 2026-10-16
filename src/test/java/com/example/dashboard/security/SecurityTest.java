@@ -126,4 +126,46 @@ class SecurityTest {
         mockMvc.perform(get("/admin/projects"))
                 .andExpect(status().isOk());
     }
+
+    @Test
+    @WithMockUser(username = "engineer", roles = {"ENGINEER"})
+    @DisplayName("ROLE_ENGINEER navbar only shows accessible pages (Home, Tasks, Add Task) and hides Dashboard, Status, Alerts, Admin")
+    void engineerNavbarHidesInaccessiblePages() throws Exception {
+        mockMvc.perform(get("/tasks"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("data-testid=\"nav-tasks\"")))
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("data-testid=\"nav-add-task\"")))
+                .andExpect(content().string(org.hamcrest.Matchers.not(org.hamcrest.Matchers.containsString("data-testid=\"nav-dashboard\""))))
+                .andExpect(content().string(org.hamcrest.Matchers.not(org.hamcrest.Matchers.containsString("data-testid=\"nav-status\""))))
+                .andExpect(content().string(org.hamcrest.Matchers.not(org.hamcrest.Matchers.containsString("data-testid=\"nav-alerts\""))))
+                .andExpect(content().string(org.hamcrest.Matchers.not(org.hamcrest.Matchers.containsString("data-testid=\"nav-admin-section\""))));
+    }
+
+    @Test
+    @WithMockUser(username = "manager", roles = {"MANAGER"})
+    @DisplayName("ROLE_MANAGER navbar shows Dashboard, Status, Alerts, Tasks, Add Task but hides Admin")
+    void managerNavbarShowsManagerPagesOnly() throws Exception {
+        mockMvc.perform(get("/dashboard"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("data-testid=\"nav-dashboard\"")))
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("data-testid=\"nav-status\"")))
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("data-testid=\"nav-alerts\"")))
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("data-testid=\"nav-tasks\"")))
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("data-testid=\"nav-add-task\"")))
+                .andExpect(content().string(org.hamcrest.Matchers.not(org.hamcrest.Matchers.containsString("data-testid=\"nav-admin-section\""))));
+    }
+
+    @Test
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
+    @DisplayName("ROLE_ADMIN navbar shows all pages including Admin dropdown")
+    void adminNavbarShowsAllPages() throws Exception {
+        mockMvc.perform(get("/dashboard"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("data-testid=\"nav-dashboard\"")))
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("data-testid=\"nav-status\"")))
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("data-testid=\"nav-alerts\"")))
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("data-testid=\"nav-tasks\"")))
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("data-testid=\"nav-add-task\"")))
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("data-testid=\"nav-admin-section\"")));
+    }
 }
