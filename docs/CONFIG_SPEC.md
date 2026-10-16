@@ -32,6 +32,7 @@ graph TD
             ConfigDir["/opt/construction-dashboard/config/<br>0750 appdeploy:docker"]
             LogsDir["/opt/construction-dashboard/logs/<br>0750 appdeploy:docker"]
             ReleasesDir["/opt/construction-dashboard/releases/<br>0755 appdeploy:docker"]
+            DataDir["/opt/construction-dashboard/data/<br>0755 appdeploy:docker"]
             EnvFile["/opt/construction-dashboard/config/app.env<br>0640 appdeploy:docker"]
         end
         
@@ -41,6 +42,7 @@ graph TD
         DockerEngine --> SystemdUnit
         SystemdUnit --> EnvFile
         SystemdUnit --> OptDir
+        SystemdUnit --> DataDir
     end
 ```
 
@@ -79,6 +81,7 @@ graph TD
 | `ansible.builtin.file` | `/opt/construction-dashboard/config` | `appdeploy` | `docker` | `0750` | Restricted configuration directory storing sensitive environment variables and tokens; no access for other users. |
 | `ansible.builtin.file` | `/opt/construction-dashboard/logs` | `appdeploy` | `docker` | `0750` | Persistent log storage directory mounted or archived from container execution; restricted access. |
 | `ansible.builtin.file` | `/opt/construction-dashboard/releases` | `appdeploy` | `docker` | `0755` | Release version metadata directory for zero-downtime release deployments and rollback records. |
+| `ansible.builtin.file` | `/opt/construction-dashboard/data` | `appdeploy` | `docker` | `0755` | Persistent database storage directory mounted into container as `/app/data` to preserve file-based H2 database across redeployments. |
 
 ---
 
@@ -88,7 +91,7 @@ graph TD
 |---|---|---|---|---|---|
 | `ansible.builtin.template` | `/etc/docker/daemon.json` | `root:root` | `0644` | JSON log-driver rotation configuration: `json-file`, `max-size: 10m`, `max-file: 3` | Prevents disk space exhaustion from container stdout/stderr logs filling the root partition. |
 | `ansible.builtin.template` | `/opt/construction-dashboard/config/app.env` | `appdeploy:docker` | `0640` | Key-value pairs: `APP_VERSION`, `SPRING_PROFILES_ACTIVE`, `SERVER_PORT`, `JAVA_OPTS` | Centralized external configuration file consumed by Docker via `--env-file`. Note: `SPRING_PROFILES_ACTIVE=dev` is for this course demo only. |
-| `ansible.builtin.template` | `/etc/systemd/system/construction-dashboard.service` | `root:root` | `0644` | Systemd service definition unit managing container lifecycle (`docker run` / `docker stop`) | Integrates application container lifecycle with host system initialization, auto-restart, and supervision. |
+| `ansible.builtin.template` | `/etc/systemd/system/construction-dashboard.service` | `root:root` | `0644` | Systemd service definition unit managing container lifecycle (`docker run` with `-v /opt/construction-dashboard/data:/app/data` / `docker stop`) | Integrates application container lifecycle with host system initialization, persistent storage volume mount, auto-restart, and supervision. |
 
 ---
 

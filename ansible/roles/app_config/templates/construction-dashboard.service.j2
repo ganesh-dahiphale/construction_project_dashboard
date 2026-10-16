@@ -17,6 +17,7 @@ ExecStartPre=-/usr/bin/docker rm {{ container_name }}
 ExecStart=/usr/bin/docker run --name {{ container_name }} \
   --rm \
   -p {{ app_port }}:8080 \
+  -v {{ app_dir }}/data:/app/data \
   --env-file {{ app_dir }}/config/app.env \
   {{ image_name | default(docker_image) }}:{{ active_release_tag | default(release_tag) | default(image_tag) }}
 ExecStop=/usr/bin/docker stop -t 15 {{ container_name }}
